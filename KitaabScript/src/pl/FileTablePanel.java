@@ -14,6 +14,7 @@ public class FileTablePanel extends JPanel {
     private FileBO fileBO;
     private DefaultTableModel tableModel;
     private FileManagementController controller;
+    private JButton deleteButton; 
 
     public FileTablePanel(FileManagementController controller) {
         this.controller = controller;
@@ -25,6 +26,17 @@ public class FileTablePanel extends JPanel {
     private void initializeUI() {
         setLayout(new BorderLayout());
         setBackground(new Color(235, 224, 199)); 
+
+        deleteButton = new JButton("Delete");
+        deleteButton.setPreferredSize(new Dimension(100, 30)); 
+        deleteButton.setBackground(new Color(235, 224, 199));
+        deleteButton.setForeground(Color.WHITE);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.setBackground(new Color(138, 83, 43)); 
+        buttonPanel.add(deleteButton); 
+
+        add(buttonPanel, BorderLayout.NORTH);
 
         tableModel = new DefaultTableModel(new Object[]{"Filename", "Last Modified"}, 0);
         fileTable = new JTable(tableModel);
