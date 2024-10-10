@@ -36,7 +36,7 @@ public class FileDetailPanel extends JPanel {
         updateButton.setBackground(new Color(0, 100, 0));
         updateButton.setForeground(Color.WHITE);
         
-        buttonPanel.add(updateButton, BorderLayout.WEST); // Align button to the left
+        buttonPanel.add(updateButton, BorderLayout.WEST); 
         buttonPanel.setBackground(new Color(135, 206, 235));
 
         add(buttonPanel, BorderLayout.NORTH);

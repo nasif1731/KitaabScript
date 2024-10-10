@@ -58,7 +58,7 @@ public class FileDAO {
 
     public int getWordCount(String fileName) {
         int wordCount = 0;
-        String query = "SELECT word_count FROM text_files WHERE filename = ?"; // Corrected column name
+        String query = "SELECT word_count FROM text_files WHERE filename = ?"; 
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
