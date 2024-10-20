@@ -58,43 +58,47 @@ public class MainScreen extends JFrame {
 			}
 		});
 		createFileButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		    public void actionPerformed(ActionEvent e) {
 
-				String fileName = JOptionPane.showInputDialog(MainScreen.this,
-						"Enter the name of the file (without extension):");
+		        String fileName = JOptionPane.showInputDialog(MainScreen.this,
+		                "Enter the name of the file (without extension):");
 
-				if (fileName != null && !fileName.trim().isEmpty()) {
+		        if (fileName == null) {
+		            return; 
+		        }
 
-					if (!fileName.toLowerCase().endsWith(".txt")) {
-						fileName += ".txt";
-					}
+		        if (fileName.trim().isEmpty()) {
+		            JOptionPane.showMessageDialog(MainScreen.this, "File name cannot be empty!");
+		            return; 
+		        }
 
-					try {
+		        if (!fileName.toLowerCase().endsWith(".txt")) {
+		            fileName += ".txt";
+		        }
 
-						FileBO fileBO = new FileBO();
-						fileBO.createFile(fileName, ""); // Creating an empty file initially
+		        try {
+		            FileBO fileBO = new FileBO();
+		            fileBO.createFile(fileName, ""); // Creating an empty file initially
 
-						MainScreen.this.setVisible(false);
+		            MainScreen.this.setVisible(true);
 
-						FileUpdatePanel fileUpdatePanel = new FileUpdatePanel(fileName);
+		            FileUpdatePanel fileUpdatePanel = new FileUpdatePanel(fileName);
 
-						fileUpdatePanel.addWindowListener(new java.awt.event.WindowAdapter() {
-							@Override
-							public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-								MainScreen.this.setVisible(true);
-							}
-						});
+		            fileUpdatePanel.addWindowListener(new java.awt.event.WindowAdapter() {
+		                @Override
+		                public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		                    MainScreen.this.setVisible(true);
+		                }
+		            });
 
-						fileUpdatePanel.setVisible(true);
+		            fileUpdatePanel.setVisible(true);
 
-					} catch (Exception ex) {
-						JOptionPane.showMessageDialog(MainScreen.this, "Error creating file: " + ex.getMessage());
-					}
-				} else {
-					JOptionPane.showMessageDialog(MainScreen.this, "File name cannot be empty!");
-				}
-			}
+		        } catch (Exception ex) {
+		            JOptionPane.showMessageDialog(MainScreen.this, "Error creating file: " + ex.getMessage());
+		        }
+		    }
 		});
+
 
 		openFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
