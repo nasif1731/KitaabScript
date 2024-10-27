@@ -17,9 +17,11 @@ class CreateFileDialogue extends JDialog {
 	private JTextField fileNameField;
 	private JButton proceedButton;
 	private MainScreen mainScreen;
+	private FileBO fileBO;
 
-	public CreateFileDialogue(MainScreen mainScreen) {
+	public CreateFileDialogue(MainScreen mainScreen, FileBO fileBO) {
 		this.mainScreen = mainScreen;
+		this.fileBO = fileBO;
 		setTitle("Create New File");
 		setModal(true);
 		setSize(300, 150);
@@ -41,11 +43,11 @@ class CreateFileDialogue extends JDialog {
 				if (!fileName.isEmpty()) {
 					try {
 
-						new FileBO().createFile(fileName, "");
+						fileBO.createFile(fileName, "");
 
 						setVisible(false);
 						dispose();
-						FileUpdatePanel fileUpdatePanel = new FileUpdatePanel(fileName);
+						FileUpdatePanel fileUpdatePanel = new FileUpdatePanel(fileName,fileBO);
 						fileUpdatePanel.setVisible(true);
 					} catch (Exception ex) {
 						JOptionPane.showMessageDialog(CreateFileDialogue.this,

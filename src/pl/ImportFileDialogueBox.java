@@ -17,9 +17,9 @@ public class ImportFileDialogueBox extends JDialog {
     private JTextArea resultArea;
     private JButton importButton;
 
-    public ImportFileDialogueBox(Frame parent) {
+    public ImportFileDialogueBox(Frame parent,FileImportBO fileImportBO) {
         super(parent, "Import File", true);
-        fileImportBO = new FileImportBO();
+        this.fileImportBO = fileImportBO;
         ImageIcon icon = new ImageIcon("resources/images/icon.png");
         setIconImage(icon.getImage());
         setLayout(new BorderLayout());
@@ -74,23 +74,22 @@ public class ImportFileDialogueBox extends JDialog {
 
             try {
                 if (selectedFiles.length == 1) {
-                    String importResult = fileImportBO.importFile(selectedFiles[0]);
+                    String importResult = fileImportBO.importFile(selectedFiles[0].getAbsolutePath());
                     resultArea.append(importResult + "\n");
                 } else {
-                    List<String> results = fileImportBO.bulkImportFiles(List.of(selectedFiles));
-                    for (String importResult : results) {
-                        resultArea.append(importResult + "\n");
-                    }
+                    List<String> filePaths = List.of(selectedFiles).stream()
+                            .map(File::getAbsolutePath)
+                            .toList();
+                    List<String> results = fileImportBO.bulkImportFiles(filePaths);
+                    results.forEach(resultArea::append);
                 }
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Error importing file(s): " + ex.getMessage(), "Error",
-                        JOptionPane.ERROR_MESSAGE);
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error importing file(s): " + ex.getMessage(), "Error",
                         JOptionPane.ERROR_MESSAGE);
             }
         }
     }
+
 
     private JButton createStyledButton(String text, Font font) {
         JButton button = new JButton(text);
@@ -106,13 +105,13 @@ public class ImportFileDialogueBox extends JDialog {
         return button;
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                JFrame frame = new JFrame();
-                ImportFileDialogueBox dialog = new ImportFileDialogueBox(frame);
-                dialog.setVisible(true);
-            }
-        });
-    }
+//    public static void main(String[] args) {
+//        SwingUtilities.invokeLater(new Runnable() {
+//            public void run() {
+//                JFrame frame = new JFrame();
+//                ImportFileDialogueBox dialog = new ImportFileDialogueBox(frame);
+//                dialog.setVisible(true);
+//            }
+//        });
+//    }
 }

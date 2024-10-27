@@ -17,8 +17,8 @@ public class FileDetailPanel extends JFrame {
 	private FileBO fileBO;
 	private FileDTO fileDTO;
 
-	public FileDetailPanel(String fileName) {
-		fileBO = new FileBO();
+	public FileDetailPanel(String fileName, FileBO fileBO) {
+		this.fileBO = fileBO;
 		initializeUI();
 		loadFileDetails(fileName);
 	}
@@ -54,7 +54,7 @@ public class FileDetailPanel extends JFrame {
 
 	void loadWriteMode() {
 		dispose();
-		FileUpdatePanel dialog = new FileUpdatePanel(fileDTO.getFilename());
+		FileUpdatePanel dialog = new FileUpdatePanel(fileDTO.getFilename(),fileBO);
 		dialog.setVisible(true);
 	}
 
@@ -75,7 +75,7 @@ public class FileDetailPanel extends JFrame {
 			} else {
 				JOptionPane.showMessageDialog(null, "File not found!", "Error", JOptionPane.ERROR_MESSAGE);
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error loading file details: " + e.getMessage(), "Error",
 					JOptionPane.ERROR_MESSAGE);

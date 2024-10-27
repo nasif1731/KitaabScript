@@ -24,12 +24,11 @@ public class FileTablePanel extends JPanel {
     private static final Color BUTTON_COLOR = new Color(138, 83, 43);
     private static final Color TABLE_HEADER_COLOR = BACKGROUND_COLOR;
 
-    public FileTablePanel() {
-        this.fileBO = new FileBO();
+    public FileTablePanel(FileBO fileBO) {
+        this.fileBO = fileBO;
         initializeUI();
         loadFiles();
     }
-
     private void initializeUI() {
         setLayout(new BorderLayout());
         setBackground(BACKGROUND_COLOR);
@@ -128,22 +127,23 @@ public class FileTablePanel extends JPanel {
 
     private void openFileDetailPanel(String fileName) {
         
-        FileDetailPanel fileDetailPanel = new FileDetailPanel(fileName);
+        FileDetailPanel fileDetailPanel = new FileDetailPanel(fileName,fileBO);
         fileDetailPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
         fileDetailPanel.setSize(600, 400); 
         fileDetailPanel.setLocationRelativeTo(null); 
         fileDetailPanel.setVisible(true); 
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("File Management System");
-            FileTablePanel fileTablePanel = new FileTablePanel();
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-            frame.setContentPane(fileTablePanel); 
-            frame.setSize(600, 400);
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
-        });
-    }
+//    public static void main(String[] args) {
+//        SwingUtilities.invokeLater(() -> {
+//            JFrame frame = new JFrame("File Management System");
+//            FileBO fileBO = new FileBO(); 
+//            FileTablePanel fileTablePanel = new FileTablePanel(fileBO);
+//            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+//            frame.setContentPane(fileTablePanel); 
+//            frame.setSize(600, 400);
+//            frame.setLocationRelativeTo(null);
+//            frame.setVisible(true);
+//        });
+//    }
 }

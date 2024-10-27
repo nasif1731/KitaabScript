@@ -3,6 +3,15 @@ package pl;
 import javax.swing.*;
 
 import bll.FileBO;
+import bll.FileImportBO;
+import dal.AbstractDALFactory;
+import dal.DALFacade;
+import dal.FileDAO;
+import dal.FileImportDAO;
+import dal.IFileDAO;
+import dal.IFileImportDAO;
+import dal.IDALFacade;
+import dal.IDALFactory;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,8 +24,12 @@ public class MainScreen extends JFrame {
 	private JButton openFileButton;
 	private JButton createFileButton;
 	private JButton importFileButton;
+	private FileBO fileBO;
+	private FileImportBO fileImportBO;
 
-	public MainScreen() {
+    public MainScreen(FileBO fileBO,FileImportBO fileImportBO) {
+        this.fileBO = fileBO;
+        this.fileImportBO=fileImportBO;
 		setTitle("Kitaab Script");
 		setSize(800, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,7 +66,7 @@ public class MainScreen extends JFrame {
 
 		importFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ImportFileDialogueBox dialog = new ImportFileDialogueBox(MainScreen.this);
+				ImportFileDialogueBox dialog = new ImportFileDialogueBox(MainScreen.this,fileImportBO);
 				dialog.setVisible(true);
 			}
 		});
@@ -77,12 +90,12 @@ public class MainScreen extends JFrame {
 		        }
 
 		        try {
-		            FileBO fileBO = new FileBO();
-		            fileBO.createFile(fileName, ""); // Creating an empty file initially
+		            
+		            fileBO.createFile(fileName, ""); 
 
 		            MainScreen.this.setVisible(true);
 
-		            FileUpdatePanel fileUpdatePanel = new FileUpdatePanel(fileName);
+		            FileUpdatePanel fileUpdatePanel = new FileUpdatePanel(fileName,fileBO);
 
 		            fileUpdatePanel.addWindowListener(new java.awt.event.WindowAdapter() {
 		                @Override
@@ -104,7 +117,7 @@ public class MainScreen extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				JFrame frame = new JFrame("Files in DB");
-				FileTablePanel fileTablePanel = new FileTablePanel();
+				FileTablePanel fileTablePanel = new FileTablePanel(fileBO);
 				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				frame.add(fileTablePanel);
 				frame.setSize(600, 400);
@@ -145,8 +158,14 @@ public class MainScreen extends JFrame {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				MainScreen mainFrame = new MainScreen();
-				mainFrame.setVisible(true);
+				IDALFactory dalFactory = AbstractDALFactory.getInstance();
+                IFileDAO fileDAO = dalFactory.getFileDAO();
+                IFileImportDAO fileImportDAO = dalFactory.getFileImportDAO();
+                IDALFacade dalFacade = new DALFacade(fileDAO, fileImportDAO); 
+                FileBO fileBO = new FileBO(dalFacade);
+                FileImportBO fileImportBO = new FileImportBO(dalFacade);
+                MainScreen mainFrame = new MainScreen(fileBO, fileImportBO);
+                mainFrame.setVisible(true);
 			}
 		});
 	}

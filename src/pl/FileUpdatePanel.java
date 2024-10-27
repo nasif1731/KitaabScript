@@ -19,14 +19,14 @@ public class FileUpdatePanel extends JFrame {
 	private FileBO fileBO;
 	private String currentFileName;
 
-	public FileUpdatePanel(String fileName) {
-		this.currentFileName = fileName;
-		this.fileBO = new FileBO();
+	public FileUpdatePanel(String fileName, FileBO fileBO) {
+        this.currentFileName = fileName;
+        this.fileBO = fileBO;
 
-		initializeUI();
-		loadFileContent();
-		updateWordCount();
-	}
+        initializeUI();
+        loadFileContent();
+        updateWordCount();
+    }
 
 	private void initializeUI() {
 		setTitle("File Update - " + currentFileName);
@@ -112,7 +112,7 @@ public class FileUpdatePanel extends JFrame {
 			} else {
 				JOptionPane.showMessageDialog(null, "File not found!", "Error", JOptionPane.ERROR_MESSAGE);
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error loading file content: " + e.getMessage(), "Error",
 					JOptionPane.ERROR_MESSAGE);
@@ -148,7 +148,7 @@ public class FileUpdatePanel extends JFrame {
 
 	private void navigateToFileTable() {
 		dispose();
-		FileTablePanel fileTablePanel = new FileTablePanel();
+		FileTablePanel fileTablePanel = new FileTablePanel(fileBO);
 		fileTablePanel.setVisible(true);
 	}
 }

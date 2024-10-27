@@ -7,98 +7,31 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import dal.FileImportDAO;
+import dal.IFileImportDAO;
 import dto.FileDTO;
 import util.HashGenerator;
 
 public class FileImportBO {
 
-	private final FileImportDAO fileImportDAO;
+	private final IFileImportDAO fileImportDAO;
 
-	public FileImportBO() {
-		this.fileImportDAO = new FileImportDAO();
-	}
-
-	public String importFile(File file) throws SQLException, IOException {
-		String hash = HashGenerator.generateHashFromContent(getFileContent(file));
-
-		if (fileImportDAO.doesHashExist(hash)) {
-			return "Cannot import: A similar file already exists in the database.";
-		}
-
-		FileDTO fileDTO = createFileDTO(file, hash);
-		fileImportDAO.importFile(fileDTO);
-		return "File imported successfully.";
-	}
-
-	public List<String> bulkImportFiles(List<File> files) throws SQLException, IOException {
-		List<String> messages = new ArrayList<>();
-
-		for (File file : files) {
-			String hash = HashGenerator.generateHashFromContent(getFileContent(file));
-
-			if (fileImportDAO.doesHashExist(hash)) {
-				messages.add("Cannot import: " + file.getName() + " - A similar file already exists in the database.");
-			} else {
-				FileDTO fileDTO = createFileDTO(file, hash);
-				fileImportDAO.importFile(fileDTO);
-				messages.add("File imported successfully: " + file.getName());
-			}
-		}
-
-		return messages;
-	}
-	public static String getFileContent(File file) throws IOException {
-        return new String(Files.readAllBytes(file.toPath()));
+    public FileImportBO(IFileImportDAO fileImportDAO) {
+        this.fileImportDAO = fileImportDAO;
     }
 
-	private FileDTO createFileDTO(File file, String hash) throws IOException {
-		String content = new String(java.nio.file.Files.readAllBytes(file.toPath()));
+    public String importFile(String filePath) {
+        return fileImportDAO.importFile(filePath);
+    }
 
-		String language = determineFileLanguage(file);
-		int wordCount = countWords(content);
+    public List<String> bulkImportFiles(List<String> filePaths) {
+        List<String> results = new ArrayList<>();
+        for (String filePath : filePaths) {
+            results.add(importFile(filePath)); // Using the importFile method to handle individual file imports
+        }
+        return results;
+    }
 
-		return new FileDTO(file.getName(), content, language, hash, wordCount);
-	}
-
-	private String determineFileLanguage(File file) throws IOException {
-
-		String content = new String(java.nio.file.Files.readAllBytes(file.toPath()));
-		if (isUrdu(content)) {
-			return "Urdu";
-		} else if (isArabic(content)) {
-			return "Arabic";
-		} else {
-			return "English";
-		}
-	}
-
-	private boolean isUrdu(String content) {
-		for (int i = 0; i < content.length(); i++) {
-			char ch = content.charAt(i);
-			if (ch == 'ٹ' || ch == 'ڈ' || ch == 'ڑ' || ch == 'ں' || ch == 'ے' || ch == 'ؤ' || ch == 'ۓ') {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean isArabic(String content) {
-		for (int i = 0; i < content.length(); i++) {
-			char ch = content.charAt(i);
-			if (ch >= 0x0600 && ch <= 0x06FF && !isUrdu(String.valueOf(ch))) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private int countWords(String content) {
-		if (content.isEmpty()) {
-			return 0;
-		} else {
-			return content.split("\\s+").length;
-		}
-	}
+	
 
 //	public static void main(String[] args) {
 //		FileImportBO fileImportBO = new FileImportBO();
