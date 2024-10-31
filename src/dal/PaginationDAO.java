@@ -13,26 +13,34 @@ import java.util.List;
 
 public class PaginationDAO implements IPaginationDAO {
 
-    @Override
-    public List<PageDTO> paginateContent(int fileId, String content) {
-        List<PageDTO> pages = new ArrayList<>();
-        int charLimit = 400; 
-        int start = 0;
-        int pageNumber = 1;
+	@Override
+	public List<PageDTO> paginateContent(int fileId, String content) {
+	    List<PageDTO> pages = new ArrayList<>();
+	    int wordLimit = 400; 
+	    int wordsPerLine = 10; 
+	    String[] words = content.split("\\s+");
+	    int pageNumber = 1;
+	    StringBuilder pageContent = new StringBuilder();
+	    int wordCount = 0; 
 
-        if (content != null && !content.isEmpty()) {
-            while (start < content.length()) {
-                int end = Math.min(start + charLimit, content.length());
-                String pageContent = content.substring(start, end);
-                pages.add(new PageDTO(fileId, pageNumber++, pageContent));
-                start = end;  
-            }
-        } else {
-            pages.add(new PageDTO(fileId, pageNumber, "")); 
-        }
+	    for (int i = 0; i < words.length; i++) {
+	        pageContent.append(words[i]).append(" ");
+	        wordCount++;
 
-        return pages;
-    }
+	        if (wordCount % wordsPerLine == 0) {
+	            pageContent.append("\n"); 
+	        }
+
+	        if (wordCount >= wordLimit || i == words.length - 1) {
+	            pages.add(new PageDTO(fileId, pageNumber++, pageContent.toString().trim()));
+	            pageContent.setLength(0); 
+	            wordCount = 0; 
+	        }
+	    }
+
+	    return pages;
+	}
+
 
 
     @Override
@@ -54,7 +62,7 @@ public class PaginationDAO implements IPaginationDAO {
             }
 
             stmt.executeBatch();
-            conn.commit();
+           // conn.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }

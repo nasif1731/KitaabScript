@@ -34,6 +34,8 @@ public class FileDetailPanel extends JFrame {
 
         fileContentArea = new JTextPane();
         fileContentArea.setEditable(false);
+        fileContentArea.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+
         add(new JScrollPane(fileContentArea), BorderLayout.CENTER);
 
         updateButton = new JButton("Update");
