@@ -10,29 +10,40 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import dto.FileDTO;
+import dto.PageDTO;
 import util.DatabaseConnection;
 import util.HashGenerator;
 
 public class FileImportDAO implements IFileImportDAO{
 
-	@Override
-	public String importFile(String filePath) {
-        File file = new File(filePath);
-        String content;
-        try {
-            content = new String(Files.readAllBytes(file.toPath()));
-            String hash = HashGenerator.generateHashFromContent(content);
+	  private final PaginationDAO paginationDAO;
 
-            if (doesHashExist(hash)) {
-                return "Cannot import: A similar file already exists in the database.";
-            }
+	    public FileImportDAO() {
+	        this.paginationDAO = new PaginationDAO();
+	    }
 
-            String language = determineFileLanguage(content);
-            int wordCount = countWords(content);
+	    @Override
+	    public String importFile(String filePath) {
+	        File file = new File(filePath);
+	        String content;
+	        try {
+	            content = new String(Files.readAllBytes(file.toPath()));
+	            String hash = HashGenerator.generateHashFromContent(content);
 
-            FileDTO fileDTO = new FileDTO(file.getName(), content, language, hash, wordCount);
-            insertFileIntoDatabase(fileDTO);
-            return "File imported successfully.";
+	            if (doesHashExist(hash)) {
+	                return "Cannot import: A similar file already exists in the database.";
+	            }
+
+	            String language = determineFileLanguage(content);
+	            int wordCount = countWords(content);
+
+	            FileDTO fileDTO = new FileDTO(file.getName(), null, language, hash, wordCount);
+	            int fileId = insertFileIntoDatabase(fileDTO,content);
+				List<PageDTO> paginatedContent = paginationDAO.paginateContent(fileId, content);
+
+	            paginationDAO.insertContent(paginatedContent); 
+
+	            return "File imported successfully.";
         } catch (IOException e) {
             e.printStackTrace();
             return "Error reading the file: " + e.getMessage();
@@ -47,22 +58,36 @@ public class FileImportDAO implements IFileImportDAO{
         return messages;
     }
 	@Override
-	public void insertFileIntoDatabase(FileDTO file) {
-        String query = "INSERT INTO text_files (filename, content, language, hash, word_count) VALUES (?, ?, ?, ?, ?)";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, file.getFilename());
-            stmt.setString(2, file.getContent());
-            stmt.setString(3, file.getLanguage());
-            stmt.setString(4, file.getHash());
-            stmt.setInt(5, file.getWordCount());
+	public int insertFileIntoDatabase(FileDTO file, String content) {
+	    String query = "INSERT INTO text_files (filename, language, hash, word_count) VALUES (?, ?, ?, ?)";
+	    try (Connection conn = DatabaseConnection.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.err.println("Error inserting "+file.getFilename()+" file into database: " + e.getMessage());
-        }
-    }
+	        stmt.setString(1, file.getFilename());
+	        stmt.setString(2, file.getLanguage());
+	        stmt.setString(3, file.getHash());
+	        stmt.setInt(4, file.getWordCount());
+	        stmt.executeUpdate();
+
+	        try (ResultSet rs = stmt.getGeneratedKeys()) {
+	            if (rs.next()) {
+	                int fileId = rs.getInt(1);
+
+	                List<PageDTO> paginatedContent = paginationDAO.paginateContent(fileId, content);
+	                paginationDAO.insertContent(paginatedContent);
+
+	                return fileId;
+	            }
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        System.err.println("Error inserting " + file.getFilename() + " file into database: " + e.getMessage());
+	    }
+	    return -1;
+	}
+
+	
 	@Override
 	public boolean doesHashExist(String hash) {
         String query = "SELECT COUNT(*) FROM text_files WHERE hash = ?";

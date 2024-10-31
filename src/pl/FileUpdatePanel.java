@@ -1,7 +1,9 @@
 package pl;
 
 import bll.FileBO;
+import bll.FilePaginationBO;
 import dto.FileDTO;
+import dto.PageDTO;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -17,12 +19,14 @@ public class FileUpdatePanel extends JFrame {
 	private JLabel lastModifiedLabel;
 	private JLabel wordCountLabel;
 	private FileBO fileBO;
+	private FilePaginationBO filePaginationBO;
 	private String currentFileName;
+	   FileDTO fileDTO;
 
-	public FileUpdatePanel(String fileName, FileBO fileBO) {
+	public FileUpdatePanel(String fileName, FileBO fileBO,FilePaginationBO filePaginationBO) {
         this.currentFileName = fileName;
         this.fileBO = fileBO;
-
+        this.filePaginationBO = filePaginationBO;
         initializeUI();
         loadFileContent();
         updateWordCount();
@@ -102,28 +106,42 @@ public class FileUpdatePanel extends JFrame {
 		setVisible(true);
 	}
 
+
 	private void loadFileContent() {
-		try {
-			FileDTO fileDTO = fileBO.getOneFile(currentFileName);
-			if (fileDTO != null) {
-				fileContentArea.setText(fileDTO.getContent());
-				lastModifiedLabel.setText("Last Modified At: " + fileDTO.getUpdatedAt());
-				updateWordCount();
-			} else {
-				JOptionPane.showMessageDialog(null, "File not found!", "Error", JOptionPane.ERROR_MESSAGE);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error loading file content: " + e.getMessage(), "Error",
-					JOptionPane.ERROR_MESSAGE);
-		}
+	    try {
+	        FileDTO fileDTO = fileBO.getOneFile(currentFileName);
+	        if (fileDTO != null) {
+	            PageDTO page = filePaginationBO.getPageContent(fileDTO.getId(), 1); 
+	                fileContentArea.setText(page.getPageContent());
+	                lastModifiedLabel.setText("Last Modified At: " + fileDTO.getUpdatedAt());
+	                updateWordCount();
+	        }
+	    }
+	     catch (Exception e) {
+	        e.printStackTrace();
+	        JOptionPane.showMessageDialog(null, "Error loading file content: " + e.getMessage(), "Error",
+	                JOptionPane.ERROR_MESSAGE);
+	    }
 	}
+
+
+    private void displayPage(int pageNumber) {
+        int currentPage = 1;
+		PageDTO page = filePaginationBO.getPageContent(fileDTO.getId(), pageNumber); 
+        
+            currentPage = pageNumber;
+            fileContentArea.setText(page.getPageContent());
+            //totalPages = page.getTotalPages(); 
+//        } else {
+//            JOptionPane.showMessageDialog(this, "No more pages available.", "Navigation", JOptionPane.INFORMATION_MESSAGE);
+//        }
+    }
 
 	
 	private boolean saveFile() {
 		try {
 			String updatedContent = fileContentArea.getText();
-			fileBO.updateFile(currentFileName, updatedContent);
+			fileBO.updateFile(updatedContent, updatedContent); 
 			JOptionPane.showMessageDialog(this, "File saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
 			return true; // Indicate successful save
 		} catch (Exception e) {
@@ -148,7 +166,7 @@ public class FileUpdatePanel extends JFrame {
 
 	private void navigateToFileTable() {
 		dispose();
-		FileTablePanel fileTablePanel = new FileTablePanel(fileBO);
+		FileTablePanel fileTablePanel = new FileTablePanel(fileBO,filePaginationBO);
 		fileTablePanel.setVisible(true);
 	}
 }

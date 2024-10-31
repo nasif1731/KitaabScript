@@ -1,6 +1,7 @@
 package pl;
 
 import bll.FileBO;
+import bll.FilePaginationBO;
 import dto.FileDTO;
 
 import javax.swing.*;
@@ -15,6 +16,7 @@ import java.util.List;
 public class FileTablePanel extends JPanel { 
     private JTable fileTable;
     private FileBO fileBO;
+    private FilePaginationBO filePaginationBO;
     private DefaultTableModel tableModel;
     private JButton deleteButton;
 
@@ -23,12 +25,13 @@ public class FileTablePanel extends JPanel {
     private static final Color BACKGROUND_COLOR = new Color(235, 224, 199);
     private static final Color BUTTON_COLOR = new Color(138, 83, 43);
     private static final Color TABLE_HEADER_COLOR = BACKGROUND_COLOR;
-
-    public FileTablePanel(FileBO fileBO) {
+    public FileTablePanel(FileBO fileBO, FilePaginationBO filePaginationBO) {
         this.fileBO = fileBO;
+        this.filePaginationBO = filePaginationBO;
         initializeUI();
         loadFiles();
     }
+
     private void initializeUI() {
         setLayout(new BorderLayout());
         setBackground(BACKGROUND_COLOR);
@@ -127,7 +130,7 @@ public class FileTablePanel extends JPanel {
 
     private void openFileDetailPanel(String fileName) {
         
-        FileDetailPanel fileDetailPanel = new FileDetailPanel(fileName,fileBO);
+        FileDetailPanel fileDetailPanel = new FileDetailPanel(fileName,filePaginationBO,fileBO);
         fileDetailPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
         fileDetailPanel.setSize(600, 400); 
         fileDetailPanel.setLocationRelativeTo(null); 

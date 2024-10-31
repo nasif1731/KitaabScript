@@ -1,6 +1,7 @@
 package dto;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 public class FileDTO {
     private int id;
@@ -11,8 +12,10 @@ public class FileDTO {
     private Timestamp updatedAt; 
     private String hash;
     private int wordCount;
+    private List<PageDTO> paginatedContent;
 
-    public FileDTO(String filename, String content, String language, String hash, int wordCount) {
+
+	public FileDTO(String filename, String content, String language, String hash, int wordCount) {
         this.filename = filename;
         this.content = content;
         this.language = language;
@@ -83,4 +86,11 @@ public class FileDTO {
     public void setWordCount(int wordCount) {
         this.wordCount = wordCount;
     }
+    public List<PageDTO> getPaginatedContent() {
+  		return paginatedContent;
+  	}
+
+  	public void setPaginatedContent(List<PageDTO> paginatedContent) {
+  		this.paginatedContent = paginatedContent;
+  	}
 }

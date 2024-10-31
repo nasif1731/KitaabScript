@@ -3,7 +3,7 @@ package bll;
 
 import dal.IFileDAO;
 import dto.FileDTO;
-
+import dto.PageDTO;
 
 import java.util.List;
 
@@ -14,7 +14,9 @@ public class FileBO {
     public FileBO(IFileDAO fileDAO) {
         this.fileDAO = fileDAO;
     }
+    
     public void createFile(String name, String content) {
+    	
         try {
         	fileDAO.createFile(name, content); 
         } catch (Exception e) {
@@ -35,6 +37,8 @@ public class FileBO {
 
     public void updateFile(String name, String content) {
         try {
+//        	System.out.println(name);
+//    		System.out.println(content);
         	fileDAO.updateFile(name, content);
         } catch (Exception e) {
             throw new RuntimeException("Error updating file: " + e.getMessage(), e);
@@ -64,4 +68,12 @@ public class FileBO {
     public int getWordCount(String fileName) {
         return fileDAO.getWordCount(fileName);
     }
-}
+	public FileDTO paginatedFile(String fileName, FilePaginationBO paginationBO) {
+		 FileDTO fileDTO = getOneFile(fileName);
+	        if (fileDTO != null) {
+	            List<PageDTO> paginatedContent = paginationBO.paginateContent(fileDTO.getId(), fileDTO.getContent());
+	            fileDTO.setPaginatedContent(paginatedContent); 
+	        }
+	        return fileDTO;
+	    }
+	}

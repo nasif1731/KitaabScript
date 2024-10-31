@@ -4,12 +4,14 @@ import javax.swing.*;
 
 import bll.FileBO;
 import bll.FileImportBO;
+import bll.FilePaginationBO;
 import dal.AbstractDALFactory;
 import dal.DALFacade;
 import dal.FileDAO;
 import dal.FileImportDAO;
 import dal.IFileDAO;
 import dal.IFileImportDAO;
+import dal.IPaginationDAO;
 import dal.IDALFacade;
 import dal.IDALFactory;
 
@@ -26,10 +28,12 @@ public class MainScreen extends JFrame {
 	private JButton importFileButton;
 	private FileBO fileBO;
 	private FileImportBO fileImportBO;
+	private FilePaginationBO filePaginationBO;
 
-    public MainScreen(FileBO fileBO,FileImportBO fileImportBO) {
+    public MainScreen(FileBO fileBO,FileImportBO fileImportBO,FilePaginationBO filePaginationBO) {
         this.fileBO = fileBO;
         this.fileImportBO=fileImportBO;
+        this.filePaginationBO = filePaginationBO;
 		setTitle("Kitaab Script");
 		setSize(800, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -95,7 +99,7 @@ public class MainScreen extends JFrame {
 
 		            MainScreen.this.setVisible(true);
 
-		            FileUpdatePanel fileUpdatePanel = new FileUpdatePanel(fileName,fileBO);
+		            FileUpdatePanel fileUpdatePanel = new FileUpdatePanel(fileName,fileBO,filePaginationBO);
 
 		            fileUpdatePanel.addWindowListener(new java.awt.event.WindowAdapter() {
 		                @Override
@@ -117,7 +121,7 @@ public class MainScreen extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				JFrame frame = new JFrame("Files in DB");
-				FileTablePanel fileTablePanel = new FileTablePanel(fileBO);
+				FileTablePanel fileTablePanel = new FileTablePanel(fileBO,filePaginationBO);
 				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				frame.add(fileTablePanel);
 				frame.setSize(600, 400);
@@ -161,10 +165,12 @@ public class MainScreen extends JFrame {
 				IDALFactory dalFactory = AbstractDALFactory.getInstance();
                 IFileDAO fileDAO = dalFactory.getFileDAO();
                 IFileImportDAO fileImportDAO = dalFactory.getFileImportDAO();
-                IDALFacade dalFacade = new DALFacade(fileDAO, fileImportDAO); 
+                IPaginationDAO paginationDAO = dalFactory.getPaginationDAO();
+                IDALFacade dalFacade = new DALFacade(fileDAO, fileImportDAO, paginationDAO); 
                 FileBO fileBO = new FileBO(dalFacade);
                 FileImportBO fileImportBO = new FileImportBO(dalFacade);
-                MainScreen mainFrame = new MainScreen(fileBO, fileImportBO);
+                FilePaginationBO filePaginationBO = new FilePaginationBO(dalFacade);
+                MainScreen mainFrame = new MainScreen(fileBO, fileImportBO, filePaginationBO);
                 mainFrame.setVisible(true);
 			}
 		});

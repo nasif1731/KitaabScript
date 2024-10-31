@@ -12,4 +12,9 @@ public class MySQLDALFactory extends AbstractDALFactory{
 		return new FileImportDAO();
 	}
 
+	@Override
+	public IPaginationDAO getPaginationDAO() {
+		return new PaginationDAO();
+	}
+
 }

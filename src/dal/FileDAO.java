@@ -1,6 +1,7 @@
 package dal;
 
 import dto.FileDTO;
+import dto.PageDTO;
 import util.DatabaseConnection;
 import util.HashGenerator;
 
@@ -11,42 +12,63 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileDAO  implements IFileDAO{
+	private final PaginationDAO paginationDAO;
+	public FileDAO() {
+		this.paginationDAO = new PaginationDAO();
+	}
 	private int countWords(String content) {
         return content.isEmpty() ? 0 : content.split("\\s+").length;
     }
 	@Override
 	public void createFile(String name, String content) {
-        try {
-            String hash;
-            int count = countWords(content);
+	    try {
+	        String hash;
+	        int count = countWords(content);
 
-            if (content.isEmpty()) {
-                hash = HashGenerator.generateHashFromFile(name);
-                count = 0;
-            } else {
-                hash = HashGenerator.generateHashFromContent(content);
-            }
+	        if (content.isEmpty()) {
+	            hash = HashGenerator.generateHashFromFile(name);
+	            count = 0;
+	        } else {
+	            hash = HashGenerator.generateHashFromContent(content);
+	        }
 
-            String insertSQL = "INSERT INTO text_files (filename, content, hash, word_count, created_at, updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())";
+	        String insertSQL = "INSERT INTO text_files (filename, hash, word_count, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())";
 
-            try (Connection conn = DatabaseConnection.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(insertSQL)) {
+	        try (Connection conn = DatabaseConnection.getConnection();
+	             PreparedStatement stmt = conn.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)) {
 
-                stmt.setString(1, name);
-                stmt.setString(2, content);
-                stmt.setString(3, hash);
-                stmt.setInt(4, count);
+	            stmt.setString(1, name);
+	            stmt.setString(2, hash);
+	            stmt.setInt(3, count);
 
-                int rowsAffected = stmt.executeUpdate();
+	            int rowsAffected = stmt.executeUpdate();
 
-                if (rowsAffected == 0) {
-                    System.err.println("Failed to create the file in the database.");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+	            if (rowsAffected == 0) {
+	                System.err.println("Failed to create the file in the database.");
+	                return;
+	            }
+
+	            int fileId;
+	            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+	                if (generatedKeys.next()) {
+	                    fileId = generatedKeys.getInt(1);
+	                } else {
+	                    throw new SQLException("Creating file failed, no ID obtained.");
+	                }
+	            }
+
+	            if (!content.isEmpty()) {
+	                List<PageDTO> paginatedContent = paginationDAO.paginateContent(fileId, content);
+	                paginationDAO.insertContent(paginatedContent);
+	            } 
+
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+
+
 	@Override
 	public void deleteFile(String name) {
         try {
@@ -68,32 +90,64 @@ public class FileDAO  implements IFileDAO{
     }
 	@Override
 	public void updateFile(String name, String newContent) {
-        try {
-            File file = new File(name);
-            try (FileWriter writer = new FileWriter(file)) {
-                writer.write(newContent);
-            }
+	    int count = countWords(newContent);
+	    String updateSQL = "UPDATE text_files SET word_count = ?, updated_at = NOW() WHERE filename = ?";
+	    String contentQuery = "UPDATE pagination " +
+	                          "JOIN text_files ON pagination.text_file_id = text_files.id " +
+	                          "SET pagination.page_content = ? " +
+	                          "WHERE text_files.filename = ? AND pagination.page_number = ?";
 
-            int count = countWords(newContent);
+	    try (Connection conn = DatabaseConnection.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(updateSQL, Statement.RETURN_GENERATED_KEYS)) {
 
-            String updateSQL = "UPDATE text_files SET content = ?, word_count = ?, updated_at = NOW() WHERE filename = ?";
+	        stmt.setInt(1, count);
+	        stmt.setString(2, name);
+	        int rowsAffected = stmt.executeUpdate();
 
-            try (Connection conn = DatabaseConnection.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(updateSQL)) {
+	        if (rowsAffected == 0) {
+	            System.err.println("No file found with the name: " + name);
+	            return;  // Exit if no file was updated
+	        }
 
-                stmt.setString(1, newContent);
-                stmt.setInt(2, count);
-                stmt.setString(3, name);
-                int rowsAffected = stmt.executeUpdate();
+	        int fileId = -1;
 
-                if (rowsAffected == 0) {
-                    System.err.println("No file found with the name: " + name);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+	        try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+	            if (generatedKeys.next()) {
+	                fileId = generatedKeys.getInt(1);
+	            } else {
+	                System.err.println("File update succeeded, but no file ID obtained.");
+	                return;  // Exit if no ID was generated
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            System.err.println("Error retrieving generated file ID.");
+	            return;  
+	        }
+
+	        List<PageDTO> paginatedContent = paginationDAO.paginateContent(fileId, newContent);
+	
+	        try (PreparedStatement contentStmt = conn.prepareStatement(contentQuery)) {
+	            int pageNumber = 1; 
+
+	            for (PageDTO page : paginatedContent) {
+	                contentStmt.setString(1, page.getPageContent()); 
+	                contentStmt.setString(2, name);               
+	                contentStmt.setInt(3, pageNumber);           
+	                contentStmt.executeUpdate();
+	                pageNumber++;
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            System.err.println("Error updating content.");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+
+
+
 	@Override
 	public String createdAt(String name) {
         String createdAt = null;
@@ -123,6 +177,7 @@ public class FileDAO  implements IFileDAO{
                  PreparedStatement stmt = conn.prepareStatement(selectSQL)) {
                 stmt.setString(1, name);
                 ResultSet rs = stmt.executeQuery();
+                
                 if (rs.next()) {
                     updatedAt = rs.getString("updated_at");
                 } else {
@@ -161,33 +216,54 @@ public class FileDAO  implements IFileDAO{
         return fileDetails;
     }
 	@Override
-    public FileDTO getOneFile(String fileName) {
-        String query = "SELECT content, language, hash, word_count, updated_at FROM text_files WHERE filename = ?"; 
-        FileDTO fileDTO = null;
+	public FileDTO getOneFile(String fileName) {
+	    String query = "SELECT text_files.id, text_files.language, text_files.hash, text_files.word_count, " +
+	                   "text_files.updated_at, pagination.page_content " +
+	                   "FROM text_files " +
+	                   "JOIN pagination ON pagination.text_file_id = text_files.id " +
+	                   "WHERE text_files.filename = ? " +
+	                   "ORDER BY pagination.page_number"; 
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+	    FileDTO fileDTO = null;
+	    StringBuilder contentBuilder = new StringBuilder();
 
-            stmt.setString(1, fileName); 
-            ResultSet rs = stmt.executeQuery();
+	    try (Connection conn = DatabaseConnection.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(query)) {
 
-            if (rs.next()) {
-                String content = rs.getString("content"); 
-                String language = rs.getString("language");
-                String hash = rs.getString("hash");
-                int wordCount = rs.getInt("word_count");
-                Timestamp updatedAt = rs.getTimestamp("updated_at");
+	        stmt.setString(1, fileName);
+	        ResultSet rs = stmt.executeQuery();
 
-                fileDTO = new FileDTO(fileName, content, language, hash, wordCount);
-                fileDTO.setUpdatedAt(updatedAt); 
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            
-        }
+	        while (rs.next()) {
+	            if (fileDTO == null) {  
+	                int id = rs.getInt("id");
+	                String language = rs.getString("language");
+	                String hash = rs.getString("hash");
+	                int wordCount = rs.getInt("word_count");
+	                Timestamp updatedAt = rs.getTimestamp("updated_at");
 
-        return fileDTO;
-    }
+	                fileDTO = new FileDTO(fileName, null, language, hash, wordCount);
+	                fileDTO.setId(id);
+	                fileDTO.setUpdatedAt(updatedAt);
+	            }
+
+	            String pageContent = rs.getString("page_content");
+	            contentBuilder.append(pageContent);
+	        }
+
+	        if (fileDTO != null) {
+	            fileDTO.setContent(contentBuilder.toString()); 
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        System.err.println("Error retrieving file: " + e.getMessage());
+	    }
+
+	    return fileDTO;
+	}
+
+
+
 	@Override
     public int getWordCount(String fileName) {
         int wordCount = 0;
@@ -208,4 +284,6 @@ public class FileDAO  implements IFileDAO{
 
         return wordCount;
     }
+	 	
 }
+
