@@ -1,6 +1,7 @@
 package dal;
 
 
+import java.sql.SQLException;
 import java.util.List;
 
 import dto.FileDTO;
@@ -11,14 +12,14 @@ public interface IFileDAO {
 
 	void deleteFile(String name);
 
-	void updateFile(String name, String newContent);
+	int updateFile(String name, String newContent);
 
 	String createdAt(String name);
 
 	String updatedAt(String name);
 
 	List<FileDTO> getAllFiles();
-
+	int fetchFileIdByName(String name) throws SQLException ;
 	FileDTO getOneFile(String fileName);
 
 	int getWordCount(String fileName);

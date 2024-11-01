@@ -1,5 +1,6 @@
 package dal;
 
+import java.sql.SQLException;
 import java.util.List;
 import dto.FileDTO;
 import dto.PageDTO;
@@ -26,8 +27,8 @@ public class DALFacade implements IDALFacade {
     }
 
     @Override
-    public void updateFile(String name, String newContent) {
-        fileDAO.updateFile(name, newContent);
+    public int updateFile(String name, String newContent) {
+        return fileDAO.updateFile(name, newContent);
     }
 
     @Override
@@ -99,4 +100,9 @@ public class DALFacade implements IDALFacade {
 	   public int getTotalPages(int fileId) {
 			return paginationDAO.getTotalPages(fileId);
 		}
+
+	@Override
+	public int fetchFileIdByName(String name) throws SQLException {
+		return fetchFileIdByName(name);
+	}
 }

@@ -34,8 +34,7 @@ public class FileDetailPanel extends JFrame {
 
         fileContentArea = new JTextPane();
         fileContentArea.setEditable(false);
-        fileContentArea.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-
+  
         add(new JScrollPane(fileContentArea), BorderLayout.CENTER);
 
         updateButton = new JButton("Update");
@@ -101,7 +100,10 @@ public class FileDetailPanel extends JFrame {
         PageDTO page = filePaginationBO.getPageContent(fileDTO.getId(), pageNumber);
         if (page != null) {
             currentPage = pageNumber;
-            fileContentArea.setText(page.getPageContent());
+            String pageContent = page.getPageContent();
+            setLanguageOrientation(pageContent);
+            fileContentArea.setText(pageContent);
+            updatePageLabel();
         } else {
             JOptionPane.showMessageDialog(this, "No more pages available.", "Navigation", JOptionPane.INFORMATION_MESSAGE);
         }
@@ -123,4 +125,10 @@ public class FileDetailPanel extends JFrame {
         FileUpdatePanel dialog = new FileUpdatePanel(fileDTO.getFilename(), fileBO,filePaginationBO);
         dialog.setVisible(true);
     }
+    private void setLanguageOrientation(String content) {
+        boolean isUrdu = content.codePoints().anyMatch(
+                c -> (c >= 0x0600 && c <= 0x06FF) || (c >= 0x0750 && c <= 0x077F));
+        fileContentArea.setComponentOrientation(isUrdu ? ComponentOrientation.RIGHT_TO_LEFT : ComponentOrientation.LEFT_TO_RIGHT);
+    }
+
 }

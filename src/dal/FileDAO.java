@@ -35,7 +35,7 @@ public class FileDAO  implements IFileDAO{
 	        String insertSQL = "INSERT INTO text_files (filename, hash, word_count, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())";
 
 	        try (Connection conn = DatabaseConnection.getConnection();
-	             PreparedStatement stmt = conn.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)) {
+	             PreparedStatement stmt = conn.prepareStatement(insertSQL)) {
 
 	            stmt.setString(1, name);
 	            stmt.setString(2, hash);
@@ -48,25 +48,14 @@ public class FileDAO  implements IFileDAO{
 	                return;
 	            }
 
-	            int fileId;
-	            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-	                if (generatedKeys.next()) {
-	                    fileId = generatedKeys.getInt(1);
-	                } else {
-	                    throw new SQLException("Creating file failed, no ID obtained.");
-	                }
-	            }
-
-	            if (!content.isEmpty()) {
-	                List<PageDTO> paginatedContent = paginationDAO.paginateContent(fileId, content);
-	                paginationDAO.insertContent(paginatedContent);
-	            } 
-
 	        }
+
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
 	}
+
+	
 
 
 	@Override
@@ -88,17 +77,14 @@ public class FileDAO  implements IFileDAO{
             e.printStackTrace();
         }
     }
+
 	@Override
-	public void updateFile(String name, String newContent) {
+	public int updateFile(String name, String newContent) {
 	    int count = countWords(newContent);
 	    String updateSQL = "UPDATE text_files SET word_count = ?, updated_at = NOW() WHERE filename = ?";
-	    String contentQuery = "UPDATE pagination " +
-	                          "JOIN text_files ON pagination.text_file_id = text_files.id " +
-	                          "SET pagination.page_content = ? " +
-	                          "WHERE text_files.filename = ? AND pagination.page_number = ?";
 
 	    try (Connection conn = DatabaseConnection.getConnection();
-	         PreparedStatement stmt = conn.prepareStatement(updateSQL, Statement.RETURN_GENERATED_KEYS)) {
+	         PreparedStatement stmt = conn.prepareStatement(updateSQL)) {
 
 	        stmt.setInt(1, count);
 	        stmt.setString(2, name);
@@ -106,43 +92,18 @@ public class FileDAO  implements IFileDAO{
 
 	        if (rowsAffected == 0) {
 	            System.err.println("No file found with the name: " + name);
-	            return;  // Exit if no file was updated
+	            return -1;  // No rows updated
 	        }
 
-	        int fileId = -1;
-
-	        try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-	            if (generatedKeys.next()) {
-	                fileId = generatedKeys.getInt(1);
-	            } else {
-	                System.err.println("File update succeeded, but no file ID obtained.");
-	                return;  // Exit if no ID was generated
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	            System.err.println("Error retrieving generated file ID.");
-	            return;  
-	        }
-
+	        int fileId = fetchFileIdByName(name);
 	        List<PageDTO> paginatedContent = paginationDAO.paginateContent(fileId, newContent);
-	
-	        try (PreparedStatement contentStmt = conn.prepareStatement(contentQuery)) {
-	            int pageNumber = 1; 
+	        paginationDAO.insertContent(paginatedContent);
 
-	            for (PageDTO page : paginatedContent) {
-	                contentStmt.setString(1, page.getPageContent()); 
-	                contentStmt.setString(2, name);               
-	                contentStmt.setInt(3, pageNumber);           
-	                contentStmt.executeUpdate();
-	                pageNumber++;
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	            System.err.println("Error updating content.");
-	        }
+	        return count;
 
 	    } catch (SQLException e) {
 	        e.printStackTrace();
+	        return -1;
 	    }
 	}
 
@@ -284,6 +245,21 @@ public class FileDAO  implements IFileDAO{
 
         return wordCount;
     }
+	@Override
+	public int fetchFileIdByName(String name) throws SQLException {
+	    String query = "SELECT id FROM text_files WHERE filename = ?";
+	    try (Connection conn = DatabaseConnection.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(query)) {
+	        stmt.setString(1, name);
+	        try (ResultSet rs = stmt.executeQuery()) {
+	            if (rs.next()) {
+	                return rs.getInt("id");
+	            } else {
+	                throw new SQLException("No file ID found for filename: " + name);
+	            }
+	        }
+	    }
 	 	
+}
 }
 

@@ -34,7 +34,5 @@ public class PageDTO {
     public void setPageContent(String pageContent) {
         this.pageContent = pageContent;
     }
-//    public int setTotalPages(String fileContent) {
-//        return getTotalPages(fileContent);
-//    }
+
 }
