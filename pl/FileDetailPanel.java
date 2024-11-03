@@ -116,8 +116,6 @@ public class FileDetailPanel extends JFrame {
         }
     }
 
-  
->>>>>>> 2f92fd0e7dc9d10579fb83e8b81bdb15abccf4bc
     void loadFileDetails(String fileName) {
         try {
             displayPage(currentPage);

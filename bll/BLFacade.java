@@ -12,8 +12,7 @@ public class BLFacade implements IBLFacade {
     private final ISearchResultBO searchResultBO;
     private final ITransliterationBO transliterationBO;
 
-    public BLFacade(IFileBO fileBO, IFileImportBO fileImportBO, IFilePaginationBO filePaginateBO, 
-                    ISearchResultBO searchResultBO, ITransliterationBO transliterationBO) {
+    public BLFacade(IFileBO fileBO, IFileImportBO fileImportBO, IFilePaginationBO filePaginateBO, ISearchResultBO searchResultBO, ITransliterationBO transliterationBO) {
         this.fileBO = fileBO;
         this.fileImportBO = fileImportBO;
         this.filePaginateBO = filePaginateBO;

@@ -30,14 +30,13 @@ import bll.IFileBO;
 import bll.IFileImportBO;
 import bll.IFilePaginationBO;
 import bll.ISearchResultBO;
-<<<<<<< HEAD
+
 import bll.ITransliterationBO;
 import bll.SearchResultBO;
 import bll.TransliterationBO;
-=======
+
 import bll.SearchResultBO;
 
->>>>>>> 2f92fd0e7dc9d10579fb83e8b81bdb15abccf4bc
 import bll.IBLFacade;
 import dal.AbstractDALFactory;
 import dal.DALFacade;
@@ -47,7 +46,6 @@ import dal.IFileDAO;
 import dal.IFileImportDAO;
 import dal.IPaginationDAO;
 import dal.ISearchResultDAO;
-<<<<<<< HEAD
 import dal.ITransliterationDAO;
 
 
