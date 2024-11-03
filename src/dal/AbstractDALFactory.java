@@ -41,4 +41,10 @@ public abstract class AbstractDALFactory implements IDALFactory {
             e.printStackTrace();
         }
     }
+
+
+	public ISearchResultDAO getSearchResultDAO() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

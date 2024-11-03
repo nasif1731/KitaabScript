@@ -10,16 +10,17 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import bll.FileImportBO;
+import bll.IBLFacade;
 
 public class ImportFileDialogueBox extends JDialog {
 
-    private FileImportBO fileImportBO;
+    private IBLFacade blFacade;
     private JTextArea resultArea;
     private JButton importButton;
 
-    public ImportFileDialogueBox(Frame parent,FileImportBO fileImportBO) {
+    public ImportFileDialogueBox(Frame parent,IBLFacade blFacade) {
         super(parent, "Import File", true);
-        this.fileImportBO = fileImportBO;
+        this.blFacade = blFacade;
         ImageIcon icon = new ImageIcon("resources/images/icon.png");
         setIconImage(icon.getImage());
         setLayout(new BorderLayout());
@@ -74,13 +75,13 @@ public class ImportFileDialogueBox extends JDialog {
 
             try {
                 if (selectedFiles.length == 1) {
-                    String importResult = fileImportBO.importFile(selectedFiles[0].getAbsolutePath());
+                    String importResult = blFacade.importFile(selectedFiles[0].getAbsolutePath());
                     resultArea.append(importResult + "\n");
                 } else {
                     List<String> filePaths = List.of(selectedFiles).stream()
                             .map(File::getAbsolutePath)
                             .toList();
-                    List<String> results = fileImportBO.bulkImportFiles(filePaths);
+                    List<String> results = blFacade.bulkImportFiles(filePaths);
                     results.forEach(resultArea::append);
                 }
             } catch (Exception ex) {

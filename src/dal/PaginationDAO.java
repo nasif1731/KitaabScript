@@ -1,20 +1,23 @@
 package dal;
 
-import dto.PageDTO;
-import util.DatabaseConnection;
-
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import dto.PageDTO;
+import util.DatabaseConnection;
+
 public class PaginationDAO implements IPaginationDAO {
 
 	@Override
-	public List<PageDTO> paginateContent(int fileId, String content) {
+	public List<PageDTO> paginateContent(int fileId,String content) {
 	    List<PageDTO> pages = new ArrayList<>();
 	    int wordLimit = 400; 
 	    int wordsPerLine = 10; 
@@ -67,6 +70,25 @@ public class PaginationDAO implements IPaginationDAO {
             e.printStackTrace();
         }
     }
+    @Override
+    public int getPageID(int fileId, int pageNumber) {
+        String query = "SELECT id FROM pagination WHERE text_file_id = ? AND page_number = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, fileId);
+            stmt.setInt(2, pageNumber);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Error retrieving page ID for file ID " + fileId + ", page number " + pageNumber + ": " + e.getMessage());
+        }
+        return -1; 
+    }
+
 
     @Override
     public boolean contentExistsForFile(int fileId, int pageNumber) {
@@ -110,10 +132,9 @@ public class PaginationDAO implements IPaginationDAO {
         return totalPages;
     }
 
-
     @Override
     public PageDTO getPage(int fileId, int pageNumber) {
-        String query = "SELECT page_content FROM pagination WHERE text_file_id = ? AND page_number = ?";
+        String query = "SELECT page_content, id FROM pagination WHERE text_file_id = ? AND page_number = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
@@ -123,7 +144,9 @@ public class PaginationDAO implements IPaginationDAO {
 
             if (rs.next()) {
                 String pageContent = rs.getString("page_content");
-                return new PageDTO(fileId, pageNumber, pageContent);
+                int pageId = rs.getInt("id");
+
+                return new PageDTO(pageId, fileId, pageNumber, pageContent);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -131,4 +154,11 @@ public class PaginationDAO implements IPaginationDAO {
         }
         return null;
     }
+
+
+
+
+
+
+
 }
