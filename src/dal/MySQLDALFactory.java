@@ -16,5 +16,15 @@ public class MySQLDALFactory extends AbstractDALFactory{
 	public IPaginationDAO getPaginationDAO() {
 		return new PaginationDAO();
 	}
+	@Override
+    public ISearchResultDAO getSearchResultDAO() {
+        
+        return new SearchResultDAO(getPaginationDAO(), getFileDAO());
+    }
 
+	@Override
+	public ITransliterationDAO getTransliterationDAO() {
+		// TODO Auto-generated method stub
+		return new TransliterationDAO();
+	}
 }

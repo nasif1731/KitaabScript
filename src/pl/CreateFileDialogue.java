@@ -13,18 +13,17 @@ import javax.swing.JTextField;
 
 import bll.FileBO;
 import bll.FilePaginationBO;
+import bll.IBLFacade;
 
 class CreateFileDialogue extends JDialog {
 	private JTextField fileNameField;
 	private JButton proceedButton;
 	private MainScreen mainScreen;
-	private FileBO fileBO;
-	private FilePaginationBO filePaginationBO;
+	private IBLFacade blFacade;
 
-	public CreateFileDialogue(MainScreen mainScreen, FileBO fileBO,FilePaginationBO filePaginationBO) {
+	public CreateFileDialogue(MainScreen mainScreen, IBLFacade blFacade) {
 		this.mainScreen = mainScreen;
-		this.fileBO = fileBO;
-		this.filePaginationBO = filePaginationBO;
+		this.blFacade = blFacade;
 		setTitle("Create New File");
 		setModal(true);
 		setSize(300, 150);
@@ -46,11 +45,11 @@ class CreateFileDialogue extends JDialog {
 				if (!fileName.isEmpty()) {
 					try {
 
-						fileBO.createFile(fileName, "");
+						blFacade.createFile(fileName, "");
 
 						setVisible(false);
 						dispose();
-						FileUpdatePanel fileUpdatePanel = new FileUpdatePanel(fileName,fileBO,filePaginationBO);
+						FileUpdatePanel fileUpdatePanel = new FileUpdatePanel(fileName,blFacade);
 						fileUpdatePanel.setVisible(true);
 					} catch (Exception ex) {
 						JOptionPane.showMessageDialog(CreateFileDialogue.this,

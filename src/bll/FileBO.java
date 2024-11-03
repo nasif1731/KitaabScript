@@ -1,73 +1,75 @@
 package bll;
 
 
+import dal.IDALFacade;
 import dal.IFileDAO;
 import dto.FileDTO;
 import dto.PageDTO;
 
 import java.util.List;
 
-public class FileBO {
-	private IFileDAO fileDAO;
+public class FileBO implements IFileBO {
+	
 
-   
-    public FileBO(IFileDAO fileDAO) {
-        this.fileDAO = fileDAO;
+	private final IDALFacade dalFacade;
+    public FileBO(IDALFacade dalFacade) {
+        this.dalFacade = dalFacade;
     }
-    
+    @Override
     public void createFile(String name, String content) {
     	
         try {
-        	fileDAO.createFile(name, content); 
+        	dalFacade.createFile(name, content); 
         } catch (Exception e) {
             throw new RuntimeException("Error in file creation: " + e.getMessage(), e);
         }
     }
-
+    @Override
     public void printFileTimestamps(String name) {
         try {
-            String createdAt = fileDAO.createdAt(name);
-            String updatedAt = fileDAO.updatedAt(name);
+            String createdAt = dalFacade.createdAt(name);
+            String updatedAt = dalFacade.updatedAt(name);
             System.out.println("Created At: " + createdAt);
             System.out.println("Updated At: " + updatedAt);
         } catch (Exception e) {
             throw new RuntimeException("Error retrieving timestamps: " + e.getMessage(), e);
         }
     }
-
+    @Override
     public void updateFile(String name, String content) {
         try {
 //        	System.out.println(name);
 //    		System.out.println(content);
-        	fileDAO.updateFile(name, content);
+        	dalFacade.updateFile(name, content);
         } catch (Exception e) {
             throw new RuntimeException("Error updating file: " + e.getMessage(), e);
         }
     }
-
+    @Override
     public void deleteFile(String name)  {
         try {
-        	fileDAO.deleteFile(name);
+        	dalFacade.deleteFile(name);
         } catch (Exception e) {
             throw new RuntimeException("Error deleting file: " + e.getMessage(), e);
         }
     }
-
+    @Override
     public List<FileDTO> getAllFiles() {
-        return fileDAO.getAllFiles();
+        return dalFacade.getAllFiles();
     }
-
+    @Override
     public FileDTO getOneFile(String fileName) {
         try {
-            return fileDAO.getOneFile(fileName);
+            return dalFacade.getOneFile(fileName);
         } catch (Exception e) {
             throw new RuntimeException("Error retrieving file: " + e.getMessage(), e);
         }
     }
-
+    @Override
     public int getWordCount(String fileName) {
-        return fileDAO.getWordCount(fileName);
+        return dalFacade.getWordCount(fileName);
     }
+    @Override
 	public FileDTO paginatedFile(String fileName, FilePaginationBO paginationBO) {
 		 FileDTO fileDTO = getOneFile(fileName);
 	        if (fileDTO != null) {
@@ -76,4 +78,13 @@ public class FileBO {
 	        }
 	        return fileDTO;
 	    }
+	@Override
+	public String getFileName(int fileId) {
+		return dalFacade.getFileName(fileId);
+	}
+	@Override
+	public int getFileID() {
+		// TODO Auto-generated method stub
+		return dalFacade.getFileID();
+	}
 	}

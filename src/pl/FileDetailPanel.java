@@ -1,12 +1,13 @@
 package pl;
 
-import bll.FilePaginationBO;
-import bll.FileBO;
+import bll.IBLFacade;
 import dto.FileDTO;
 import dto.PageDTO;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class FileDetailPanel extends JFrame {
     private JTextPane fileContentArea;
@@ -15,15 +16,22 @@ public class FileDetailPanel extends JFrame {
     private JButton nextButton;
     private JLabel wordCountLabel;
     private JLabel pageLabel;
-    private FilePaginationBO filePaginationBO;
-    private FileBO fileBO;
+    private IBLFacade blFacade;
     private int currentPage = 1;
-    private FileDTO fileDTO; 
+    private FileDTO fileDTO;
+    private String filename;
     private int totalPages = 0;
+    private int pageId;
+    private TransliterationPanel transliterationPanel;
 
-    public FileDetailPanel(String fileName, FilePaginationBO filePaginationBO, FileBO fileBO) {
-        this.filePaginationBO = filePaginationBO;
-        this.fileBO = fileBO;
+    public FileDetailPanel(String fileName, IBLFacade blFacade) {
+        this.blFacade = blFacade;
+        this.filename = fileName;
+        this.fileDTO = blFacade.getOneFile(filename);
+        if (fileDTO == null) {
+            JOptionPane.showMessageDialog(this, "File not found!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         initializeUI();
         loadFileDetails(fileName);
     }
@@ -31,12 +39,29 @@ public class FileDetailPanel extends JFrame {
     private void initializeUI() {
         setLayout(new BorderLayout());
         setBackground(new Color(235, 224, 199));
-
         fileContentArea = new JTextPane();
         fileContentArea.setEditable(false);
-  
         add(new JScrollPane(fileContentArea), BorderLayout.CENTER);
+        JPopupMenu contextMenu = new JPopupMenu();
+        JMenuItem transliterateItem = new JMenuItem("Transliterate");
+        transliterateItem.addActionListener(e -> showTransliterationSidebar());
+        contextMenu.add(transliterateItem);
+        fileContentArea.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) contextMenu.show(fileContentArea, e.getX(), e.getY());
+            }
 
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) contextMenu.show(fileContentArea, e.getX(), e.getY());
+            }
+        });
+
+        pageId = blFacade.getPageID(fileDTO.getId(), currentPage);
+        transliterationPanel = new TransliterationPanel(blFacade, pageId, currentPage);
+        transliterationPanel.setVisible(false);
+        add(transliterationPanel, BorderLayout.EAST);
         updateButton = new JButton("Update");
         updateButton.setBackground(new Color(138, 83, 43));
         updateButton.setForeground(Color.WHITE);
@@ -63,10 +88,10 @@ public class FileDetailPanel extends JFrame {
         buttonPanel.add(navigationPanel, BorderLayout.EAST);
 
         add(buttonPanel, BorderLayout.NORTH);
-
         wordCountLabel = new JLabel("Word Count: 0");
         wordCountLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         add(wordCountLabel, BorderLayout.SOUTH);
+        
         pageLabel = new JLabel("Page " + currentPage + " of " + totalPages);
         pageLabel.setHorizontalAlignment(SwingConstants.LEFT);
 
@@ -77,32 +102,37 @@ public class FileDetailPanel extends JFrame {
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
-    private void loadFileDetails(String fileName) {
+    private void showTransliterationSidebar() {
+        String selectedText = fileContentArea.getSelectedText();
+        if (selectedText != null && !selectedText.isEmpty()) {
+            transliterationPanel.performTransliteration(); 
+            transliterationPanel.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select text for transliteration.", "No Text Selected", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+    void loadFileDetails(String fileName) {
         try {
-            fileDTO = fileBO.getOneFile(fileName); 
-            if (fileDTO != null) {
-                displayPage(currentPage);
-                int wordCount = fileBO.getWordCount(fileName); 
-                wordCountLabel.setText("Word Count: " + wordCount);
-               totalPages = filePaginationBO.getTotalPages(fileDTO.getId()); 
-                updatePageLabel();
-            } else {
-                JOptionPane.showMessageDialog(null, "File not found!", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            displayPage(currentPage);
+            int wordCount = blFacade.getWordCount(fileName); 
+            wordCountLabel.setText("Word Count: " + wordCount);
+            totalPages = blFacade.getTotalPages(fileDTO.getId());
+            updatePageLabel();
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Error loading file details: " + e.getMessage(), "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error loading file details: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void displayPage(int pageNumber) {
-        PageDTO page = filePaginationBO.getPageContent(fileDTO.getId(), pageNumber);
+        PageDTO page = blFacade.getPageContent(fileDTO.getId(), pageNumber);
         if (page != null) {
             currentPage = pageNumber;
             String pageContent = page.getPageContent();
             setLanguageOrientation(pageContent);
             fileContentArea.setText(pageContent);
+            
+            pageId = blFacade.getPageID(fileDTO.getId(), currentPage);
             updatePageLabel();
         } else {
             JOptionPane.showMessageDialog(this, "No more pages available.", "Navigation", JOptionPane.INFORMATION_MESSAGE);
@@ -110,25 +140,28 @@ public class FileDetailPanel extends JFrame {
     }
 
     private void pageNavigation(int pageNumber) {
-        if (pageNumber < 1) {
-            JOptionPane.showMessageDialog(this, "You are on the first page.", "Navigation", JOptionPane.INFORMATION_MESSAGE);
+        if (pageNumber < 1 || pageNumber > totalPages) {
+            JOptionPane.showMessageDialog(this, "No more pages available.", "Navigation", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
         displayPage(pageNumber);
     }
+
     private void updatePageLabel() {
         pageLabel.setText("Page " + currentPage + " of " + totalPages);
     }
 
     void loadWriteMode() {
         dispose();
-        FileUpdatePanel dialog = new FileUpdatePanel(fileDTO.getFilename(), fileBO,filePaginationBO);
+        FileUpdatePanel dialog = new FileUpdatePanel(fileDTO.getFilename(), blFacade);
         dialog.setVisible(true);
     }
+
     private void setLanguageOrientation(String content) {
+        if (fileContentArea == null) return;
+
         boolean isUrdu = content.codePoints().anyMatch(
                 c -> (c >= 0x0600 && c <= 0x06FF) || (c >= 0x0750 && c <= 0x077F));
         fileContentArea.setComponentOrientation(isUrdu ? ComponentOrientation.RIGHT_TO_LEFT : ComponentOrientation.LEFT_TO_RIGHT);
     }
-
 }
