@@ -24,4 +24,12 @@ public interface IFileDAO {
 
 	int getWordCount(String fileName);
 
+	List<Integer> getAllFileIds();
+
+	String getFileName(int fileId);
+	
+	int getFileID();
+
+
+
 }

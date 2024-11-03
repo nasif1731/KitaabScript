@@ -261,5 +261,51 @@ public class FileDAO  implements IFileDAO{
 	    }
 	 	
 }
+	 @Override
+	  public String getFileName(int fileId) {
+	      String fileName = null;
+	      String query = "SELECT filename FROM text_files WHERE id = ?"; 
+
+	      try (Connection conn = DatabaseConnection.getConnection();
+	           PreparedStatement stmt = conn.prepareStatement(query)) {
+	          stmt.setInt(1, fileId);
+	          try (ResultSet rs = stmt.executeQuery()) {
+	              if (rs.next()) {
+	                  fileName = rs.getString("filename");
+	              }
+	          }
+	      } catch (SQLException e) {
+	          e.printStackTrace();
+	          throw new RuntimeException("Error retrieving file name", e);
+	      }
+
+	      return fileName;
+	  
+}
+   
+   @Override
+   public List<Integer> getAllFileIds() {
+       List<Integer> fileIds = new ArrayList<>();
+       String query = "SELECT id FROM text_files"; 
+
+       try (Connection conn = DatabaseConnection.getConnection();
+       		PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery()) {
+           while (rs.next()) {
+               fileIds.add(rs.getInt("id"));
+           }
+       } catch (SQLException e) {
+           e.printStackTrace();
+           throw new RuntimeException("Error retrieving file IDs", e);
+       }
+
+       return fileIds;
+   }
+@Override
+public int getFileID() {
+	// TODO Auto-generated method stub
+	return 0;
+}
+	
 }
 

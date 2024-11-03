@@ -2,6 +2,7 @@ package pl;
 
 import bll.FileBO;
 import bll.FilePaginationBO;
+import bll.IBLFacade;
 import dto.FileDTO;
 import dto.PageDTO;
 
@@ -19,17 +20,15 @@ public class FileUpdatePanel extends JFrame {
     private JLabel lastModifiedLabel;
     private JLabel wordCountLabel;
     private JLabel pageLabel;
-    private FileBO fileBO;
-    private FilePaginationBO filePaginationBO;
+    private IBLFacade blFacade;
     private String currentFileName;
     private FileDTO fileDTO;
     private int currentPage = 1;
     private int totalPages = 0;
 
-    public FileUpdatePanel(String fileName, FileBO fileBO, FilePaginationBO filePaginationBO) {
+    public FileUpdatePanel(String fileName, IBLFacade blFacade) {
         this.currentFileName = fileName;
-        this.fileBO = fileBO;
-        this.filePaginationBO = filePaginationBO;
+        this.blFacade = blFacade;
         initializeUI();
         loadFileContent();
         updateWordCount();
@@ -94,14 +93,14 @@ public class FileUpdatePanel extends JFrame {
 
     private void loadFileContent() {
         try {
-            fileDTO = fileBO.getOneFile(currentFileName);
+            fileDTO = blFacade.getOneFile(currentFileName);
             if (fileDTO != null) {
-                PageDTO page = filePaginationBO.getPageContent(fileDTO.getId(), currentPage);
+                PageDTO page = blFacade.getPageContent(fileDTO.getId(), currentPage);
                 if (page != null) {
                     setLanguageOrientation(page.getPageContent());
                     fileContentArea.setText(page.getPageContent());
                     lastModifiedLabel.setText("Last Modified At: " + fileDTO.getUpdatedAt());
-                    totalPages = filePaginationBO.getTotalPages(fileDTO.getId());
+                    totalPages = blFacade.getTotalPages(fileDTO.getId());
                     updatePageLabel();
                 }
             }
@@ -118,7 +117,7 @@ public class FileUpdatePanel extends JFrame {
     }
 
     private void updateWordCount() {
-        int wordCount = fileBO.getWordCount(currentFileName);
+        int wordCount = blFacade.getWordCount(currentFileName);
         wordCountLabel.setText("Word Count: " + wordCount);
     }
 
@@ -129,7 +128,7 @@ public class FileUpdatePanel extends JFrame {
     private boolean saveFile() {
         try {
             String updatedContent = fileContentArea.getText();
-            fileBO.updateFile(currentFileName, updatedContent);
+            blFacade.updateFile(currentFileName, updatedContent);
             JOptionPane.showMessageDialog(this, "File saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
             return true;
         } catch (Exception e) {
@@ -148,7 +147,7 @@ public class FileUpdatePanel extends JFrame {
 
     private void navigateToFileTable() {
         dispose();
-        FileTablePanel fileTablePanel = new FileTablePanel(fileBO, filePaginationBO);
+        FileTablePanel fileTablePanel = new FileTablePanel(blFacade);
         fileTablePanel.setVisible(true);
     }
 }

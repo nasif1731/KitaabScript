@@ -4,16 +4,24 @@ import java.sql.SQLException;
 import java.util.List;
 import dto.FileDTO;
 import dto.PageDTO;
+import dto.SearchResultDTO;
+import dto.TransliterationDTO;
 
 public class DALFacade implements IDALFacade {
     private final IFileDAO fileDAO;
     private final IFileImportDAO fileImportDAO;
     private final IPaginationDAO paginationDAO;
+    private final ISearchResultDAO searchResultDAO;
+    private final ITransliterationDAO transliterationDAO;
+    
+    
 
-    public DALFacade(IFileDAO fileDAO, IFileImportDAO fileImportDAO, IPaginationDAO paginationDAO) {
+    public DALFacade(IFileDAO fileDAO, IFileImportDAO fileImportDAO, IPaginationDAO paginationDAO,ISearchResultDAO searchResultDAO,ITransliterationDAO transliterationDAO) {
         this.fileDAO = fileDAO;
         this.fileImportDAO = fileImportDAO;
         this.paginationDAO = paginationDAO;
+		this.searchResultDAO = searchResultDAO;
+		this.transliterationDAO = transliterationDAO;
     }
 
     @Override
@@ -105,4 +113,55 @@ public class DALFacade implements IDALFacade {
 	public int fetchFileIdByName(String name) throws SQLException {
 		return fetchFileIdByName(name);
 	}
+
+	@Override
+	public List<Integer> getAllFileIds() {
+		return fileDAO.getAllFileIds();
+	
+	}
+
+	@Override
+	public String getFileName(int fileId) {
+		return fileDAO.getFileName(fileId);
+		
+	}
+
+	@Override
+	public List<SearchResultDTO> search(String keyword) {
+		// TODO Auto-generated method stub
+		return searchResultDAO.search(keyword);
+		
+	}
+
+	@Override
+	public List<TransliterationDTO> getTransliterationsForPage(int pageId) {
+		// TODO Auto-generated method stub
+		return transliterationDAO.getTransliterationsForPage(pageId);
+	}
+
+	@Override
+	public boolean isTransliterationSavedForPage(int pageId) {
+		// TODO Auto-generated method stub
+		return transliterationDAO.isTransliterationSavedForPage(pageId);
+	}
+
+	@Override
+	public void addTransliteration(TransliterationDTO transliteration) {
+		// TODO Auto-generated method stub
+		transliterationDAO.addTransliteration(transliteration);
+		
+	}
+
+	@Override
+	public int getPageID(int fileId, int pageNumber) {
+		// TODO Auto-generated method stub
+		return paginationDAO.getPageID(fileId,pageNumber);
+	}
+
+	@Override
+	public int getFileID() {
+		// TODO Auto-generated method stub
+		return fileDAO.getFileID();
+	}
+	 
 }

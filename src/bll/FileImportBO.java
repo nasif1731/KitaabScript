@@ -7,22 +7,23 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import dal.FileImportDAO;
+import dal.IDALFacade;
 import dal.IFileImportDAO;
 import dto.FileDTO;
 import util.HashGenerator;
 
-public class FileImportBO {
+public class FileImportBO implements IFileImportBO {
 
-	private final IFileImportDAO fileImportDAO;
-
-    public FileImportBO(IFileImportDAO fileImportDAO) {
-        this.fileImportDAO = fileImportDAO;
+	private final IDALFacade dalFacade;
+	
+    public FileImportBO(IDALFacade dalFacade) {
+        this.dalFacade = dalFacade;
     }
-
+    @Override
     public String importFile(String filePath) {
-        return fileImportDAO.importFile(filePath);
+        return dalFacade.importFile(filePath);
     }
-
+    @Override
     public List<String> bulkImportFiles(List<String> filePaths) {
         List<String> results = new ArrayList<>();
         for (String filePath : filePaths) {
