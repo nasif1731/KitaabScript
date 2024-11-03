@@ -10,7 +10,7 @@ import dto.PageDTO;
 
 public class TransliterationPanel extends JPanel {
 
-    private JTextPane textPane;
+    public JTextPane textPane;
     private JPopupMenu contextMenu;
     private IBLFacade blFacade;
     private JPanel sidebarPanel;
@@ -32,7 +32,7 @@ public class TransliterationPanel extends JPanel {
         
         contextMenu = new JPopupMenu();
         JMenuItem transliterateItem = new JMenuItem("Transliterate");
-        transliterateItem.addActionListener(e -> performTransliteration());
+        transliterateItem.addActionListener(e -> performTransliteration(textPane.getText()));
         contextMenu.add(transliterateItem);
         
         textPane.addMouseListener(new MouseAdapter() {
@@ -85,10 +85,9 @@ public class TransliterationPanel extends JPanel {
     public void showContextMenu(MouseEvent e) {
         contextMenu.show(e.getComponent(), e.getX(), e.getY());
     }
-
     // Perform transliteration and display result in sidebar
-    public void performTransliteration() {
-        String selectedText = textPane.getSelectedText();
+    public void performTransliteration(String text) {
+        String selectedText = text;
         System.out.println("Selected text for transliteration: '" + selectedText + "'"); // Debugging statement
         if (selectedText == null || selectedText.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please select text for transliteration.");

@@ -24,7 +24,7 @@ public class MySQLDALFactory extends AbstractDALFactory{
 
 	@Override
 	public ITransliterationDAO getTransliterationDAO() {
-		// TODO Auto-generated method stub
+	
 		return new TransliterationDAO();
 	}
 }

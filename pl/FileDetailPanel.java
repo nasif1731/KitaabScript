@@ -35,11 +35,13 @@ public class FileDetailPanel extends JFrame {
         }
         initializeUI();
         loadFileDetails(fileName);
+        setVisible(true);
     }
 
     private void initializeUI() {
         setLayout(new BorderLayout());
         setBackground(new Color(235, 224, 199));
+        this.setSize(500,500);
         fileContentArea = new JTextPane();
         fileContentArea.setEditable(false);
         add(new JScrollPane(fileContentArea), BorderLayout.CENTER);
@@ -108,8 +110,9 @@ public class FileDetailPanel extends JFrame {
 
     private void showTransliterationSidebar() {
         String selectedText = fileContentArea.getSelectedText();
-        if (selectedText != null && !selectedText.isEmpty()) {
-            transliterationPanel.performTransliteration(); 
+        if (selectedText != null) {
+        	transliterationPanel.textPane.setText(selectedText);
+            transliterationPanel.performTransliteration(selectedText); 
             transliterationPanel.setVisible(true);
         } else {
             JOptionPane.showMessageDialog(this, "Please select text for transliteration.", "No Text Selected", JOptionPane.WARNING_MESSAGE);
@@ -139,7 +142,7 @@ public class FileDetailPanel extends JFrame {
 
             pageId = page.getPageId(); 
 
-            pageId = blFacade.getPageID(fileDTO.getId(), currentPage);
+            //pageId = blFacade.getPageID(fileDTO.getId(), currentPage);
 
             updatePageLabel();
         } else {
