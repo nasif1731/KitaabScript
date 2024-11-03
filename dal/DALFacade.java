@@ -14,10 +14,7 @@ public class DALFacade implements IDALFacade {
     private final IFileImportDAO fileImportDAO;
     private final IPaginationDAO paginationDAO;
     private final ISearchResultDAO searchResultDAO;
-
     private final ITransliterationDAO transliterationDAO;
-    
-    
 
     public DALFacade(IFileDAO fileDAO, IFileImportDAO fileImportDAO, IPaginationDAO paginationDAO,ISearchResultDAO searchResultDAO,ITransliterationDAO transliterationDAO) {
         this.fileDAO = fileDAO;
@@ -136,6 +133,7 @@ public class DALFacade implements IDALFacade {
 		return searchResultDAO.search(keyword);
 		
 	}
+
 	@Override
 	public List<TransliterationDTO> getTransliterationsForPage(int pageId) {
 		// TODO Auto-generated method stub

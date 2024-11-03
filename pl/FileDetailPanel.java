@@ -44,6 +44,7 @@ public class FileDetailPanel extends JFrame {
         fileContentArea.setEditable(false);
         add(new JScrollPane(fileContentArea), BorderLayout.CENTER);
         JPopupMenu contextMenu = new JPopupMenu();
+
         JMenuItem transliterateItem = new JMenuItem("Transliterate");
         transliterateItem.addActionListener(e -> showTransliterationSidebar());
 
@@ -105,7 +106,6 @@ public class FileDetailPanel extends JFrame {
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
-
     private void showTransliterationSidebar() {
         String selectedText = fileContentArea.getSelectedText();
         if (selectedText != null && !selectedText.isEmpty()) {
@@ -115,7 +115,7 @@ public class FileDetailPanel extends JFrame {
             JOptionPane.showMessageDialog(this, "Please select text for transliteration.", "No Text Selected", JOptionPane.WARNING_MESSAGE);
         }
     }
-
+    
     void loadFileDetails(String fileName) {
         try {
             displayPage(currentPage);
@@ -136,8 +136,11 @@ public class FileDetailPanel extends JFrame {
             String pageContent = page.getPageContent();
             setLanguageOrientation(pageContent);
             fileContentArea.setText(pageContent);
-            
+
+            pageId = page.getPageId(); 
+
             pageId = blFacade.getPageID(fileDTO.getId(), currentPage);
+
             updatePageLabel();
         } else {
             JOptionPane.showMessageDialog(this, "No more pages available.", "Navigation", JOptionPane.INFORMATION_MESSAGE);
