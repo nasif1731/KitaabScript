@@ -20,7 +20,7 @@ public class FileDAO  implements IFileDAO{
         return content.isEmpty() ? 0 : content.split("\\s+").length;
     }
 	@Override
-	public void createFile(String name, String content) {
+	public PageDTO createFile(String name, String content) {
 	    try {
 	        String hash;
 	        int count = countWords(content);
@@ -45,68 +45,82 @@ public class FileDAO  implements IFileDAO{
 
 	            if (rowsAffected == 0) {
 	                System.err.println("Failed to create the file in the database.");
-	                return;
+	                return null; // Return null if file creation failed
 	            }
 
-	        }
+	            int fileId = fetchFileIdByName(name);
+	            List<PageDTO> paginatedContent = paginationDAO.paginateContent(fileId, content);
 
+	            return paginatedContent.isEmpty() ? null : paginatedContent.get(0);
+
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return null;
+	}
+
+	@Override
+	public void deleteFile(String name) {
+	    try {
+	        String deleteSQL = "DELETE FROM text_files WHERE filename = ?";
+
+	        try (Connection conn = DatabaseConnection.getConnection();
+	             PreparedStatement stmt = conn.prepareStatement(deleteSQL)) {
+
+	            stmt.setString(1, name);
+	            int rowsAffected = stmt.executeUpdate();
+
+	            if (rowsAffected == 0) {
+	                System.err.println("No file found with the name: " + name);
+	            }
+	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
 	}
 
-	
-
-
 	@Override
-	public void deleteFile(String name) {
-        try {
-            String deleteSQL = "DELETE FROM text_files WHERE filename = ?";
+	public PageDTO updateFile(String name, String newContent) {
+	    try {
+	        int count = countWords(newContent);
+	        String updateSQL = "UPDATE text_files SET word_count = ?, updated_at = NOW() WHERE filename = ?";
 
-            try (Connection conn = DatabaseConnection.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(deleteSQL)) {
+	        try (Connection conn = DatabaseConnection.getConnection();
+	             PreparedStatement stmt = conn.prepareStatement(updateSQL)) {
 
-                stmt.setString(1, name);
-                int rowsAffected = stmt.executeUpdate();
+	            stmt.setInt(1, count);
+	            stmt.setString(2, name);
+	            int rowsAffected = stmt.executeUpdate();
 
-                if (rowsAffected == 0) {
-                    System.err.println("No file found with the name: " + name);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+	            if (rowsAffected == 0) {
+	                System.err.println("No file found with the name: " + name);
+	                return null;  // No rows updated
+	            }
 
-	@Override
-	public int updateFile(String name, String newContent) {
-	    int count = countWords(newContent);
-	    String updateSQL = "UPDATE text_files SET word_count = ?, updated_at = NOW() WHERE filename = ?";
+	            int fileId = fetchFileIdByName(name);
+	            List<PageDTO> paginatedContent = paginationDAO.paginateContent(fileId, newContent);
 
-	    try (Connection conn = DatabaseConnection.getConnection();
-	         PreparedStatement stmt = conn.prepareStatement(updateSQL)) {
+	            for (PageDTO page : paginatedContent) {
+	                String updatePaginationSQL = "INSERT INTO pagination (text_file_id, page_number, page_content) "
+	                                             + "VALUES (?, ?, ?) "
+	                                             + "ON DUPLICATE KEY UPDATE page_content = VALUES(page_content)";
+	                try (PreparedStatement paginationStmt = conn.prepareStatement(updatePaginationSQL)) {
+	                    paginationStmt.setInt(1, page.getTextFileId());
+	                    paginationStmt.setInt(2, page.getPageNumber());
+	                    paginationStmt.setString(3, page.getPageContent());
+	                    paginationStmt.executeUpdate();
+	                }
+	            }
 
-	        stmt.setInt(1, count);
-	        stmt.setString(2, name);
-	        int rowsAffected = stmt.executeUpdate();
+	            return paginatedContent.isEmpty() ? null : paginatedContent.get(0);
 
-	        if (rowsAffected == 0) {
-	            System.err.println("No file found with the name: " + name);
-	            return -1;  // No rows updated
 	        }
-
-	        int fileId = fetchFileIdByName(name);
-	        List<PageDTO> paginatedContent = paginationDAO.paginateContent(fileId, newContent);
-	        paginationDAO.insertContent(paginatedContent);
-
-	        return count;
-
 	    } catch (SQLException e) {
 	        e.printStackTrace();
-	        return -1;
 	    }
+	    return null;
 	}
-
 
 
 	@Override
@@ -308,4 +322,3 @@ public int getFileID() {
 }
 	
 }
-

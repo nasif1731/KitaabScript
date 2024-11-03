@@ -1,9 +1,5 @@
 package dal;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,35 +12,33 @@ import util.DatabaseConnection;
 
 public class PaginationDAO implements IPaginationDAO {
 
-	@Override
-	public List<PageDTO> paginateContent(int fileId,String content) {
-	    List<PageDTO> pages = new ArrayList<>();
-	    int wordLimit = 400; 
-	    int wordsPerLine = 10; 
-	    String[] words = content.split("\\s+");
-	    int pageNumber = 1;
-	    StringBuilder pageContent = new StringBuilder();
-	    int wordCount = 0; 
+    @Override
+    public List<PageDTO> paginateContent(int fileId, String content) {
+        List<PageDTO> pages = new ArrayList<>();
+        int wordLimit = 400;
+        int wordsPerLine = 10;
+        String[] words = content.split("\\s+");
+        int pageNumber = 1;
+        StringBuilder pageContent = new StringBuilder();
+        int wordCount = 0;
 
-	    for (int i = 0; i < words.length; i++) {
-	        pageContent.append(words[i]).append(" ");
-	        wordCount++;
+        for (int i = 0; i < words.length; i++) {
+            pageContent.append(words[i]).append(" ");
+            wordCount++;
 
-	        if (wordCount % wordsPerLine == 0) {
-	            pageContent.append("\n"); 
-	        }
+            if (wordCount % wordsPerLine == 0) {
+                pageContent.append("\n");
+            }
 
-	        if (wordCount >= wordLimit || i == words.length - 1) {
-	            pages.add(new PageDTO(fileId, pageNumber++, pageContent.toString().trim()));
-	            pageContent.setLength(0); 
-	            wordCount = 0; 
-	        }
-	    }
+            if (wordCount >= wordLimit || i == words.length - 1) {
+                pages.add(new PageDTO(fileId, pageNumber++, pageContent.toString().trim()));
+                pageContent.setLength(0);
+                wordCount = 0;
+            }
+        }
 
-	    return pages;
-	}
-
-
+        return pages;
+    }
 
     @Override
     public void insertContent(List<PageDTO> paginatedContent) {
@@ -53,23 +47,34 @@ public class PaginationDAO implements IPaginationDAO {
             return;
         }
 
-        String query = "INSERT INTO pagination (text_file_id, page_number, page_content) VALUES (?, ?, ?)";
+        String updateQuery = "UPDATE pagination SET page_content = ? WHERE text_file_id = ? AND page_number = ?";
+        String insertQuery = "INSERT INTO pagination (text_file_id, page_number, page_content) VALUES (?, ?, ?)";
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-        	stmt.clearBatch();
+             PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
+             PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
+
             for (PageDTO page : paginatedContent) {
-                stmt.setInt(1, page.getTextFileId());
-                stmt.setInt(2, page.getPageNumber());
-                stmt.setString(3, page.getPageContent());
-                stmt.addBatch();  
+                if (contentExistsForFile(page.getTextFileId(), page.getPageNumber())) {
+                    updateStmt.setString(1, page.getPageContent());
+                    updateStmt.setInt(2, page.getTextFileId());
+                    updateStmt.setInt(3, page.getPageNumber());
+                    updateStmt.executeUpdate();
+                } else {
+                    insertStmt.setInt(1, page.getTextFileId());
+                    insertStmt.setInt(2, page.getPageNumber());
+                    insertStmt.setString(3, page.getPageContent());
+                    insertStmt.addBatch();
+                }
             }
 
-            stmt.executeBatch();
-           // conn.commit();
+            insertStmt.executeBatch();
         } catch (SQLException e) {
             e.printStackTrace();
+            System.err.println("Error inserting or updating page content: " + e.getMessage());
         }
     }
+
     @Override
     public int getPageID(int fileId, int pageNumber) {
         String query = "SELECT id FROM pagination WHERE text_file_id = ? AND page_number = ?";
@@ -86,9 +91,8 @@ public class PaginationDAO implements IPaginationDAO {
             e.printStackTrace();
             System.err.println("Error retrieving page ID for file ID " + fileId + ", page number " + pageNumber + ": " + e.getMessage());
         }
-        return -1; 
+        return -1;
     }
-
 
     @Override
     public boolean contentExistsForFile(int fileId, int pageNumber) {
@@ -106,6 +110,7 @@ public class PaginationDAO implements IPaginationDAO {
         }
         return false;
     }
+
     @Override
     public int getTotalPages(int fileId) {
         int totalPages = 0;
@@ -117,8 +122,7 @@ public class PaginationDAO implements IPaginationDAO {
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-            preparedStatement.setInt(1, fileId); 
-
+            preparedStatement.setInt(1, fileId);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
@@ -126,7 +130,7 @@ public class PaginationDAO implements IPaginationDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace(); 
+            e.printStackTrace();
         }
 
         return totalPages;
@@ -154,11 +158,4 @@ public class PaginationDAO implements IPaginationDAO {
         }
         return null;
     }
-
-
-
-
-
-
-
 }
