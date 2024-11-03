@@ -11,14 +11,14 @@ public class BLFacade implements IBLFacade{
 	private final IFileImportBO fileImportBO;
 	private final IFilePaginationBO filePaginateBO;
 	private final ISearchResultBO searchResultBO;
-	private final ITransliterationBO transliterationBO;
+	
 
-	public BLFacade(IFileBO fileBO, IFileImportBO fileImporBO,IFilePaginationBO filePaginateBO,ISearchResultBO searchResultBO,ITransliterationBO transliterationBO) {
+	public BLFacade(IFileBO fileBO, IFileImportBO fileImporBO,IFilePaginationBO filePaginateBO,ISearchResultBO searchResultBO) {
 		this.fileBO = fileBO;
 		this.fileImportBO = fileImporBO;
 		this.filePaginateBO = filePaginateBO;
 		this.searchResultBO = searchResultBO;
-		this.transliterationBO = transliterationBO;
+	
 	}
 	@Override
 	public void createFile(String name, String content) {
@@ -73,24 +73,6 @@ public class BLFacade implements IBLFacade{
 		
 	}
 
-	@Override
-	public String transliterateToLatin(String arabicText) {
-		// TODO Auto-generated method stub
-		return transliterationBO.transliterateToLatin(arabicText);
-	}
-
-	@Override
-	public void saveTransliterationIfNotExists(int pageId, String pageContent) {
-		// TODO Auto-generated method stub
-		transliterationBO.saveTransliterationIfNotExists(pageId, pageContent);
-		
-	}
-
-	@Override
-	public String getTransliterationForText(String text) {
-		// TODO Auto-generated method stub
-		return transliterationBO.getTransliterationForText(text);
-	}
 
 	@Override
 	public List<String> bulkImportFiles(List<String> filePaths) {
