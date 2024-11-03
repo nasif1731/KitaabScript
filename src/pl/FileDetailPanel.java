@@ -22,8 +22,7 @@ public class FileDetailPanel extends JFrame {
     private String filename;
     private int totalPages = 0;
     private int pageId;
-    private TransliterationPanel transliterationPanel;
-
+    
     public FileDetailPanel(String fileName, IBLFacade blFacade) {
         this.blFacade = blFacade;
         this.filename = fileName;
@@ -44,7 +43,7 @@ public class FileDetailPanel extends JFrame {
         add(new JScrollPane(fileContentArea), BorderLayout.CENTER);
         JPopupMenu contextMenu = new JPopupMenu();
         JMenuItem transliterateItem = new JMenuItem("Transliterate");
-        transliterateItem.addActionListener(e -> showTransliterationSidebar());
+       
         contextMenu.add(transliterateItem);
         fileContentArea.addMouseListener(new MouseAdapter() {
             @Override
@@ -59,9 +58,7 @@ public class FileDetailPanel extends JFrame {
         });
 
         pageId = blFacade.getPageID(fileDTO.getId(), currentPage);
-        transliterationPanel = new TransliterationPanel(blFacade, pageId, currentPage);
-        transliterationPanel.setVisible(false);
-        add(transliterationPanel, BorderLayout.EAST);
+      
         updateButton = new JButton("Update");
         updateButton.setBackground(new Color(138, 83, 43));
         updateButton.setForeground(Color.WHITE);
@@ -102,15 +99,7 @@ public class FileDetailPanel extends JFrame {
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
-    private void showTransliterationSidebar() {
-        String selectedText = fileContentArea.getSelectedText();
-        if (selectedText != null && !selectedText.isEmpty()) {
-            transliterationPanel.performTransliteration(); 
-            transliterationPanel.setVisible(true);
-        } else {
-            JOptionPane.showMessageDialog(this, "Please select text for transliteration.", "No Text Selected", JOptionPane.WARNING_MESSAGE);
-        }
-    }
+  
     void loadFileDetails(String fileName) {
         try {
             displayPage(currentPage);

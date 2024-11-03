@@ -5,5 +5,5 @@ public interface IDALFactory {
 	public IFileImportDAO getFileImportDAO();
 	public IPaginationDAO getPaginationDAO();
 	public ISearchResultDAO getSearchResultDAO();
-	public ITransliterationDAO getTransliterationDAO();
+	
 }

@@ -22,9 +22,4 @@ public class MySQLDALFactory extends AbstractDALFactory{
         return new SearchResultDAO(getPaginationDAO(), getFileDAO());
     }
 
-	@Override
-	public ITransliterationDAO getTransliterationDAO() {
-		// TODO Auto-generated method stub
-		return new TransliterationDAO();
-	}
 }
