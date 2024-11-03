@@ -185,7 +185,7 @@ public class MainScreen extends JFrame {
             return new Font("Serif", Font.BOLD, 40);
         }
     }
-
+    
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
