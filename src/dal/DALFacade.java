@@ -25,8 +25,8 @@ public class DALFacade implements IDALFacade {
     }
 
     @Override
-    public void createFile(String name, String content) {
-        fileDAO.createFile(name, content);
+    public PageDTO createFile(String name, String content) {
+        return fileDAO.createFile(name, content);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class DALFacade implements IDALFacade {
     }
 
     @Override
-    public int updateFile(String name, String newContent) {
+    public PageDTO updateFile(String name, String newContent) {
         return fileDAO.updateFile(name, newContent);
     }
 

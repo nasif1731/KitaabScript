@@ -19,6 +19,8 @@ public class FileTablePanel extends JPanel {
     private IBLFacade blFacade;
     private DefaultTableModel tableModel;
     private JButton deleteButton;
+	private FilePaginationBO filePaginationBO;
+	private FileBO fileBO;
 
     
     private static final Dimension BUTTON_SIZE = new Dimension(100, 30);
@@ -31,7 +33,12 @@ public class FileTablePanel extends JPanel {
         loadFiles();
     }
 
-    private void initializeUI() {
+    public FileTablePanel(FileBO fileBO, FilePaginationBO filePaginationBO) {
+		this.fileBO = fileBO;
+		this.filePaginationBO = filePaginationBO;
+	}
+
+	private void initializeUI() {
         setLayout(new BorderLayout());
         setBackground(BACKGROUND_COLOR);
 

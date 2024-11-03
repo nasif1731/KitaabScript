@@ -132,12 +132,13 @@ public class FileDetailPanel extends JFrame {
             setLanguageOrientation(pageContent);
             fileContentArea.setText(pageContent);
             
-            pageId = blFacade.getPageID(fileDTO.getId(), currentPage);
+            pageId = page.getPageId(); 
             updatePageLabel();
         } else {
             JOptionPane.showMessageDialog(this, "No more pages available.", "Navigation", JOptionPane.INFORMATION_MESSAGE);
         }
     }
+
 
     private void pageNavigation(int pageNumber) {
         if (pageNumber < 1 || pageNumber > totalPages) {

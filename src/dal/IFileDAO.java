@@ -5,14 +5,15 @@ import java.sql.SQLException;
 import java.util.List;
 
 import dto.FileDTO;
+import dto.PageDTO;
 
 public interface IFileDAO {
 
-	void createFile(String name, String content) ;
+	PageDTO createFile(String name, String content) ;
 
 	void deleteFile(String name);
 
-	int updateFile(String name, String newContent);
+	PageDTO updateFile(String name, String newContent);
 
 	String createdAt(String name);
 

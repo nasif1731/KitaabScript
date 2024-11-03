@@ -46,6 +46,7 @@ public class PaginationDAO implements IPaginationDAO {
 
 
 
+   
     @Override
     public void insertContent(List<PageDTO> paginatedContent) {
         if (paginatedContent == null || paginatedContent.isEmpty()) {
@@ -53,23 +54,35 @@ public class PaginationDAO implements IPaginationDAO {
             return;
         }
 
-        String query = "INSERT INTO pagination (text_file_id, page_number, page_content) VALUES (?, ?, ?)";
+        String updateQuery = "UPDATE pagination SET page_content = ? WHERE text_file_id = ? AND page_number = ?";
+        String insertQuery = "INSERT INTO pagination (text_file_id, page_number, page_content) VALUES (?, ?, ?)";
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-        	stmt.clearBatch();
+             PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
+             PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
+
             for (PageDTO page : paginatedContent) {
-                stmt.setInt(1, page.getTextFileId());
-                stmt.setInt(2, page.getPageNumber());
-                stmt.setString(3, page.getPageContent());
-                stmt.addBatch();  
+                if (contentExistsForFile(page.getTextFileId(), page.getPageNumber())) {
+                    updateStmt.setString(1, page.getPageContent());
+                    updateStmt.setInt(2, page.getTextFileId());
+                    updateStmt.setInt(3, page.getPageNumber());
+                    updateStmt.executeUpdate();
+                } else {
+                    
+                    insertStmt.setInt(1, page.getTextFileId());
+                    insertStmt.setInt(2, page.getPageNumber());
+                    insertStmt.setString(3, page.getPageContent());
+                    insertStmt.addBatch();
+                }
             }
 
-            stmt.executeBatch();
-           // conn.commit();
+            insertStmt.executeBatch();  
         } catch (SQLException e) {
             e.printStackTrace();
+            System.err.println("Error inserting or updating page content: " + e.getMessage());
         }
     }
+
     @Override
     public int getPageID(int fileId, int pageNumber) {
         String query = "SELECT id FROM pagination WHERE text_file_id = ? AND page_number = ?";
