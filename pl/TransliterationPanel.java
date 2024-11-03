@@ -77,7 +77,7 @@ public class TransliterationPanel extends JPanel {
             blFacade.saveTransliterationIfNotExists(pageID, page.getPageContent());
         } else {
             textPane.setText("No content available for this page.");
-            System.out.println("PageDTO is null for pageID: " + pageID + ", pageNumber: " + pageNumber); // Debugging statement
+//            System.out.println("PageDTO is null for pageID: " + pageID + ", pageNumber: " + pageNumber); // Debugging statement
         }
     }
 
