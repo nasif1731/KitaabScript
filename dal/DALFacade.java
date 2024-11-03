@@ -5,7 +5,9 @@ import java.util.List;
 import dto.FileDTO;
 import dto.PageDTO;
 import dto.SearchResultDTO;
+
 import dto.TransliterationDTO;
+
 
 public class DALFacade implements IDALFacade {
     private final IFileDAO fileDAO;
@@ -13,8 +15,6 @@ public class DALFacade implements IDALFacade {
     private final IPaginationDAO paginationDAO;
     private final ISearchResultDAO searchResultDAO;
     private final ITransliterationDAO transliterationDAO;
-    
-    
 
     public DALFacade(IFileDAO fileDAO, IFileImportDAO fileImportDAO, IPaginationDAO paginationDAO,ISearchResultDAO searchResultDAO,ITransliterationDAO transliterationDAO) {
         this.fileDAO = fileDAO;
@@ -23,6 +23,7 @@ public class DALFacade implements IDALFacade {
 		this.searchResultDAO = searchResultDAO;
 		this.transliterationDAO = transliterationDAO;
     }
+
 
     @Override
     public PageDTO createFile(String name, String content) {

@@ -22,6 +22,7 @@ public class FileTablePanel extends JPanel {
 	private FilePaginationBO filePaginationBO;
 	private FileBO fileBO;
 
+
     
     private static final Dimension BUTTON_SIZE = new Dimension(100, 30);
     private static final Color BACKGROUND_COLOR = new Color(235, 224, 199);
@@ -33,12 +34,9 @@ public class FileTablePanel extends JPanel {
         loadFiles();
     }
 
-    public FileTablePanel(FileBO fileBO, FilePaginationBO filePaginationBO) {
-		this.fileBO = fileBO;
-		this.filePaginationBO = filePaginationBO;
-	}
 
-	private void initializeUI() {
+    private void initializeUI() {
+
         setLayout(new BorderLayout());
         setBackground(BACKGROUND_COLOR);
 

@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
 public class FileUpdatePanel extends JFrame {
-	private FilePaginationBO filePaginationBO;
+
 	private JTextArea fileContentArea;
 	private JButton saveButton;
 	private JButton prevButton;
@@ -36,6 +36,8 @@ public class FileUpdatePanel extends JFrame {
 		loadFileContent();
 		updateWordCount();
 	}
+
+
 
 	private void initializeUI() {
 		setTitle("File Update - " + currentFileName);
@@ -92,9 +94,9 @@ public class FileUpdatePanel extends JFrame {
 		controlPanel.add(prevButton);
 		controlPanel.add(saveButton);
 		controlPanel.add(nextButton);
-
 		mainPanel.add(controlPanel, BorderLayout.SOUTH);
 
+   
 		saveButton.addActionListener(e -> {
 			if (saveFile()) {
 				navigateToFileTable();
@@ -104,6 +106,11 @@ public class FileUpdatePanel extends JFrame {
 		add(mainPanel);
 		setVisible(true);
 	}
+
+    private void updateWordCount() {
+        int wordCount = blFacade.getWordCount(currentFileName);
+        wordCountLabel.setText("Word Count: " + wordCount);
+    }
 
 	private void loadFileContent() {
 		try {
@@ -132,10 +139,6 @@ public class FileUpdatePanel extends JFrame {
 				isUrdu ? ComponentOrientation.RIGHT_TO_LEFT : ComponentOrientation.LEFT_TO_RIGHT);
 	}
 
-	private void updateWordCount() {
-		int wordCount = blFacade.getWordCount(currentFileName);
-		wordCountLabel.setText("Word Count: " + wordCount);
-	}
 
 	private void updatePageLabel() {
 		pageLabel.setText("Page " + currentPage + " of " + totalPages);
