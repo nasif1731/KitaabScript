@@ -27,8 +27,7 @@ public class TransliterationPanel extends JPanel {
         textPane.setEditable(false);
         textPane.setFont(new Font("Arial", Font.PLAIN, 16));
         
-        // Call the method to load the page content when the panel is created
-        loadPageContent();
+        
         
         contextMenu = new JPopupMenu();
         JMenuItem transliterateItem = new JMenuItem("Transliterate");
@@ -68,42 +67,26 @@ public class TransliterationPanel extends JPanel {
         add(sidebarPanel, BorderLayout.EAST); 
     }
 
-    // Load content for the current page
-    public void loadPageContent() {
-        PageDTO page = blFacade.getPageContent(pageID, pageNumber);
-        if (page != null) {
-            textPane.setText(page.getPageContent());
-            // Optionally, you can save the transliteration immediately after loading the page content
-            blFacade.saveTransliterationIfNotExists(pageID, page.getPageContent());
-        } else {
-            textPane.setText("No content available for this page.");
-//            System.out.println("PageDTO is null for pageID: " + pageID + ", pageNumber: " + pageNumber); // Debugging statement
-        }
-    }
 
-    // Show the context menu for transliteration
+ 
     public void showContextMenu(MouseEvent e) {
         contextMenu.show(e.getComponent(), e.getX(), e.getY());
     }
-    // Perform transliteration and display result in sidebar
     public void performTransliteration(String text) {
         String selectedText = text;
-        System.out.println("Selected text for transliteration: '" + selectedText + "'"); // Debugging statement
         if (selectedText == null || selectedText.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please select text for transliteration.");
             return;
         }
 
-        // Retrieve transliterated text through blFacade
         String transliteratedText = blFacade.getTransliterationForText(selectedText);
         
-        // Check if transliteratedText is null or empty
+        
         if (transliteratedText == null || transliteratedText.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Transliteration failed.");
             return;
         }
 
-        // Show the transliteration in a dialog
         JDialog transliterationDialog = new JDialog();
         transliterationDialog.setTitle("Transliteration");
         transliterationDialog.setModal(true);
@@ -127,7 +110,6 @@ public class TransliterationPanel extends JPanel {
         transliterationDialog.setVisible(true);
     }
 
-    // Show or hide the sidebar
     public void toggleSidebar(boolean visible) {
         sidebarPanel.setVisible(visible);
         revalidate();

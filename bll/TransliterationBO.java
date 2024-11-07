@@ -50,7 +50,7 @@ public class TransliterationBO implements ITransliterationBO{
         Mapping.put('و', "w");
         Mapping.put('ي', "y");
         Mapping.put('ء', "'");
-        Mapping.put('ة', "h"); 
+        Mapping.put('ة', "t"); 
         Mapping.put('ا', "aa");  
         Mapping.put('َ', "a");
         Mapping.put('ُ', "u");  
@@ -89,9 +89,9 @@ public class TransliterationBO implements ITransliterationBO{
 
     @Override
     public void saveTransliterationIfNotExists(int pageId, String pageContent) {
-        if (!dalFacade.isTransliterationSavedForPage(pageId)) {
+        if (!dalFacade.isTransliterationSavedForPage(pageId,pageContent)) {
             String transliteratedContent = transliterateToLatin(pageContent);
-            TransliterationDTO transliteration = new TransliterationDTO(0, pageId, pageContent, transliteratedContent);
+            TransliterationDTO transliteration = new TransliterationDTO( pageId, pageContent, transliteratedContent);
             dalFacade.addTransliteration(transliteration);
         }
     }

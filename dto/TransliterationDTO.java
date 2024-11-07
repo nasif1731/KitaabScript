@@ -12,6 +12,11 @@ public class TransliterationDTO {
         this.originalText = originalText;
         this.transliteratedText = transliteratedText;
     }
+    public TransliterationDTO(int paginationId, String originalText, String transliteratedText) {
+    	this.paginationId = paginationId;
+        this.originalText = originalText;
+        this.transliteratedText = transliteratedText;
+    }
 
     
     public int getId() { return id; }

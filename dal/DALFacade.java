@@ -141,9 +141,9 @@ public class DALFacade implements IDALFacade {
 	}
 
 	@Override
-	public boolean isTransliterationSavedForPage(int pageId) {
+	public boolean isTransliterationSavedForPage(int pageId, String content) {
 		// TODO Auto-generated method stub
-		return transliterationDAO.isTransliterationSavedForPage(pageId);
+		return transliterationDAO.isTransliterationSavedForPage(pageId,content);
 	}
 
 	@Override

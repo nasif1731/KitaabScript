@@ -8,8 +8,8 @@ public interface ITransliterationDAO {
 
 	List<TransliterationDTO> getTransliterationsForPage(int pageId);
 
-	boolean isTransliterationSavedForPage(int pageId);
-
 	void addTransliteration(TransliterationDTO transliteration);
+
+	boolean isTransliterationSavedForPage(int pageId, String newContent);
 
 }

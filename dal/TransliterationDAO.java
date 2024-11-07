@@ -49,18 +49,35 @@ public class TransliterationDAO implements ITransliterationDAO {
     }
 
     @Override
-    public boolean isTransliterationSavedForPage(int pageId) {
-        String query = "SELECT COUNT(*) AS count FROM transliterations WHERE pagination_id=?";
+    
+    public boolean isTransliterationSavedForPage(int pageId, String newContent) {
+        String queryCheck = "SELECT COUNT(*) AS count, original_text FROM transliterations WHERE pagination_id=?";
+        String queryDelete = "DELETE FROM transliterations WHERE pagination_id=?";
+        
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, pageId);
-            ResultSet result = stmt.executeQuery();
+             PreparedStatement stmtCheck = conn.prepareStatement(queryCheck);
+             PreparedStatement stmtDelete = conn.prepareStatement(queryDelete)) {
+            
+            stmtCheck.setInt(1, pageId);
+            ResultSet result = stmtCheck.executeQuery();
+            
             if (result.next()) {
-                return result.getInt("count") > 0;
+                int count = result.getInt("count");
+                String existingContent = result.getString("original_text");
+                
+                if (count > 0 && existingContent.equals(newContent)) {
+                    return true; 
+                } else if (count > 0 && !existingContent.equals(newContent)) {
+                    
+                    stmtDelete.setInt(1, pageId);
+                    stmtDelete.executeUpdate();
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return false;  
     }
+
+
 }

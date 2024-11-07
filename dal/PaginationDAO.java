@@ -149,7 +149,6 @@ public class PaginationDAO implements IPaginationDAO {
             if (rs.next()) {
                 String pageContent = rs.getString("page_content");
                 int pageId = rs.getInt("id");
-
                 return new PageDTO(pageId, fileId, pageNumber, pageContent);
             }
         } catch (SQLException e) {

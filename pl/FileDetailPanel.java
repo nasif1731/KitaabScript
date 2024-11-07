@@ -142,9 +142,10 @@ public class FileDetailPanel extends JFrame {
 
             pageId = page.getPageId(); 
 
-            //pageId = blFacade.getPageID(fileDTO.getId(), currentPage);
+            pageId = blFacade.getPageID(fileDTO.getId(), currentPage);
 
             updatePageLabel();
+            blFacade.saveTransliterationIfNotExists(pageId, page.getPageContent());
         } else {
             JOptionPane.showMessageDialog(this, "No more pages available.", "Navigation", JOptionPane.INFORMATION_MESSAGE);
         }
