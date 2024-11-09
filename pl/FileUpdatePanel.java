@@ -44,6 +44,8 @@ public class FileUpdatePanel extends JFrame {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setSize(600, 400);
 		setLocationRelativeTo(null);
+		ImageIcon icon = new ImageIcon("resources/images/icon.png");
+        setIconImage(icon.getImage());
 
 		getContentPane().setBackground(new Color(235, 224, 199));
 

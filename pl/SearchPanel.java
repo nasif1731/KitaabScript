@@ -10,6 +10,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -32,8 +33,10 @@ public class SearchPanel extends JPanel {
 
     public SearchPanel(IBLFacade blFacade) {
         this.blFacade = blFacade;
+        
         initializeUIComponents();
         layoutComponents();
+        
         setupListeners();
         styleComponents();
     }

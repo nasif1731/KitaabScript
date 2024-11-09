@@ -41,6 +41,8 @@ public class FileDetailPanel extends JFrame {
     private void initializeUI() {
         setLayout(new BorderLayout());
         setBackground(new Color(235, 224, 199));
+        ImageIcon icon = new ImageIcon("resources/images/icon.png");
+        setIconImage(icon.getImage());
         this.setSize(500,500);
         fileContentArea = new JTextPane();
         fileContentArea.setEditable(false);
