@@ -10,7 +10,7 @@ public interface IFileBO {
 
 	void printFileTimestamps(String name);
 
-	void updateFile(String name, String content);
+	
 
 	void deleteFile(String name);
 
@@ -24,6 +24,10 @@ public interface IFileBO {
 
 	String getFileName(int fileID);
 
-	int getFileID();
+	
+
+	int getFileID(String filename);
+
+	void updateFile(String name, int pageNumber, String content);
 
 }

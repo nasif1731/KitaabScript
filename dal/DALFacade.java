@@ -3,6 +3,8 @@ package dal;
 import java.sql.SQLException;
 import java.util.List;
 import dto.FileDTO;
+import dto.LemmatizationDTO;
+import dto.POSTaggingDTO;
 import dto.PageDTO;
 import dto.SearchResultDTO;
 
@@ -15,13 +17,17 @@ public class DALFacade implements IDALFacade {
     private final IPaginationDAO paginationDAO;
     private final ISearchResultDAO searchResultDAO;
     private final ITransliterationDAO transliterationDAO;
+    private final ILemmatizationDAO lemmatizationDAO;
+    private final IPOSTaggingDAO postaggingDAO;
 
-    public DALFacade(IFileDAO fileDAO, IFileImportDAO fileImportDAO, IPaginationDAO paginationDAO,ISearchResultDAO searchResultDAO,ITransliterationDAO transliterationDAO) {
+    public DALFacade(IFileDAO fileDAO, IFileImportDAO fileImportDAO, IPaginationDAO paginationDAO,ISearchResultDAO searchResultDAO,ITransliterationDAO transliterationDAO,ILemmatizationDAO lemmatizationDAO,IPOSTaggingDAO postaggingDAO) {
         this.fileDAO = fileDAO;
         this.fileImportDAO = fileImportDAO;
         this.paginationDAO = paginationDAO;
 		this.searchResultDAO = searchResultDAO;
 		this.transliterationDAO = transliterationDAO;
+		this.lemmatizationDAO = lemmatizationDAO;
+		this.postaggingDAO = postaggingDAO;
     }
 
 
@@ -35,10 +41,7 @@ public class DALFacade implements IDALFacade {
         fileDAO.deleteFile(name);
     }
 
-    @Override
-    public PageDTO updateFile(String name, String newContent) {
-        return fileDAO.updateFile(name, newContent);
-    }
+   
 
     @Override
     public String createdAt(String name) {
@@ -111,8 +114,14 @@ public class DALFacade implements IDALFacade {
 		}
 
 	@Override
-	public int fetchFileIdByName(String name) throws SQLException {
-		return fetchFileIdByName(name);
+	public int fetchFileIdByName(String name) {
+		try {
+			return fileDAO.fetchFileIdByName(name);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
 	}
 
 	@Override
@@ -159,10 +168,63 @@ public class DALFacade implements IDALFacade {
 		return paginationDAO.getPageID(fileId,pageNumber);
 	}
 
+	
+
+
 	@Override
-	public int getFileID() {
+	public List<PageDTO> getPagesByTextFileId(int textFileId) {
 		// TODO Auto-generated method stub
-		return fileDAO.getFileID();
+		return paginationDAO.getPagesByTextFileId(textFileId);
+	}
+
+
+	@Override
+	public void addLemmatization(LemmatizationDTO lemmatization) {
+		lemmatizationDAO.addLemmatization(lemmatization);
+		
+	}
+
+
+	@Override
+	public List<LemmatizationDTO> getLemmatizationForPage(int pageId) {
+		// TODO Auto-generated method stub
+		return lemmatizationDAO.getLemmatizationForPage(pageId);
+	}
+
+
+	@Override
+	public boolean isLemmatizationSavedForPage(int pageId, String newContent) {
+		// TODO Auto-generated method stub
+		return lemmatizationDAO.isLemmatizationSavedForPage(pageId, newContent);
+	}
+
+
+	@Override
+	public void addPOSTagging(POSTaggingDTO posTagging) {
+		// TODO Auto-generated method stub
+		postaggingDAO.addPOSTagging(posTagging);
+		
+	}
+
+
+	@Override
+	public List<POSTaggingDTO> getPOSTaggingForPage(int pageId) {
+		// TODO Auto-generated method stub
+		return postaggingDAO.getPOSTaggingForPage(pageId);
+	}
+
+
+	@Override
+	public boolean isPOSTaggingSavedForPage(int pageId, String newContent) {
+		// TODO Auto-generated method stub
+		return postaggingDAO.isPOSTaggingSavedForPage(pageId, newContent);
+	}
+
+
+	@Override
+	public PageDTO updateFile(String name, int pageNumber, String newContent) {
+		return fileDAO.updateFile(name,pageNumber, newContent);
+		
 	}
 	 
 }

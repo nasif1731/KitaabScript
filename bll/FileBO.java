@@ -36,11 +36,11 @@ public class FileBO implements IFileBO {
         }
     }
     @Override
-    public void updateFile(String name, String content) {
+    public void updateFile(String name, int pageNumber, String content) {
         try {
 //        	System.out.println(name);
 //    		System.out.println(content);
-        	dalFacade.updateFile(name, content);
+        	dalFacade.updateFile(name, pageNumber, content);
         } catch (Exception e) {
             throw new RuntimeException("Error updating file: " + e.getMessage(), e);
         }
@@ -82,9 +82,11 @@ public class FileBO implements IFileBO {
 	public String getFileName(int fileId) {
 		return dalFacade.getFileName(fileId);
 	}
+	
+	
 	@Override
-	public int getFileID() {
+	public int getFileID(String filename) {
 		// TODO Auto-generated method stub
-		return dalFacade.getFileID();
+		return 0;
 	}
 	}

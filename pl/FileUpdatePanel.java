@@ -149,7 +149,7 @@ public class FileUpdatePanel extends JFrame {
 	private boolean saveFile() {
 		try {
 			String updatedContent = fileContentArea.getText();
-			blFacade.updateFile(currentFileName, updatedContent);
+			blFacade.updateFile(currentFileName, currentPage, updatedContent);
 			JOptionPane.showMessageDialog(this, "File saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
 			return true;
 		} catch (Exception e) {

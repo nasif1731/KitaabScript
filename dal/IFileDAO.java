@@ -13,8 +13,6 @@ public interface IFileDAO {
 
 	void deleteFile(String name);
 
-	PageDTO updateFile(String name, String newContent);
-
 	String createdAt(String name);
 
 	String updatedAt(String name);
@@ -28,8 +26,10 @@ public interface IFileDAO {
 	List<Integer> getAllFileIds();
 
 	String getFileName(int fileId);
+
+	PageDTO updateFile(String name, int pageNumber, String newContent);
 	
-	int getFileID();
+	
 
 
 
