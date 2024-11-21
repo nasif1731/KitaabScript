@@ -27,4 +27,16 @@ public class MySQLDALFactory extends AbstractDALFactory{
 	
 		return new TransliterationDAO();
 	}
+
+	@Override
+	public ILemmatizationDAO getLemmatizationDAO() {
+		// TODO Auto-generated method stub
+		return new LemmatizationDAO();
+	}
+
+	@Override
+	public IPOSTaggingDAO getPOSTaggingDAO() {
+		// TODO Auto-generated method stub
+		return new POSTaggingDAO();
+	}
 }

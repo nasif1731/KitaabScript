@@ -1,8 +1,12 @@
 package bll;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import dto.FileDTO;
+import dto.LemmatizationDTO;
+import dto.POSTaggingDTO;
 import dto.PageDTO;
 import dto.SearchResultDTO;
 
@@ -12,13 +16,23 @@ public class BLFacade implements IBLFacade {
     private final IFilePaginationBO filePaginateBO;
     private final ISearchResultBO searchResultBO;
     private final ITransliterationBO transliterationBO;
+    private final ILemmatizationBO lemmatizationBO;
+    private final IPOSTaggingBO postaggingBO;
+    private final ITFIDFAnalysisBO tfidfAnalysisBO;
+    private final IPMIAnalysisBO pmiAnalysisBO;
+    private final IKLAnalysisBO klAnalysisBO;
 
-    public BLFacade(IFileBO fileBO, IFileImportBO fileImportBO, IFilePaginationBO filePaginateBO, ISearchResultBO searchResultBO, ITransliterationBO transliterationBO) {
+    public BLFacade(IFileBO fileBO, IFileImportBO fileImportBO, IFilePaginationBO filePaginateBO, ISearchResultBO searchResultBO, ITransliterationBO transliterationBO,ILemmatizationBO lemmatizationBO,IPOSTaggingBO postaggingBO,ITFIDFAnalysisBO tfidfAnalysisBO,IPMIAnalysisBO pmiAnalysisBO,IKLAnalysisBO klAnalysisBO) {
         this.fileBO = fileBO;
         this.fileImportBO = fileImportBO;
         this.filePaginateBO = filePaginateBO;
         this.searchResultBO = searchResultBO;
         this.transliterationBO = transliterationBO;
+		this.lemmatizationBO = lemmatizationBO;
+		this.postaggingBO = postaggingBO;
+		this.tfidfAnalysisBO = tfidfAnalysisBO;
+		this.pmiAnalysisBO = pmiAnalysisBO;
+		this.klAnalysisBO = klAnalysisBO;
     }
 
     @Override
@@ -127,7 +141,66 @@ public class BLFacade implements IBLFacade {
     }
 
     @Override
-    public int getFileID() {
-        return fileBO.getFileID();
+    public int getFileID(String filename) {
+        return fileBO.getFileID(filename);
     }
+
+	@Override
+	public void processLemmatizationForPage(int pageId, String pageContent) {
+		lemmatizationBO.processLemmatizationForPage(pageId, pageContent);
+		
+	}
+
+	@Override
+	public LinkedList<LemmatizationDTO> getLemmatizationForPage(int pageId) {
+		// TODO Auto-generated method stub
+		return lemmatizationBO.getLemmatizationForPage(pageId);
+	}
+
+	@Override
+	public void processPOSTaggingForPage(int pageId, String pageContent) {
+		// TODO Auto-generated method stub
+		postaggingBO.processPOSTaggingForPage(pageId, pageContent);
+		
+		
+	}
+
+	@Override
+	public LinkedList<POSTaggingDTO> getPOSTaggingForPage(int pageId) {
+		// TODO Auto-generated method stub
+		return postaggingBO.getPOSTaggingForPage(pageId);
+	}
+
+	@Override
+	public POSTaggingDTO analyzedWord(String word, int pageId) {
+		// TODO Auto-generated method stub
+		return postaggingBO.analyzedWord(word, pageId);
+	}
+
+	@Override
+	public LemmatizationDTO analyzeWord(String word, int pageId) {
+		// TODO Auto-generated method stub
+		return lemmatizationBO.analyzeWord(word, pageId);
+	}
+
+	@Override
+	public Map<String, Double> performTFIDFAnalysisForWord(String searchWord) {
+		// TODO Auto-generated method stub
+		return tfidfAnalysisBO.performTFIDFAnalysisForWord(searchWord);
+	}
+
+	@Override
+	public Map<String, Double> performPMIAnalysisForWord(String searchWord) {
+		// TODO Auto-generated method stub
+		return pmiAnalysisBO.performPMIAnalysisForWord(searchWord);
+	}
+
+	@Override
+	public Map<String, Double> performKLAnalysisForWord(String searchWord) {
+		// TODO Auto-generated method stub
+		return klAnalysisBO.performKLAnalysisForWord(searchWord);
+	}
+	
+
+	
 }

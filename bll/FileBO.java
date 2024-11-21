@@ -6,6 +6,7 @@ import dal.IFileDAO;
 import dto.FileDTO;
 import dto.PageDTO;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class FileBO implements IFileBO {
@@ -83,8 +84,14 @@ public class FileBO implements IFileBO {
 		return dalFacade.getFileName(fileId);
 	}
 	@Override
-	public int getFileID() {
+	public int getFileID(String filename) {
 		// TODO Auto-generated method stub
-		return dalFacade.getFileID();
+		try {
+			return dalFacade.fetchFileIdByName(filename);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
 	}
 	}

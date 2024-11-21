@@ -29,7 +29,7 @@ public interface IFileDAO {
 
 	String getFileName(int fileId);
 	
-	int getFileID();
+	
 
 
 

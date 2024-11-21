@@ -28,7 +28,7 @@ public class ImportFileDialogueBox extends JDialog {
         
         Font mughalFont = new Font("Serif", Font.BOLD, 24); 
 
-        // Result area setup
+        
         resultArea = new JTextArea(10, 30);
         resultArea.setEditable(false);
         resultArea.setBackground(new Color(255, 244, 206)); 

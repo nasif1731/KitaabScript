@@ -101,6 +101,7 @@ public class FileUpdatePanel extends JFrame {
    
 		saveButton.addActionListener(e -> {
 			if (saveFile()) {
+//				navigateToFileDetailPanel();
 				navigateToFileTable();
 			}
 		});
@@ -109,7 +110,11 @@ public class FileUpdatePanel extends JFrame {
 		setVisible(true);
 	}
 
-    private void updateWordCount() {
+    
+
+
+
+	private void updateWordCount() {
         int wordCount = blFacade.getWordCount(currentFileName);
         wordCountLabel.setText("Word Count: " + wordCount);
     }

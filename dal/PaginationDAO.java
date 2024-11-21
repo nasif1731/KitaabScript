@@ -157,4 +157,30 @@ public class PaginationDAO implements IPaginationDAO {
         }
         return null;
     }
+    @Override
+    public List<PageDTO> getPagesByTextFileId(int textFileId) {
+        List<PageDTO> pages = new ArrayList<>();
+        String sql = "SELECT * FROM pagination WHERE text_file_id = ? ORDER BY page_number";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+        		PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, textFileId); 
+            ResultSet resultSet = statement.executeQuery(); 
+
+           
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id"); 
+                int pageNumber = resultSet.getInt("page_number"); 
+                String content = resultSet.getString("page_content"); 
+                pages.add(new PageDTO(id, textFileId, pageNumber, content)); 
+            }
+        }
+        catch(SQLException e)
+        {
+        	e.printStackTrace();
+            System.err.println("Error retrieving pages " + e.getMessage());
+        }
+        return pages; 
+    }
 }
+

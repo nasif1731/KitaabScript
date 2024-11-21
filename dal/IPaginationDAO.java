@@ -13,4 +13,6 @@ public interface IPaginationDAO {
 	PageDTO getPage(int fileId, int pageNumber);
 
 	int getPageID(int fileId, int pageNumber);
+
+	List<PageDTO> getPagesByTextFileId(int textFileId);
 }

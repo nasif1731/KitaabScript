@@ -24,6 +24,8 @@ public interface IFileBO {
 
 	String getFileName(int fileID);
 
-	int getFileID();
+	
+
+	int getFileID(String filename);
 
 }

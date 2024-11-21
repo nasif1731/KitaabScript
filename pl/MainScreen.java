@@ -29,13 +29,23 @@ import bll.FilePaginationBO;
 import bll.IFileBO;
 import bll.IFileImportBO;
 import bll.IFilePaginationBO;
+import bll.IKLAnalysisBO;
 import bll.ISearchResultBO;
+import bll.ITFIDFAnalysisBO;
+import bll.ILemmatizationBO;
+import bll.IPMIAnalysisBO;
+import bll.IPOSTaggingBO;
 
 import bll.ITransliterationBO;
+import bll.KLAnalysisBO;
+import bll.LemmatizationBO;
+import bll.PMIAnalysisBO;
+import bll.POSTaggingBO;
 import bll.SearchResultBO;
+import bll.TFIDFAnalysisBO;
 import bll.TransliterationBO;
 
-import bll.SearchResultBO;
+
 
 import bll.IBLFacade;
 import dal.AbstractDALFactory;
@@ -44,6 +54,8 @@ import dal.IDALFacade;
 import dal.IDALFactory;
 import dal.IFileDAO;
 import dal.IFileImportDAO;
+import dal.ILemmatizationDAO;
+import dal.IPOSTaggingDAO;
 import dal.IPaginationDAO;
 import dal.ISearchResultDAO;
 import dal.ITransliterationDAO;
@@ -56,7 +68,7 @@ public class MainScreen extends JFrame {
     private JButton importFileButton;
     private JButton searchButton; 
     private IBLFacade blFacade;
-
+    private JButton performAnalysisButton;
     public MainScreen(IBLFacade blFacade) {
         this.blFacade=blFacade;
         setTitle("Kitaab Script");
@@ -84,17 +96,26 @@ public class MainScreen extends JFrame {
         createFileButton = createStyledButton("Create File", mughalFont);
         importFileButton = createStyledButton("Import File", mughalFont);
         searchButton = createStyledButton("Search", mughalFont); 
-
+        performAnalysisButton = createStyledButton("Perform Analysis", mughalFont);
         buttonPanel.add(openFileButton);
         buttonPanel.add(createFileButton);
         buttonPanel.add(importFileButton);
         buttonPanel.add(searchButton); 
-
+        buttonPanel.add(performAnalysisButton);
         JPanel paddedPanel = new JPanel(new BorderLayout());
         paddedPanel.setBackground(new Color(235, 224, 199));
         paddedPanel.setBorder(BorderFactory.createEmptyBorder(40, 20, 20, 20));
         paddedPanel.add(buttonPanel, BorderLayout.CENTER);
-
+        performAnalysisButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame analysisFrame = new JFrame("Analysis Panel");
+                analysisFrame.setSize(600, 600);
+                analysisFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                analysisFrame.add(new AnalysisPanel(blFacade));
+                analysisFrame.setVisible(true);
+            }
+        });
         importFileButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 ImportFileDialogueBox dialog = new ImportFileDialogueBox(MainScreen.this, blFacade);
@@ -203,8 +224,11 @@ public class MainScreen extends JFrame {
                 ISearchResultDAO searchResultDAO=dalFactory.getSearchResultDAO();
 
                 ITransliterationDAO transliterationDAO=dalFactory.getTransliterationDAO();  
+                ILemmatizationDAO lemmatizationDAO=dalFactory.getLemmatizationDAO();
+                IPOSTaggingDAO postaggingDAO=dalFactory.getPOSTaggingDAO();
                 
-                IDALFacade dalFacade = new DALFacade(fileDAO, fileImportDAO, paginationDAO,searchResultDAO,transliterationDAO);
+                
+                IDALFacade dalFacade = new DALFacade(fileDAO, fileImportDAO, paginationDAO,searchResultDAO,transliterationDAO,lemmatizationDAO,postaggingDAO);
 
                 
                 IFileBO fileBO = new FileBO(dalFacade);
@@ -213,8 +237,13 @@ public class MainScreen extends JFrame {
                 ISearchResultBO searchResultBO=new SearchResultBO(dalFacade);
 
                 ITransliterationBO transliterationBO=new TransliterationBO(dalFacade);
+                ILemmatizationBO lemmatizationBO=new LemmatizationBO(dalFacade);
+                IPOSTaggingBO posTaggingBO =new POSTaggingBO (dalFacade);
+                ITFIDFAnalysisBO tfidfAnalysisBO=new TFIDFAnalysisBO(dalFacade);
+                IPMIAnalysisBO pmiAnalysisBO=new PMIAnalysisBO(dalFacade);
+                IKLAnalysisBO klAnalysisBO=new KLAnalysisBO(dalFacade);
                 
-                IBLFacade blFacade=new BLFacade(fileBO,fileImportBO,filePaginationBO,searchResultBO,transliterationBO);
+                IBLFacade blFacade=new BLFacade(fileBO,fileImportBO,filePaginationBO,searchResultBO,transliterationBO,lemmatizationBO,posTaggingBO,tfidfAnalysisBO,pmiAnalysisBO,klAnalysisBO);
 
                 
                 MainScreen mainFrame = new MainScreen(blFacade);

@@ -6,5 +6,7 @@ public interface IDALFactory {
 	public IPaginationDAO getPaginationDAO();
 	public ISearchResultDAO getSearchResultDAO();
 	public ITransliterationDAO getTransliterationDAO();
+	public ILemmatizationDAO getLemmatizationDAO();
+	public IPOSTaggingDAO getPOSTaggingDAO();
 
 }

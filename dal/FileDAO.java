@@ -45,7 +45,7 @@ public class FileDAO  implements IFileDAO{
 
 	            if (rowsAffected == 0) {
 	                System.err.println("Failed to create the file in the database.");
-	                return null; // Return null if file creation failed
+	                return null;
 	            }
 
 	            int fileId = fetchFileIdByName(name);
@@ -95,7 +95,7 @@ public class FileDAO  implements IFileDAO{
 
 	            if (rowsAffected == 0) {
 	                System.err.println("No file found with the name: " + name);
-	                return null;  // No rows updated
+	                return null; 
 	            }
 
 	            int fileId = fetchFileIdByName(name);
@@ -315,10 +315,8 @@ public class FileDAO  implements IFileDAO{
 
        return fileIds;
    }
-@Override
-public int getFileID() {
-	// TODO Auto-generated method stub
-	return 0;
-}
+
+
+
 	
 }

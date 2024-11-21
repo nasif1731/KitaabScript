@@ -1,5 +1,6 @@
 package bll;
 
+import dal.IDALFacade;
 import dal.IPOSTaggingDAO;
 import dto.POSTaggingDTO;
 
@@ -11,22 +12,24 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class POSTaggingBO  implements IPOSTaggingBO{
-    private final IPOSTaggingDAO dao;
+    private final IDALFacade dalFacade;
 
-    public POSTaggingBO(IPOSTaggingDAO dalFacade) {
-        this.dao = dalFacade;
+    public POSTaggingBO(IDALFacade dalFacade) {
+        this.dalFacade = dalFacade;
     }
 
     @Override
     public void processPOSTaggingForPage(int pageId, String pageContent) {
-        if (!dao.isPOSTaggingSavedForPage(pageId, pageContent)) {
+        if (!dalFacade.isPOSTaggingSavedForPage(pageId, pageContent)) {
+        	System.out.println("The pos tagging is not null");
             try {
                 String[] words = pageContent.split("\\s+");
 
                 for (String word : words) {
                     POSTaggingDTO posTagging = analyzedWord(word,pageId);
                     if (posTagging != null) {
-                        dao.addPOSTagging(posTagging);
+//                    	System.out.println(posTagging.getWord());
+                    	dalFacade.addPOSTagging(posTagging);
                     }
                 }
             } catch (Exception e) {
@@ -58,7 +61,8 @@ public class POSTaggingBO  implements IPOSTaggingBO{
                         String wordType = (String) getWordTypeMethod.invoke(result);
 
                         classLoader.close();
-                        return new POSTaggingDTO(pageId, voweledWord, wordType);
+                        
+                        return new POSTaggingDTO(pageId, word, wordType);
                     }
                 }
 
@@ -71,6 +75,7 @@ public class POSTaggingBO  implements IPOSTaggingBO{
                 String wordType = (String) getWordTypeMethod.invoke(defaultResult);
 
                 classLoader.close();
+//                System.out.println(voweledWord);
                 return new POSTaggingDTO(pageId, voweledWord, wordType);
             }
 
@@ -84,6 +89,6 @@ public class POSTaggingBO  implements IPOSTaggingBO{
 
     @Override
     public LinkedList<POSTaggingDTO> getPOSTaggingForPage(int pageId) {
-        return new LinkedList<>(dao.getPOSTaggingForPage(pageId));
+        return new LinkedList<>(dalFacade.getPOSTaggingForPage(pageId));
     }
 }

@@ -27,12 +27,13 @@ public class POSTaggingDAO implements IPOSTaggingDAO {
             checkStatement.setString(3, posTagging.getPosTag());
 
             try (ResultSet rs = checkStatement.executeQuery()) {
-                if (rs.next() && rs.getInt(1) == 0) { // If no existing entry found
+                if (rs.next() && rs.getInt(1) == 0) { 
                     try (PreparedStatement insertStatement = conn.prepareStatement(insertQuery)) {
                         insertStatement.setInt(1, posTagging.getPaginationId());
                         insertStatement.setString(2, posTagging.getWord());
                         insertStatement.setString(3, posTagging.getPosTag());
                         insertStatement.executeUpdate();
+//                        System.out.println("Inserted record against "+posTagging.getWord());
                     }
                 }
             }
@@ -43,7 +44,7 @@ public class POSTaggingDAO implements IPOSTaggingDAO {
 
     @Override
     public List<POSTaggingDTO> getPOSTaggingForPage(int pageId) {
-        String query = "SELECT id, pagination_id, word, pos_tag FROM pos_tagging WHERE pagination_id = ?";
+        String query = "SELECT id, word, pos_tag FROM pos_tagging WHERE pagination_id = ?";
         List<POSTaggingDTO> posTaggings = new ArrayList<>();
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -54,6 +55,7 @@ public class POSTaggingDAO implements IPOSTaggingDAO {
                     int id = resultSet.getInt("id");
                     String word = resultSet.getString("word");
                     String tag = resultSet.getString("pos_tag");
+//                    System.out.println("Got record against "+word);
                     POSTaggingDTO dto = new POSTaggingDTO(id, pageId, word, tag);
                     posTaggings.add(dto);
                 }
@@ -70,7 +72,7 @@ public class POSTaggingDAO implements IPOSTaggingDAO {
         String[] words = newContent.split("\\s+");
         List<String> existingWords = new ArrayList<>();
 
-        // Fetch existing word-pos_tag pairs from the database for the given page
+        
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setInt(1, pageId);
@@ -78,37 +80,44 @@ public class POSTaggingDAO implements IPOSTaggingDAO {
                 while (resultSet.next()) {
                     String word = resultSet.getString("word");
                     String posTag = resultSet.getString("pos_tag");
-                    // Store the word and its associated POS tag
                     existingWords.add(word + ":" + posTag);
+
+                	
                 }
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error while checking if POS tagging is saved for page ID: " + pageId, e);
         }
 
-        // Process each word in the new content
-        for (String word : words) {
-            // Use the getPosTagForWord method to get the POS tag for the word
+        if(existingWords.size() == 0)
+        {
+        	return false;
+        }
+       
+        for (String word : existingWords) {
+            
             String posTag = getPosTagForWord(word);
-
+//            if(posTag==null) System.out.println("POS Tag is null");
+//            if(!existingWords.contains(word + ":" + posTag)) System.out.println("contains");
             if (posTag == null || !existingWords.contains(word + ":" + posTag)) {
-                return false; // If any word-pos_tag pair doesn't exist, return false
+//            	System.out.println("POS Tagging not saved");
+                return false; 
             }
         }
 
-        return true; // All word-pos_tag pairs are already in the database
+        return true; 
     }
 
     private String getPosTagForWord(String word) {
         try {
-            // Path to the Al Khalil JAR
+            
             File jarFile = new File("/mnt/data/AlKhalil-2.1.21.jar");
             try (URLClassLoader classLoader = new URLClassLoader(new URL[] { jarFile.toURI().toURL() })) {
-                // Load Al Khalil class and instantiate it
+                
                 Class<?> posTaggerClass = classLoader.loadClass("AlKhalil2.AnalyzedWords");
                 Object posTaggerInstance = posTaggerClass.getDeclaredConstructor().newInstance();
 
-                // Invoke the analyzedWords method from Al Khalil
+                
                 Method tagMethod = posTaggerClass.getMethod("analyzedWords", String.class);
                 List<?> posTaggedResults = (List<?>) tagMethod.invoke(posTaggerInstance, word);
 
@@ -118,14 +127,15 @@ public class POSTaggingDAO implements IPOSTaggingDAO {
                         String voweledWord = (String) getWordMethod.invoke(result);
 
                         if (word.equals(voweledWord)) {
+                        	//
                             Method getWordTypeMethod = result.getClass().getMethod("getWordType");
                             String wordType = (String) getWordTypeMethod.invoke(result);
 
-                            return wordType;  // Return POS tag when found
+                            return wordType; 
                         }
                     }
 
-                    // Default case: If no exact match found, return first result's word type
+                    
                     Object defaultResult = posTaggedResults.get(0);
                     Method getWordMethod = defaultResult.getClass().getMethod("getVoweledWord");
                     Method getWordTypeMethod = defaultResult.getClass().getMethod("getWordType");
@@ -133,7 +143,7 @@ public class POSTaggingDAO implements IPOSTaggingDAO {
                     String voweledWord = (String) getWordMethod.invoke(defaultResult);
                     String wordType = (String) getWordTypeMethod.invoke(defaultResult);
 
-                    return wordType;  // Return default word type
+                    return wordType;  
                 }
 
             } catch (Exception e) {
@@ -143,6 +153,6 @@ public class POSTaggingDAO implements IPOSTaggingDAO {
             throw new RuntimeException("Error loading Al Khalil library or performing POS tagging.", e);
         }
 
-        return null;  // Return null if no POS tag found
+        return null;  
     }
 }
