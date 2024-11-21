@@ -1,3 +1,4 @@
+
 package dto;
 
 public class LemmatizationDTO {
@@ -59,3 +60,4 @@ public class LemmatizationDTO {
 		this.root = root;
 	}
 }
+

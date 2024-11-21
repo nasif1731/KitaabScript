@@ -1,3 +1,4 @@
+
 package bll;
 
 import dal.IDALFacade;
@@ -94,3 +95,4 @@ public class LemmatizationBO implements ILemmatizationBO {
 		return new LinkedList<>(dalFacade.getLemmatizationForPage(pageId));
 	}
 }
+

@@ -1,3 +1,4 @@
+
 package pl;
 
 import java.awt.BorderLayout;
@@ -77,3 +78,4 @@ public class LemmatizationPanel extends JPanel {
 		lemmatizationResultsArea.setText(content);
 	}
 }
+

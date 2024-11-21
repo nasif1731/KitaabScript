@@ -21,7 +21,9 @@ public class POSTaggingBO  implements IPOSTaggingBO{
     @Override
     public void processPOSTaggingForPage(int pageId, String pageContent) {
         if (!dalFacade.isPOSTaggingSavedForPage(pageId, pageContent)) {
-        	System.out.println("The pos tagging is not null");
+
+        	//System.out.println("The pos tagging is not null");
+
             try {
                 String[] words = pageContent.split("\\s+");
 

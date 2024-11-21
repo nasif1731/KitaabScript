@@ -41,10 +41,7 @@ public class DALFacade implements IDALFacade {
         fileDAO.deleteFile(name);
     }
 
-    @Override
-    public PageDTO updateFile(String name, String newContent) {
-        return fileDAO.updateFile(name, newContent);
-    }
+   
 
     @Override
     public String createdAt(String name) {
@@ -221,6 +218,15 @@ public class DALFacade implements IDALFacade {
 	public boolean isPOSTaggingSavedForPage(int pageId, String newContent) {
 		// TODO Auto-generated method stub
 		return postaggingDAO.isPOSTaggingSavedForPage(pageId, newContent);
+
+	}
+
+
+	@Override
+	public PageDTO updateFile(String name, int pageNumber, String newContent) {
+		return fileDAO.updateFile(name,pageNumber, newContent);
+		
+
 	}
 	 
 }

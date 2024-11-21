@@ -1,3 +1,6 @@
+
+
+
 package bll;
 
 import java.util.LinkedList;
@@ -13,3 +16,4 @@ public interface ILemmatizationBO {
 	LinkedList<LemmatizationDTO> getLemmatizationForPage(int pageId);
 
 }
+

@@ -45,10 +45,6 @@ public class BLFacade implements IBLFacade {
         fileBO.printFileTimestamps(name);
     }
 
-    @Override
-    public void updateFile(String name, String content) {
-        fileBO.updateFile(name, content);
-    }
 
     @Override
     public void deleteFile(String name) {
@@ -199,6 +195,13 @@ public class BLFacade implements IBLFacade {
 	public Map<String, Double> performKLAnalysisForWord(String searchWord) {
 		// TODO Auto-generated method stub
 		return klAnalysisBO.performKLAnalysisForWord(searchWord);
+	}
+
+
+	@Override
+	public void updateFile(String name, int pageNumber, String content) {
+		 fileBO.updateFile(name,pageNumber, content);
+		
 	}
 	
 
