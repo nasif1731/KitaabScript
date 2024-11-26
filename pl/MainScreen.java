@@ -112,6 +112,7 @@ public class MainScreen extends JFrame {
                 JFrame analysisFrame = new JFrame("Analysis Panel");
                 analysisFrame.setSize(600, 600);
                 analysisFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                analysisFrame.setLocationRelativeTo(null);
                 analysisFrame.add(new AnalysisPanel(blFacade));
                 analysisFrame.setVisible(true);
             }
@@ -211,6 +212,7 @@ public class MainScreen extends JFrame {
             return new Font("Serif", Font.BOLD, 40);
         }
     }
+    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {

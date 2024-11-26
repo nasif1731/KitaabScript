@@ -1,1 +1,0 @@
-S/S قارأ/NOUN-MS ال+/DET مدرس/NOUN-MS ال+/DET كتاب/NOUN-MS و+/CONJ فهم/NOUN-MS ال+/DET مفاهيم/NOUN-FP ./PUNC E/E 

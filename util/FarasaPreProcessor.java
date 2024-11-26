@@ -19,8 +19,11 @@ public class FarasaPreProcessor {
 	}
 
 	public String normalizeText(String text) {
-		return text.replaceAll("[\\u064B-\\u0652]", "").trim();
+	    return text.replaceAll("[\\u064B-\\u0652]", "") // Remove diacritics
+	               .replaceAll("[^\\p{L}\\p{N}\\s]", "") // Remove non-letters/numbers
+	               .trim(); // Trim whitespace
 	}
+
 
 	public List<String> segmentText(String text) {
 		List<String> res = new ArrayList<>();
@@ -36,6 +39,7 @@ public class FarasaPreProcessor {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		return res;
 	}
 

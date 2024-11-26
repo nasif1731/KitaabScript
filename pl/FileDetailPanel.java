@@ -4,11 +4,13 @@ import dto.FileDTO;
 import dto.LemmatizationDTO;
 import dto.POSTaggingDTO;
 import dto.PageDTO;
+import util.FarasaPreProcessor;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.BreakIterator;
 import java.util.LinkedList;
 import java.util.function.Function;
 
@@ -170,76 +172,104 @@ public class FileDetailPanel extends JFrame {
 	}
 
 	private void showLemmatizationSidebar() {
-		if (lemmatizationPanel == null) {
-			
-			return;
-		}
-//		System.out.println("The lemma pane is not null");
-		String selectedText = fileContentArea.getSelectedText();
-		if (selectedText != null) {
-			LinkedList<LemmatizationDTO> lemmatizationResults = blFacade.getLemmatizationForPage(pageId);
-			StringBuilder resultsBuilder = new StringBuilder("<html><body><table border='1' style='width:100%;'>");
-			resultsBuilder.append("<tr><th>Word</th><th>Lemma</th><th>Root</th></tr>");
+	    if (lemmatizationPanel == null) {
+	        return;
+	    }
 
-			for (LemmatizationDTO dto : lemmatizationResults) {
-				if (selectedText.contains(dto.getWord())) {
-					resultsBuilder.append("<tr>").append("<td>").append(dto.getWord()).append("</td>").append("<td>")
-							.append(dto.getLemma()).append("</td>").append("<td>").append(dto.getRoot()).append("</td>")
-							.append("</tr>");
-				}
-			}
+	    String selectedText = fileContentArea.getSelectedText();
+	    if (selectedText != null) {
+	        // Tokenize selected text
+	        String[] selectedWords = selectedText.split("\\s+");
 
-			resultsBuilder.append("</table></body></html>");
-			lemmatizationPanel.setContent(resultsBuilder.toString());
-			int zorder = 0;
-			int l = this.getComponentZOrder(posTaggingPanel), p = this.getComponentZOrder(lemmatizationPanel);
-//			if(l < 0 || p < l) {
-//				zorder = p;
-//			}
-//			else if (p< 0 || l < p) {
-//				zorder = l;
-//			}
-//			else {
-//				zorder = p;
-//			}
-//			System.out.println(zorder);
-			setComponentZOrder(lemmatizationPanel, 0);
-			lemmatizationPanel.setVisible(true);
-			lemmatizationPanel.repaint();
-		} else {
-			JOptionPane.showMessageDialog(this, "Please select text for lemmatization.", "No Text Selected",
-					JOptionPane.WARNING_MESSAGE);
-		}
+	        // Fetch lemmatization results
+	        LinkedList<LemmatizationDTO> lemmatizationResults = blFacade.getLemmatizationForPage(pageId);
+//	        if (lemmatizationResults == null || lemmatizationResults.isEmpty()) {
+//	            System.out.println("Debug: No lemmatization results found for pageId = " + pageId);
+//	        } else {
+//	            System.out.println("Debug: Lemmatization results retrieved for pageId = " + pageId);
+//	            for (LemmatizationDTO dto : lemmatizationResults) {
+//	                System.out.println("Debug: Word = " + dto.getWord() + ", Lemma = " + dto.getLemma() + ", Root = " + dto.getRoot());
+//	            }
+//	        }
+
+	        // Build table content
+	        StringBuilder resultsBuilder = new StringBuilder("<html><body><table border='1' style='width:100%;'>");
+	        resultsBuilder.append("<tr><th>Word</th><th>Lemma</th><th>Root</th></tr>");
+
+	        for (LemmatizationDTO dto : lemmatizationResults) {
+	            for (String word : selectedWords) {
+	            	if (isWordInSelectedText(dto.getWord(), word)) {
+	                    resultsBuilder.append("<tr>")
+	                            .append("<td>").append(dto.getWord()).append("</td>")
+	                            .append("<td>").append(dto.getLemma()).append("</td>")
+	                            .append("<td>").append(dto.getRoot()).append("</td>")
+	                            .append("</tr>");
+	                }
+	            }
+	        }
+	        
+
+	        resultsBuilder.append("</table></body></html>");
+	        //System.out.println("Filtered Lemmatization Results: " + resultsBuilder.toString());
+	        
+	        lemmatizationPanel.setContent(resultsBuilder.toString());
+	        setComponentZOrder(lemmatizationPanel, 0);
+	        lemmatizationPanel.setVisible(true);
+	        lemmatizationPanel.repaint();
+	    } else {
+	        JOptionPane.showMessageDialog(this, "Please select text for lemmatization.", "No Text Selected",
+	                JOptionPane.WARNING_MESSAGE);
+	    }
 	}
+
 
 	private void showPOSTaggingSidebar() {
-		if (posTaggingPanel == null)
-			return;
+	    if (posTaggingPanel == null) {
+	        return;
+	    }
 
-		String selectedText = fileContentArea.getSelectedText();
-		if (selectedText != null) {
-			LinkedList<POSTaggingDTO> posTaggingResults = blFacade.getPOSTaggingForPage(pageId);
+	    String selectedText = fileContentArea.getSelectedText();
+	    if (selectedText != null) {
+	        // Tokenize selected text
+	        String[] selectedWords = selectedText.split("\\s+");
 
-			StringBuilder resultsBuilder = new StringBuilder("<html><body><table border='1' style='width:100%;'>");
-			resultsBuilder.append("<tr><th>Word</th><th>POS Tag</th></tr>");
+	        // Fetch POS tagging results
+	        LinkedList<POSTaggingDTO> posTaggingResults = blFacade.getPOSTaggingForPage(pageId);
+//	        if (posTaggingResults == null || posTaggingResults.isEmpty()) {
+//	            System.out.println("Debug: No POSTagging results found for pageId = " + pageId);
+//	        } else {
+//	            System.out.println("Debug: POSTagging results retrieved for pageId = " + pageId);
+//	            for (POSTaggingDTO dto : posTaggingResults) {
+//	                System.out.println("Debug: Word = " + dto.getWord() + ", POSTag = " + dto.getPosTag());
+//	            }
+//	        }
+	        // Build table content
+	        StringBuilder resultsBuilder = new StringBuilder("<html><body><table border='1' style='width:100%;'>");
+	        resultsBuilder.append("<tr><th>Word</th><th>POS Tag</th></tr>");
 
-			for (POSTaggingDTO dto : posTaggingResults) {
-				if (selectedText.contains(dto.getWord())) {
-					resultsBuilder.append("<tr>").append("<td>").append(dto.getWord()).append("</td>").append("<td>")
-							.append(dto.getPosTag()).append("</td>").append("</tr>");
-				}
-			}
+	        for (POSTaggingDTO dto : posTaggingResults) {
+	            for (String word : selectedWords) { // or ignore this lopoop kia mtlb?
+	            	// ye ana tha wahan
+	            	if (isWordInSelectedText(dto.getWord(), word)) {
+	                    resultsBuilder.append("<tr>")
+	                            .append("<td>").append(dto.getWord()).append("</td>")
+	                            .append("<td>").append(dto.getPosTag()).append("</td>")
+	                            .append("</tr>");
+	                }
+	            }
+	        }
 
-			resultsBuilder.append("</table></body></html>");
-			posTaggingPanel.setContent(resultsBuilder.toString());
-			//int zorder = Integer.min(this.getComponentZOrder(posTaggingPanel),this.getComponentZOrder(lemmatizationPanel));
-			setComponentZOrder(posTaggingPanel, 0);
-			posTaggingPanel.setVisible(true);
-		} else {
-			JOptionPane.showMessageDialog(this, "Please select text for POS tagging.", "No Text Selected",
-					JOptionPane.WARNING_MESSAGE);
-		}
+	        resultsBuilder.append("</table></body></html>");
+	        //System.out.println("Filtered POS Tagging Results: " + resultsBuilder.toString());
+	        posTaggingPanel.setContent(resultsBuilder.toString());
+	        setComponentZOrder(posTaggingPanel, 0);
+	        posTaggingPanel.setVisible(true);
+	    } else {
+	        JOptionPane.showMessageDialog(this, "Please select text for POS tagging.", "No Text Selected",
+	                JOptionPane.WARNING_MESSAGE);
+	    }
 	}
+
 
 	void loadFileDetails(String fileName) {
 		try {
@@ -260,6 +290,7 @@ public class FileDetailPanel extends JFrame {
 		PageDTO page = blFacade.getPageContent(fileDTO.getId(), pageNumber);
 		if (page != null) {
 			currentPage = pageNumber;
+			pageId = page.getPageId();
 			String pageContent = page.getPageContent();
 			setLanguageOrientation(pageContent);
 			fileContentArea.setText(pageContent);
@@ -293,6 +324,25 @@ public class FileDetailPanel extends JFrame {
 			return;
 		}
 		displayPage(pageNumber);
+	}
+	private String normalizeText(String text) {
+	    return text.replaceAll("[\\u064B-\\u0652]", "") // Remove diacritics
+	               .replaceAll("[^\\p{L}\\p{N}\\s]", "") // Remove non-letters/numbers
+	               .trim(); // Trim whitespace
+	}
+	private boolean isWordInSelectedText(String word, String selectedText) {
+	    
+	    String token = selectedText;
+	         
+//	        System.out.println(token + "  " + word);
+	        String normalizedSearchWord = normalizeText(word);
+	        String normalizedtoken = normalizeText(token);
+	        if (normalizedtoken.contains(normalizedSearchWord)) {
+//	        	System.out.println("Im Here");
+	            return true;
+	        }
+	    
+	    return false;
 	}
 
 	private void updatePageLabel() {
