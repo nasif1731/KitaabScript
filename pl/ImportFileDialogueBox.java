@@ -73,23 +73,28 @@ public class ImportFileDialogueBox extends JDialog {
                 return;
             }
 
-            try {
-                if (selectedFiles.length == 1) {
-                    String importResult = blFacade.importFile(selectedFiles[0].getAbsolutePath());
-                    resultArea.append(importResult + "\n");
-                } else {
-                    List<String> filePaths = List.of(selectedFiles).stream()
-                            .map(File::getAbsolutePath)
-                            .toList();
-                    List<String> results = blFacade.bulkImportFiles(filePaths);
-                    results.forEach(resultArea::append);
-                }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error importing file(s): " + ex.getMessage(), "Error",
-                        JOptionPane.ERROR_MESSAGE);
-            }
+            
+            Thread importThread = new Thread(() -> {
+                List<String> filePaths = List.of(selectedFiles).stream()
+                        .map(File::getAbsolutePath)
+                        .toList();
+
+                List<String> results = blFacade.bulkImportFiles(filePaths);
+
+                
+                SwingUtilities.invokeLater(() -> {
+                    for (String message : results) {
+                        resultArea.append(message + "\n");
+                    }
+                    JOptionPane.showMessageDialog(ImportFileDialogueBox.this,
+                            "File import completed.", "Completed", JOptionPane.INFORMATION_MESSAGE);
+                });
+            });
+
+            importThread.start(); 
         }
     }
+
 
 
     private JButton createStyledButton(String text, Font font) {
