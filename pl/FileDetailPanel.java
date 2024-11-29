@@ -278,10 +278,6 @@ public class FileDetailPanel extends JFrame {
 			setLanguageOrientation(pageContent);
 			fileContentArea.setText(pageContent);
 
-			
-
-			
-
 			updatePageLabel();
 			blFacade.saveTransliterationIfNotExists(page.getPageId(), page.getPageContent());
 			blFacade.processPOSTaggingForPage(page.getPageId(), page.getPageContent());

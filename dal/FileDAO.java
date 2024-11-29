@@ -4,21 +4,62 @@ import dto.FileDTO;
 import dto.PageDTO;
 import util.DatabaseConnection;
 import util.HashGenerator;
-
-import java.io.File;
-import java.io.FileWriter;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 public class FileDAO  implements IFileDAO{
 	private final PaginationDAO paginationDAO;
 	public FileDAO() {
 		this.paginationDAO = new PaginationDAO();
 	}
+
 	private int countWords(String content) {
-        return content.isEmpty() ? 0 : content.split("\\s+").length;
-    }
+	    if (content.isEmpty()) {
+	        return 0;
+	    }
+
+	    int numThreads = Runtime.getRuntime().availableProcessors();
+	    String[] words = content.split("\\s+");
+	    int wordDivision = (int) Math.ceil((double) words.length / numThreads);
+
+	    // Shared total word count
+	    int[] totalWordCount = {0};
+	    Thread[] threads = new Thread[numThreads];
+
+	    //Creating and Starting Thread
+	    for (int i = 0; i < numThreads; i++) {
+	        int start = i * wordDivision;
+	        int end = Math.min(start + wordDivision, words.length);
+
+	        threads[i] = new Thread(() -> {
+	            int wordCount = 0;
+	            for (int j = start; j < end; j++) {
+	                if (!words[j].isBlank()) {
+	                	wordCount++;
+	                }
+	            }
+	            synchronized (totalWordCount) {
+	                totalWordCount[0] += wordCount;
+	            }
+	        });
+	        threads[i].start();
+	    }
+
+	    for (Thread thread : threads) {
+	        try {
+	            thread.join();
+	        } catch (InterruptedException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return totalWordCount[0];
+	}
+
+
 	@Override
 	public PageDTO createFile(String name, String content) {
 	    try {
@@ -35,7 +76,7 @@ public class FileDAO  implements IFileDAO{
 	        String insertSQL = "INSERT INTO text_files (filename, hash, word_count, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())";
 
 	        try (Connection conn = DatabaseConnection.getConnection();
-	             PreparedStatement stmt = conn.prepareStatement(insertSQL)) {
+	             PreparedStatement stmt = conn.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)) {
 
 	            stmt.setString(1, name);
 	            stmt.setString(2, hash);
@@ -48,17 +89,25 @@ public class FileDAO  implements IFileDAO{
 	                return null;
 	            }
 
-	            int fileId = fetchFileIdByName(name);
+	            ResultSet rs = stmt.getGeneratedKeys();
+	            int fileId = 0;
+	            if (rs.next()) {
+	                fileId = rs.getInt(1);
+	            }
+
 	            List<PageDTO> paginatedContent = paginationDAO.paginateContent(fileId, content);
+
+	            paginationDAO.insertContent(paginatedContent);
 
 	            return paginatedContent.isEmpty() ? null : paginatedContent.get(0);
 
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();
+	        return null;
 	    }
-	    return null;
 	}
+
 
 	@Override
 	public void deleteFile(String name) {
@@ -230,9 +279,7 @@ public class FileDAO  implements IFileDAO{
 
 	    return fileDTO;
 	}
-
-
-
+	
 	@Override
     public int getWordCount(String fileName) {
         int wordCount = 0;
@@ -309,8 +356,4 @@ public class FileDAO  implements IFileDAO{
 
        return fileIds;
    }
-
-
-
-	
 }
