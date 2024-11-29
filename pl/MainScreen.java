@@ -61,7 +61,7 @@ import dal.ISearchResultDAO;
 import dal.ITransliterationDAO;
 
 
-public class MainScreen extends JFrame {
+public class MainScreen extends JFrame { //هَذِهِ
 
     private JButton openFileButton;
     private JButton createFileButton;
