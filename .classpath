@@ -7,17 +7,22 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry kind="lib" path="C:/Users/dell/Downloads/AlKhalil-2.1.21.jar">
+	<classpathentry kind="lib" path="C:/Users/nasif/Downloads/AlKhalil-2.1.21.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/dell/Downloads/FarasaSegmenterJar.jar">
+	<classpathentry kind="lib" path="C:/Users/nasif/Downloads/mysql-connector-j-8.0.31.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/dell/Downloads/mysql-connector-j-8.0.31.jar">
+	<classpathentry kind="lib" path="C:/Users/nasif/Downloads/FarasaSegmenterJar.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/nasif/Downloads/h2-2.3.232.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>

@@ -75,7 +75,7 @@ public class FileDAO  implements IFileDAO{
 
 	        String insertSQL = "INSERT INTO text_files (filename, hash, word_count, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())";
 
-	        try (Connection conn = DatabaseConnection.getConnection();
+	        try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
 	             PreparedStatement stmt = conn.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)) {
 
 	            stmt.setString(1, name);
@@ -114,7 +114,7 @@ public class FileDAO  implements IFileDAO{
 	    try {
 	        String deleteSQL = "DELETE FROM text_files WHERE filename = ?";
 
-	        try (Connection conn = DatabaseConnection.getConnection();
+	        try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
 	             PreparedStatement stmt = conn.prepareStatement(deleteSQL)) {
 
 	            stmt.setString(1, name);
@@ -135,7 +135,7 @@ public class FileDAO  implements IFileDAO{
 	        int count = countWords(newContent);
 	        String updateSQL = "UPDATE text_files SET word_count = ?, updated_at = NOW() WHERE filename = ?";
 
-	        try (Connection conn = DatabaseConnection.getConnection();
+	        try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
 	             PreparedStatement stmt = conn.prepareStatement(updateSQL)) {
 
 	            stmt.setInt(1, count);
@@ -171,7 +171,7 @@ public class FileDAO  implements IFileDAO{
         String createdAt = null;
         try {
             String selectSQL = "SELECT created_at FROM text_files WHERE filename = ?";
-            try (Connection conn = DatabaseConnection.getConnection();
+            try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
                  PreparedStatement stmt = conn.prepareStatement(selectSQL)) {
                 stmt.setString(1, name);
                 ResultSet rs = stmt.executeQuery();
@@ -191,7 +191,7 @@ public class FileDAO  implements IFileDAO{
         String updatedAt = null;
         try {
             String selectSQL = "SELECT updated_at FROM text_files WHERE filename = ?";
-            try (Connection conn = DatabaseConnection.getConnection();
+            try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
                  PreparedStatement stmt = conn.prepareStatement(selectSQL)) {
                 stmt.setString(1, name);
                 ResultSet rs = stmt.executeQuery();
@@ -212,7 +212,7 @@ public class FileDAO  implements IFileDAO{
         List<FileDTO> fileDetails = new ArrayList<>();
         String query = "SELECT filename, updated_at, language, hash, word_count FROM text_files"; 
 
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
 
@@ -245,7 +245,7 @@ public class FileDAO  implements IFileDAO{
 	    FileDTO fileDTO = null;
 	    StringBuilder contentBuilder = new StringBuilder();
 
-	    try (Connection conn = DatabaseConnection.getConnection();
+	    try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
 	         PreparedStatement stmt = conn.prepareStatement(query)) {
 
 	        stmt.setString(1, fileName);
@@ -285,7 +285,7 @@ public class FileDAO  implements IFileDAO{
         int wordCount = 0;
         String query = "SELECT word_count FROM text_files WHERE filename = ?"; 
 
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setString(1, fileName);
@@ -303,7 +303,7 @@ public class FileDAO  implements IFileDAO{
 	@Override
 	public int fetchFileIdByName(String name) throws SQLException {
 	    String query = "SELECT id FROM text_files WHERE filename = ?";
-	    try (Connection conn = DatabaseConnection.getConnection();
+	    try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
 	         PreparedStatement stmt = conn.prepareStatement(query)) {
 	        stmt.setString(1, name);
 	        try (ResultSet rs = stmt.executeQuery()) {
@@ -321,7 +321,7 @@ public class FileDAO  implements IFileDAO{
 	      String fileName = null;
 	      String query = "SELECT filename FROM text_files WHERE id = ?"; 
 
-	      try (Connection conn = DatabaseConnection.getConnection();
+	      try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
 	           PreparedStatement stmt = conn.prepareStatement(query)) {
 	          stmt.setInt(1, fileId);
 	          try (ResultSet rs = stmt.executeQuery()) {
@@ -343,7 +343,7 @@ public class FileDAO  implements IFileDAO{
        List<Integer> fileIds = new ArrayList<>();
        String query = "SELECT id FROM text_files"; 
 
-       try (Connection conn = DatabaseConnection.getConnection();
+       try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
        		PreparedStatement stmt = conn.prepareStatement(query);
             ResultSet rs = stmt.executeQuery()) {
            while (rs.next()) {
