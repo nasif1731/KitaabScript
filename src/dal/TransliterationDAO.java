@@ -14,7 +14,7 @@ public class TransliterationDAO implements ITransliterationDAO {
     @Override
     public void addTransliteration(TransliterationDTO transliteration) {
         String query = "INSERT INTO transliterations (pagination_id, original_text, transliterated_text) VALUES (?, ?, ?)";
-        try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
+        try (Connection conn =DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, transliteration.getPaginationId());
             stmt.setString(2, transliteration.getOriginalText());
@@ -29,7 +29,7 @@ public class TransliterationDAO implements ITransliterationDAO {
     public List<TransliterationDTO> getTransliterationsForPage(int pageId) {
         List<TransliterationDTO> transliterations = new ArrayList<>();
         String query = "SELECT * FROM transliterations WHERE pagination_id=?";
-        try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, pageId);
             ResultSet result = stmt.executeQuery();
@@ -54,7 +54,7 @@ public class TransliterationDAO implements ITransliterationDAO {
         String queryCheck = "SELECT COUNT(*) AS count, original_text FROM transliterations WHERE pagination_id=?";
         String queryDelete = "DELETE FROM transliterations WHERE pagination_id=?";
         
-        try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmtCheck = conn.prepareStatement(queryCheck);
              PreparedStatement stmtDelete = conn.prepareStatement(queryDelete)) {
             

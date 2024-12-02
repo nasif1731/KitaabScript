@@ -22,7 +22,7 @@ public class LemmatizationDAO implements ILemmatizationDAO{
 	    String checkQuery = "SELECT COUNT(*) FROM lemmatization WHERE pagination_id = ? AND word = ? AND lemma = ? AND root = ?";
 	    String insertQuery = "INSERT INTO lemmatization (pagination_id, word, lemma, root) VALUES (?, ?, ?, ?)";
 
-	    try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
+	    try (Connection conn = DatabaseConnection.getInstance().getConnection();
 	         PreparedStatement checkStatement = conn.prepareStatement(checkQuery)) {
 	        checkStatement.setInt(1, lemmatization.getPaginationId());
 	        checkStatement.setString(2, lemmatization.getWord());
@@ -51,7 +51,7 @@ public class LemmatizationDAO implements ILemmatizationDAO{
         String query = "SELECT id, pagination_id, word, lemma, root FROM lemmatization WHERE pagination_id = ?";
         List<LemmatizationDTO> lemmatizations = new ArrayList<>();
 
-        try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
 				PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setInt(1, pageId);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -78,7 +78,7 @@ public class LemmatizationDAO implements ILemmatizationDAO{
 	    List<String> existingWords = new ArrayList<>();
 
 	    
-	    try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
+	    try (Connection conn = DatabaseConnection.getInstance().getConnection();
 	         PreparedStatement statement = conn.prepareStatement(query)) {
 	        statement.setInt(1, pageId);
 	        try (ResultSet resultSet = statement.executeQuery()) {

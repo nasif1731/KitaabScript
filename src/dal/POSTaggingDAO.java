@@ -20,7 +20,7 @@ public class POSTaggingDAO implements IPOSTaggingDAO {
         String checkQuery = "SELECT COUNT(*) FROM pos_tagging WHERE pagination_id = ? AND word = ? AND pos_tag = ?";
         String insertQuery = "INSERT INTO pos_tagging (pagination_id, word, pos_tag) VALUES (?, ?, ?)";
 
-        try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement checkStatement = conn.prepareStatement(checkQuery)) {
             checkStatement.setInt(1, posTagging.getPaginationId());
             checkStatement.setString(2, posTagging.getWord());
@@ -47,7 +47,7 @@ public class POSTaggingDAO implements IPOSTaggingDAO {
         String query = "SELECT id, word, pos_tag FROM pos_tagging WHERE pagination_id = ?";
         List<POSTaggingDTO> posTaggings = new ArrayList<>();
 
-        try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setInt(1, pageId);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -73,7 +73,7 @@ public class POSTaggingDAO implements IPOSTaggingDAO {
         List<String> existingWords = new ArrayList<>();
 
         
-        try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setInt(1, pageId);
             try (ResultSet resultSet = statement.executeQuery()) {

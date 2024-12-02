@@ -83,7 +83,7 @@ public class FileImportDAO implements IFileImportDAO{
 	@Override
 	public int insertFileIntoDatabase(FileDTO file, String content) {
 	    String query = "INSERT INTO text_files (filename, language, hash, word_count) VALUES (?, ?, ?, ?)";
-	    try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
+	    try (Connection conn = DatabaseConnection.getInstance().getConnection();
 	         PreparedStatement stmt = conn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
 	        stmt.setString(1, file.getFilename());
@@ -114,7 +114,7 @@ public class FileImportDAO implements IFileImportDAO{
 	@Override
 	public boolean doesHashExist(String hash) {
         String query = "SELECT COUNT(*) FROM text_files WHERE hash = ?";
-        try (Connection conn = DatabaseConnection.getInstance(false).getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, hash);
             try (ResultSet rs = stmt.executeQuery()) {
