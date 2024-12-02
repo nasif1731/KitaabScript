@@ -77,7 +77,7 @@ public class MainScreen extends JFrame { //هَذِهِ
         setLocationRelativeTo(null);
 
         getContentPane().setBackground(new Color(235, 224, 199));
-        ImageIcon icon = new ImageIcon("resources/images/icon.png");
+        ImageIcon icon = new ImageIcon("C:\\Users\\dell\\Desktop\\24f-prj-scd-team\\src\\resources\\images\\icon.png");
         setIconImage(icon.getImage());
         Font mughalFont = new Font("Serif", Font.BOLD, 24);
         Font gothicFont = loadGothicFont(55f);
@@ -204,7 +204,7 @@ public class MainScreen extends JFrame { //هَذِهِ
 
     private Font loadGothicFont(float size) {
         try {
-            File fontFile = new File("resources/fonts/OldLondon.ttf");
+            File fontFile = new File("C:\\Users\\dell\\Desktop\\24f-prj-scd-team\\src\\resources\\fonts\\OldLondon.ttf");
             Font gothicFont = Font.createFont(Font.TRUETYPE_FONT, fontFile);
             return gothicFont.deriveFont(size);
         } catch (FontFormatException | IOException e) {

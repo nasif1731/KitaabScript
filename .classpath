@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path=""/>
+	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/hp/Downloads/AlKhalil-2.1.21.jar">
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
+	<classpathentry kind="lib" path="C:/Users/dell/Downloads/AlKhalil-2.1.21.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/hp/Downloads/FarasaSegmenterJar.jar">
+	<classpathentry kind="lib" path="C:/Users/dell/Downloads/FarasaSegmenterJar.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/hp/Downloads/mysql-connector-j-8.0.31.jar">
+	<classpathentry kind="lib" path="C:/Users/dell/Downloads/mysql-connector-j-8.0.31.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
