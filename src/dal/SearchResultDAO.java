@@ -1,18 +1,18 @@
 package dal;
 
-import dto.SearchResultDTO;
-import dto.PageDTO;
-
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+
+import dto.PageDTO;
+import dto.SearchResultDTO;
 
 public class SearchResultDAO implements ISearchResultDAO {
     private final IPaginationDAO paginationDAO;
     private final IFileDAO fileDAO;
     private Connection conn;
     public SearchResultDAO(IPaginationDAO paginationDAO, IFileDAO fileDAO, Connection conn) {
-    	this.conn=conn;
+    	this.setConn(conn);
         this.paginationDAO = paginationDAO;
         this.fileDAO = fileDAO;
     }
@@ -47,4 +47,14 @@ public class SearchResultDAO implements ISearchResultDAO {
 
         return searchResults;
     }
+
+
+	public Connection getConn() {
+		return conn;
+	}
+
+
+	public void setConn(Connection conn) {
+		this.conn = conn;
+	}
 }

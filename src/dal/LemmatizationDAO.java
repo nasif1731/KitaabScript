@@ -1,4 +1,3 @@
-
 package dal;
 
 import java.io.File;
@@ -13,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dto.LemmatizationDTO;
-import util.DatabaseConnection;
 
 public class LemmatizationDAO implements ILemmatizationDAO{
    private Connection conn;

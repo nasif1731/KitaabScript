@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import dto.TransliterationDTO;
-import util.DatabaseConnection;
 
 public class TransliterationDAO implements ITransliterationDAO {
 	private Connection conn;

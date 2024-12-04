@@ -15,7 +15,6 @@ import javax.swing.SwingConstants;
 
 import bll.IBLFacade;
 
-@SuppressWarnings("serial")
 public class LemmatizationPanel extends JPanel {
 
 	/**
@@ -24,7 +23,6 @@ public class LemmatizationPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private IBLFacade blFacade;
-	@SuppressWarnings("unused")
 	private int pageId;
 	private JTextPane lemmatizationResultsArea;
 	private JButton closeButton;
