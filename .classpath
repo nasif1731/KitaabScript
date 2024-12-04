@@ -7,7 +7,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="lib" path="C:/Users/nasif/Downloads/AlKhalil-2.1.21.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
