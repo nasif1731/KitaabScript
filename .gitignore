@@ -1,5 +1,12 @@
+<<<<<<< HEAD
 /bin/                 # Ignore compiled files
 .classpath             # Eclipse classpath file
 .project               # Eclipse project file
 .settings/             # Eclipse settings folder
 /bin/
+=======
+/.classpath          # Eclipse classpath file
+/.project            # Eclipse project file
+/.settings/          # Eclipse settings folder
+/bin/                # Compiled class files directory
+>>>>>>> 12d0361e3a5c3c7fe395df8d3edda55399b7991f
