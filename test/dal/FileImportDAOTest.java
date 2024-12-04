@@ -1,178 +1,142 @@
 package dal;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+import dto.FileDTO;
+import util.HashGenerator;
 import util.MockDatabaseConnection;
 
-class FileImportDAOTest {
 
-    private Connection mockConnection;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class FileImportDAOTest {
+
+    private Connection conn;
     private FileImportDAO fileImportDAO;
-    @Before
-    public void cleanup() throws SQLException {
-        // Clean up the test database by removing any previous test entries
-        try (PreparedStatement stmt = mockConnection.prepareStatement("DELETE FROM text_files WHERE filename = ?")) {
-            stmt.setString(1, "test.txt");
-            stmt.executeUpdate();
+
+    @BeforeEach
+    void setUp() throws SQLException {
+        try {
+			conn = MockDatabaseConnection.getInstance().getConnection();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        fileImportDAO = new FileImportDAO(conn);
+    }
+
+    @AfterEach
+    void tearDown() throws SQLException {
+        try (Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate("DELETE FROM text_files");
+            stmt.executeUpdate("DELETE FROM pagination");
         }
     }
 
-    @BeforeEach
-    void setup() throws SQLException, InterruptedException {
-        mockConnection = MockDatabaseConnection.getInstance().getConnection();
-        fileImportDAO = new FileImportDAO(mockConnection);
-
-      
-        mockConnection.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS text_files (" +
-                "id INT PRIMARY KEY AUTO_INCREMENT, " +
-                "filename TEXT, language TEXT, hash TEXT, word_count INT)");
+    @Test
+    void testImportFileWithValidFile() {
+        String filePath = "valid.txt";
+        String result = fileImportDAO.importFile(filePath);
+        assertEquals("File imported successfully.", result);
     }
-
 
     
 
     @Test
-    void testImportFile_FileDoesNotExist() {
-        String filePath = "nonexistent.txt";
+    void testImportFileWithDuplicateHash() throws SQLException {
+        String filePath = "file1.txt";
+        String hash = HashGenerator.generateHashFromContent("Content of file 1");
+        String insertQuery = "INSERT INTO text_files (filename, hash) VALUES (?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(insertQuery)) {
+            stmt.setString(1, "file1.txt");
+            stmt.setString(2, hash);
+            stmt.executeUpdate();
+        }
         String result = fileImportDAO.importFile(filePath);
-        assertTrue(result.startsWith("Error reading the file"));
+        assertEquals("Cannot import: A similar file already exists in the database.", result);
     }
 
-//    @Test
-//    void testImportFile_HashExists() throws IOException, SQLException {
-//        String filePath = "test.txt";
-//        String content = "Duplicate content";
-//        String hash = "dummyhash";
-//        File testFile = new File(filePath);
-//        try (FileWriter writer = new FileWriter(testFile)) {
-//            writer.write(content);
-//        }
-//
-//        // Check if the file already exists before inserting
-//        try (PreparedStatement stmt = mockConnection.prepareStatement("SELECT COUNT(*) FROM text_files WHERE filename = ?")) {
-//            stmt.setString(1, filePath);
-//            ResultSet rs = stmt.executeQuery();
-//            rs.next();
-//            if (rs.getInt(1) > 0) {
-//                assertEquals("Cannot import: A similar file already exists in the database.", fileImportDAO.importFile(filePath));
-//            } else {
-//                // Proceed with the insert
-//                stmt = mockConnection.prepareStatement(
-//                    "INSERT INTO text_files (filename, language, hash, word_count) VALUES (?, ?, ?, ?)");
-//                stmt.setString(1, "test.txt");
-//                stmt.setString(2, "English");
-//                stmt.setString(3, hash);
-//                stmt.setInt(4, 2);
-//                stmt.executeUpdate();
-//            }
-//        }
-//
-//        // Cleanup
-//        Files.deleteIfExists(testFile.toPath());
-//    }
-//
-//
-//    @Test
-//    void testImportFile_SuccessfulImport() throws IOException {
-//        String filePath = "valid.txt";
-//        String content = "Unique content";
-//
-//        // Create test file
-//        File testFile = new File(filePath);
-//        try (FileWriter writer = new FileWriter(testFile)) {
-//            writer.write(content);
-//        }
-//
-//        String result = fileImportDAO.importFile(filePath);
-//        assertEquals("File imported successfully.", result);
-//
-//     
-//        try (PreparedStatement stmt = mockConnection.prepareStatement("SELECT COUNT(*) FROM text_files")) {
-//            ResultSet rs = stmt.executeQuery();
-//            rs.next();
-//            assertEquals(1, rs.getInt(1));
-//        } catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//       
-//        Files.deleteIfExists(testFile.toPath());
-//    }
-
     @Test
-    void testBulkImportFiles_EmptyList() {
-        List<String> filePaths = Arrays.asList();
+    void testBulkImportFilesWithValidPaths() {
+        List<String> filePaths = new ArrayList<>();
+        filePaths.add("file1.txt"); 
+        filePaths.add("file2.txt");
         List<String> results = fileImportDAO.bulkImportFiles(filePaths);
-        assertTrue(results.isEmpty());
+        assertEquals(2, results.size());
+        assertTrue(results.stream().allMatch(msg -> msg.equals("File imported successfully.")));
     }
 
-//    @Test
-//    void testBulkImportFiles_ValidFiles() throws IOException {
-//        String filePath1 = "file1.txt";
-//        String filePath2 = "file2.txt";
-//
-//      
-//        try (FileWriter writer1 = new FileWriter(filePath1);
-//             FileWriter writer2 = new FileWriter(filePath2)) {
-//            writer1.write("Content of file 1");
-//            writer2.write("Content of file 2");
-//        }
-//
-//        List<String> filePaths = Arrays.asList(filePath1, filePath2);
-//        List<String> results = fileImportDAO.bulkImportFiles(filePaths);
-//
-//        assertEquals(2, results.size());
-//        assertTrue(results.stream().allMatch(result -> result.equals("File imported successfully.")));
-//
-//        // Cleanup
-//        Files.deleteIfExists(new File(filePath1).toPath());
-//        Files.deleteIfExists(new File(filePath2).toPath());
-//    }
+    
 
     @Test
-    void testDetermineFileLanguage_Urdu() {
-        String content = "یہ ایک ٹیسٹ ہے";
+    void testInsertFileIntoDatabase() {
+        FileDTO fileDTO = new FileDTO("testFile.txt", null, "English", "test_hash", 100);
+        int fileId = fileImportDAO.insertFileIntoDatabase(fileDTO, "Sample content for testing.");
+        assertTrue(fileId > 0);
+    }
+
+   
+
+    @Test
+    void testDoesHashExistWithExistingHash() throws SQLException {
+    	
+        String hash = HashGenerator.generateHashFromContent("Content of file 1");
+        String insertQuery = "INSERT INTO text_files (filename, hash) VALUES (?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(insertQuery)) {
+            stmt.setString(1, "file1.txt");
+            stmt.setString(2, hash);
+            stmt.executeUpdate();
+        }
+        
+        
+        assertTrue(fileImportDAO.doesHashExist(hash));
+    }
+
+    @Test
+    void testDoesHashExistWithNonExistingHash() {
+        assertFalse(fileImportDAO.doesHashExist("non_existing_hash"));
+    }
+
+    @Test
+    void testDetermineFileLanguageWithUrduContent() {
+        String content = "یہ ایک اردو متن ہے۔"; 
         String language = fileImportDAO.determineFileLanguage(content);
         assertEquals("Urdu", language);
     }
 
     @Test
-    void testDetermineFileLanguage_English() {
-        String content = "This is a test.";
+    void testDetermineFileLanguageWithArabicContent() {
+        String content = "هذا نص عربي."; 
+        String language = fileImportDAO.determineFileLanguage(content);
+        assertEquals("Arabic", language);
+    }
+
+    @Test
+    void testDetermineFileLanguageWithEnglishContent() {
+        String content = "This is an English text.";
         String language = fileImportDAO.determineFileLanguage(content);
         assertEquals("English", language);
     }
 
-//    @Test
-//    void testDoesHashExist_HashExists() throws SQLException {
-//        String hash = "existinghash";
-//
-//        // Insert hash into the database
-//        PreparedStatement stmt = mockConnection.prepareStatement(
-//                "INSERT INTO text_files (filename, language, hash, word_count) VALUES (?, ?, ?, ?)");
-//        stmt.setString(1, "existing.txt");
-//        stmt.setString(2, "English");
-//        stmt.setString(3, hash);
-//        stmt.setInt(4, 3);
-//        stmt.executeUpdate();
-//
-//        assertTrue(fileImportDAO.doesHashExist(hash));
-//    }
+    @Test
+    void testCountWordsWithEmptyContent() {
+        int wordCount = fileImportDAO.countWords("");
+        assertEquals(0, wordCount);
+    }
 
-//    @Test
-//    void testDoesHashExist_HashDoesNotExist() {
-//        assertFalse(fileImportDAO.doesHashExist("nonexistenthash"));
-//    }
+    @Test
+    void testCountWordsWithContent() {
+        String content = "This is a sample content with several words.";
+        int wordCount = fileImportDAO.countWords(content);
+        assertEquals(8, wordCount);
+    }
 }

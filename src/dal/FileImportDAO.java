@@ -134,8 +134,12 @@ public class FileImportDAO implements IFileImportDAO{
                 return "Urdu";
             } else if (isArabic(content)) {
                 return "Arabic";
-            } else {
+            } else if(isEnglish(content)) {
                 return "English";
+            }
+            else
+            {
+            	return "Unknown";
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -170,5 +174,9 @@ public class FileImportDAO implements IFileImportDAO{
 			return content.split("\\s+").length;
 		}
 	}
+	 boolean isEnglish(String sentence) {
+	        
+	        return sentence.matches("^[A-Za-z0-9\\s.,!?\"'()]*$");
+	    }
 
 }
