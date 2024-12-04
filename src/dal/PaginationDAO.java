@@ -53,7 +53,7 @@ public class PaginationDAO implements IPaginationDAO {
         String updateQuery = "UPDATE pagination SET page_content = ? WHERE text_file_id = ? AND page_number = ?";
         String insertQuery = "INSERT INTO pagination (text_file_id, page_number, page_content) VALUES (?, ?, ?)";
 
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
              PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
 
@@ -81,7 +81,7 @@ public class PaginationDAO implements IPaginationDAO {
     @Override
     public int getPageID(int fileId, int pageNumber) {
         String query = "SELECT id FROM pagination WHERE text_file_id = ? AND page_number = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, fileId);
             stmt.setInt(2, pageNumber);
@@ -100,7 +100,7 @@ public class PaginationDAO implements IPaginationDAO {
     @Override
     public boolean contentExistsForFile(int fileId, int pageNumber) {
         String query = "SELECT 1 FROM pagination WHERE text_file_id = ? AND page_number = ? LIMIT 1";
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setInt(1, fileId);
@@ -122,7 +122,7 @@ public class PaginationDAO implements IPaginationDAO {
                        "JOIN text_files tf ON p.text_file_id = tf.id " +
                        "WHERE tf.id = ?";
 
-        try (Connection connection = DatabaseConnection.getConnection();
+        try (Connection connection =DatabaseConnection.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setInt(1, fileId);
@@ -142,7 +142,7 @@ public class PaginationDAO implements IPaginationDAO {
     @Override
     public PageDTO getPage(int fileId, int pageNumber) {
         String query = "SELECT page_content, id FROM pagination WHERE text_file_id = ? AND page_number = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setInt(1, fileId);
@@ -165,7 +165,7 @@ public class PaginationDAO implements IPaginationDAO {
         List<PageDTO> pages = new ArrayList<>();
         String sql = "SELECT * FROM pagination WHERE text_file_id = ? ORDER BY page_number";
 
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
         		PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, textFileId); 
             ResultSet resultSet = statement.executeQuery(); 

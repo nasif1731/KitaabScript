@@ -49,18 +49,41 @@ public class FileImportDAO implements IFileImportDAO{
             return "Error reading the file: " + e.getMessage();
         }
     }
-	@Override
-	public List<String> bulkImportFiles(List<String> filePaths) {
-        List<String> messages = new ArrayList<>();
-        for (String filePath : filePaths) {
-            messages.add(importFile(filePath));
-        }
-        return messages;
-    }
+	    @Override
+	    public List<String> bulkImportFiles(List<String> filePaths) {
+	        List<Thread> threads = new ArrayList<>();
+	        List<String> messages = new ArrayList<>();
+	        List<String> sharedResults = new ArrayList<>(); 
+
+	        for (String filePath : filePaths) {
+	            Thread thread = new Thread(() -> {
+	                String message = importFile(filePath);
+	                synchronized (sharedResults) {
+	                    sharedResults.add(message); 
+	                }
+	            });
+	            threads.add(thread);
+	            thread.start();
+	        }
+
+	        
+	        for (Thread thread : threads) {
+	            try {
+	                thread.join();
+	            } catch (InterruptedException e) {
+	                e.printStackTrace();
+	                messages.add("Error waiting for thread: " + e.getMessage());
+	            }
+	        }
+
+	       
+	        messages.addAll(sharedResults);
+	        return messages;
+	    }
 	@Override
 	public int insertFileIntoDatabase(FileDTO file, String content) {
 	    String query = "INSERT INTO text_files (filename, language, hash, word_count) VALUES (?, ?, ?, ?)";
-	    try (Connection conn = DatabaseConnection.getConnection();
+	    try (Connection conn = DatabaseConnection.getInstance().getConnection();
 	         PreparedStatement stmt = conn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
 	        stmt.setString(1, file.getFilename());
@@ -91,7 +114,7 @@ public class FileImportDAO implements IFileImportDAO{
 	@Override
 	public boolean doesHashExist(String hash) {
         String query = "SELECT COUNT(*) FROM text_files WHERE hash = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, hash);
             try (ResultSet rs = stmt.executeQuery()) {
