@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import dal.IDALFacade;
-import dal.ITransliterationDAO;
 import dto.TransliterationDTO;
 
 public class TransliterationBO implements ITransliterationBO{

@@ -1,4 +1,3 @@
-
 package pl;
 
 import java.awt.BorderLayout;
@@ -17,14 +16,18 @@ import javax.swing.SwingConstants;
 import bll.IBLFacade;
 
 public class LemmatizationPanel extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private IBLFacade blFacade;
 	private int pageId;
 	private JTextPane lemmatizationResultsArea;
 	private JButton closeButton;
 
 	public LemmatizationPanel(IBLFacade blFacade, int pageId) {
-		this.blFacade = blFacade;
-		this.pageId = pageId;
+		this.setBlFacade(blFacade);
+		this.setPageId(pageId);
 		initializeUI();
 	}
 
@@ -76,6 +79,22 @@ public class LemmatizationPanel extends JPanel {
 //    }
 	public void setContent(String content) {
 		lemmatizationResultsArea.setText(content);
+	}
+
+	public IBLFacade getBlFacade() {
+		return blFacade;
+	}
+
+	public void setBlFacade(IBLFacade blFacade) {
+		this.blFacade = blFacade;
+	}
+
+	public int getPageId() {
+		return pageId;
+	}
+
+	public void setPageId(int pageId) {
+		this.pageId = pageId;
 	}
 }
 

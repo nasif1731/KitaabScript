@@ -1,20 +1,36 @@
 package pl;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
-import bll.FileImportBO;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import bll.IBLFacade;
 
 public class ImportFileDialogueBox extends JDialog {
 
-    private IBLFacade blFacade;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private IBLFacade blFacade;
     private JTextArea resultArea;
     private JButton importButton;
 

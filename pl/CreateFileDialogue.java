@@ -11,19 +11,21 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import bll.FileBO;
-import bll.FilePaginationBO;
 import bll.IBLFacade;
 
 class CreateFileDialogue extends JDialog {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JTextField fileNameField;
 	private JButton proceedButton;
 	private MainScreen mainScreen;
 	private IBLFacade blFacade;
 
 	public CreateFileDialogue(MainScreen mainScreen, IBLFacade blFacade) {
-		this.mainScreen = mainScreen;
-		this.blFacade = blFacade;
+		this.setMainScreen(mainScreen);
+		this.setBlFacade(blFacade);
 		setTitle("Create New File");
 		setModal(true);
 		setSize(300, 150);
@@ -58,5 +60,21 @@ class CreateFileDialogue extends JDialog {
 				}
 			}
 		});
+	}
+
+	public IBLFacade getBlFacade() {
+		return blFacade;
+	}
+
+	public void setBlFacade(IBLFacade blFacade) {
+		this.blFacade = blFacade;
+	}
+
+	public MainScreen getMainScreen() {
+		return mainScreen;
+	}
+
+	public void setMainScreen(MainScreen mainScreen) {
+		this.mainScreen = mainScreen;
 	}
 }

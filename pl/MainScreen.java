@@ -26,16 +26,16 @@ import bll.BLFacade;
 import bll.FileBO;
 import bll.FileImportBO;
 import bll.FilePaginationBO;
+import bll.IBLFacade;
 import bll.IFileBO;
 import bll.IFileImportBO;
 import bll.IFilePaginationBO;
 import bll.IKLAnalysisBO;
-import bll.ISearchResultBO;
-import bll.ITFIDFAnalysisBO;
 import bll.ILemmatizationBO;
 import bll.IPMIAnalysisBO;
 import bll.IPOSTaggingBO;
-
+import bll.ISearchResultBO;
+import bll.ITFIDFAnalysisBO;
 import bll.ITransliterationBO;
 import bll.KLAnalysisBO;
 import bll.LemmatizationBO;
@@ -44,10 +44,6 @@ import bll.POSTaggingBO;
 import bll.SearchResultBO;
 import bll.TFIDFAnalysisBO;
 import bll.TransliterationBO;
-
-
-
-import bll.IBLFacade;
 import dal.AbstractDALFactory;
 import dal.DALFacade;
 import dal.IDALFacade;
@@ -61,16 +57,20 @@ import dal.ISearchResultDAO;
 import dal.ITransliterationDAO;
 
 
-public class MainScreen extends JFrame { //هَذِهِ
+public class MainScreen extends JFrame {
 
-    private JButton openFileButton;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JButton openFileButton;
     private JButton createFileButton;
     private JButton importFileButton;
     private JButton searchButton; 
     private IBLFacade blFacade;
     private JButton performAnalysisButton;
     public MainScreen(IBLFacade blFacade) {
-        this.blFacade=blFacade;
+        this.setBlFacade(blFacade);
         setTitle("Kitaab Script");
         setSize(800, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -253,4 +253,12 @@ public class MainScreen extends JFrame { //هَذِهِ
             }
         });
     }
+
+	public IBLFacade getBlFacade() {
+		return blFacade;
+	}
+
+	public void setBlFacade(IBLFacade blFacade) {
+		this.blFacade = blFacade;
+	}
 }

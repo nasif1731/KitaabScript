@@ -1,16 +1,31 @@
 package pl;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+
 import bll.IBLFacade;
-import dto.PageDTO;
 
 public class TransliterationPanel extends JPanel {
 
-    public JTextPane textPane;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public JTextPane textPane;
     private JPopupMenu contextMenu;
     private IBLFacade blFacade;
     private JPanel sidebarPanel;
@@ -20,8 +35,8 @@ public class TransliterationPanel extends JPanel {
 
     public TransliterationPanel(IBLFacade blFacade, int pageID, int pageNumber) {
         this.blFacade = blFacade;
-        this.pageID = pageID;
-        this.pageNumber = pageNumber;
+        this.setPageID(pageID);
+        this.setPageNumber(pageNumber);
 
         textPane = new JTextPane();
         textPane.setEditable(false);
@@ -115,4 +130,28 @@ public class TransliterationPanel extends JPanel {
         revalidate();
         repaint();
     }
+
+
+
+	public int getPageID() {
+		return pageID;
+	}
+
+
+
+	public void setPageID(int pageID) {
+		this.pageID = pageID;
+	}
+
+
+
+	public int getPageNumber() {
+		return pageNumber;
+	}
+
+
+
+	public void setPageNumber(int pageNumber) {
+		this.pageNumber = pageNumber;
+	}
 }

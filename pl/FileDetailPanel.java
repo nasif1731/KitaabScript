@@ -13,6 +13,10 @@ import java.util.LinkedList;
 import java.util.function.Function;
 
 public class FileDetailPanel extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JTextPane fileContentArea;
 	private JButton updateButton;
 	private JButton prevButton;
@@ -34,6 +38,7 @@ public class FileDetailPanel extends JFrame {
 	private JButton showLemmatizationButton; 
 	
 	private JPanel cardPanel; 
+	@SuppressWarnings("unused")
 	public FileDetailPanel(String fileName, IBLFacade blFacade) {
 		this.blFacade = blFacade;
 		this.filename = fileName;
@@ -284,10 +289,12 @@ public class FileDetailPanel extends JFrame {
 			blFacade.processLemmatizationForPage(page.getPageId(), page.getPageContent());
 			 LinkedList<POSTaggingDTO> posTaggingResults=blFacade.getPOSTaggingForPage(page.getPageId());
 			 LinkedList<LemmatizationDTO> lemmatizationResults=blFacade.getLemmatizationForPage(page.getPageId());
-			 String posResults = generateHtmlTable(posTaggingResults, new String[]{"Word", "POS Tag"}, dto -> new String[]{dto.getWord(), dto.getPosTag()});
+			 @SuppressWarnings("unused")
+			String posResults = generateHtmlTable(posTaggingResults, new String[]{"Word", "POS Tag"}, dto -> new String[]{dto.getWord(), dto.getPosTag()});
 		        
 
-		        String lemmaResults = generateHtmlTable(lemmatizationResults, new String[]{"Word", "Lemma", "Root"}, dto -> new String[]{dto.getWord(), dto.getLemma(), dto.getRoot()});
+		        @SuppressWarnings("unused")
+				String lemmaResults = generateHtmlTable(lemmatizationResults, new String[]{"Word", "Lemma", "Root"}, dto -> new String[]{dto.getWord(), dto.getLemma(), dto.getRoot()});
 		        
 			
 		} else {

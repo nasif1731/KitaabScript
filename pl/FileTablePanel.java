@@ -1,21 +1,35 @@
 package pl;
 
-import bll.FileBO;
-import bll.FilePaginationBO;
-import bll.IBLFacade;
-import dto.FileDTO;
-
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
+
+import bll.FileBO;
+import bll.FilePaginationBO;
+import bll.IBLFacade;
+import dto.FileDTO;
+
 public class FileTablePanel extends JPanel { 
-    private JTable fileTable;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JTable fileTable;
     private IBLFacade blFacade;
     private DefaultTableModel tableModel;
     private JButton deleteButton;
@@ -140,6 +154,26 @@ public class FileTablePanel extends JPanel {
         fileDetailPanel.setLocationRelativeTo(null); 
         fileDetailPanel.setVisible(true); 
     }
+
+
+	public FilePaginationBO getFilePaginationBO() {
+		return filePaginationBO;
+	}
+
+
+	public void setFilePaginationBO(FilePaginationBO filePaginationBO) {
+		this.filePaginationBO = filePaginationBO;
+	}
+
+
+	public FileBO getFileBO() {
+		return fileBO;
+	}
+
+
+	public void setFileBO(FileBO fileBO) {
+		this.fileBO = fileBO;
+	}
 
 //    public static void main(String[] args) {
 //        SwingUtilities.invokeLater(() -> {
