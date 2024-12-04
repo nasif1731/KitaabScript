@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dto.POSTaggingDTO;
-import util.DatabaseConnection;
 
 public class POSTaggingDAO implements IPOSTaggingDAO {
 	private Connection conn;

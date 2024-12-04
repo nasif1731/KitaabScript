@@ -15,7 +15,7 @@ import javax.swing.SwingConstants;
 
 import bll.IBLFacade;
 
-@SuppressWarnings("serial")
+
 public class LemmatizationPanel extends JPanel {
 
 	/**
