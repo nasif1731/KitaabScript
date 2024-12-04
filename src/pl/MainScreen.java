@@ -205,7 +205,7 @@ public class MainScreen extends JFrame {
 
     private Font loadGothicFont(float size) {
         try {
-            File fontFile = new File("C:\\Users\\nasif\\git\\24f-prj-scd-team\\src\\resources\\fonts\\OldLondon.ttf");
+            File fontFile = new File("C:\\Users\\hp\\git\\24f-prj-scd-team\\src\\resources\\fonts\\OldLondon.ttf");
             Font gothicFont = Font.createFont(Font.TRUETYPE_FONT, fontFile);
             return gothicFont.deriveFont(size);
         } catch (FontFormatException | IOException e) {

@@ -7,7 +7,7 @@ import java.util.concurrent.BlockingQueue;
 
 public class DatabaseConnection {
     private static DatabaseConnection instance;
-    private BlockingQueue<Connection> connectionPool;
+    private static BlockingQueue<Connection> connectionPool;
     private static final int POOL_SIZE = 10;
     
     private static final String PROD_URL = "jdbc:mysql://127.0.0.1:3306/kitaab_script";
@@ -28,7 +28,7 @@ public class DatabaseConnection {
         return instance;
     }
 
-    public Connection getConnection() throws InterruptedException {
+    public static Connection getConnection() throws InterruptedException {
         return connectionPool.take(); 
     }
 

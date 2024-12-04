@@ -11,6 +11,7 @@ import java.util.List;
 
 import dto.FileDTO;
 import dto.PageDTO;
+import util.DatabaseConnection;
 import util.HashGenerator;
 
 
@@ -66,8 +67,7 @@ public class FileDAO  implements IFileDAO{
 
 	    return totalWordCount[0];
 	}
-
-
+//	
 	@Override
 	public PageDTO createFile(String name, String content) {
 	    try {
@@ -83,17 +83,15 @@ public class FileDAO  implements IFileDAO{
 
 	        String insertSQL = "INSERT INTO text_files (filename, hash, word_count, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())";
 
-	        try (
+	        try (Connection conn = DatabaseConnection.getConnection();
 	             PreparedStatement stmt = conn.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)) {
 
 	            stmt.setString(1, name);
 	            stmt.setString(2, hash);
 	            stmt.setInt(3, count);
-
 	            int rowsAffected = stmt.executeUpdate();
 
 	            if (rowsAffected == 0) {
-	                System.err.println("Failed to create the file in the database.");
 	                return null;
 	            }
 
@@ -103,18 +101,29 @@ public class FileDAO  implements IFileDAO{
 	                fileId = rs.getInt(1);
 	            }
 
+	            if (fileId == 0) {
+	                return null;
+	            }
+
+	            if (content == null || content.isEmpty()) {
+	                return null;
+	            }
+
 	            List<PageDTO> paginatedContent = paginationDAO.paginateContent(fileId, content);
 
+	            if (paginatedContent.isEmpty()) {
+	                return null;
+	            }
+
 	            paginationDAO.insertContent(paginatedContent);
-
-	            return paginatedContent.isEmpty() ? null : paginatedContent.get(0);
-
+	            return paginatedContent.get(0);
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	        return null;
 	    }
 	}
+
 
 
 	@Override
