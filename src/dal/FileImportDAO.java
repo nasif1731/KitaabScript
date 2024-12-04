@@ -17,9 +17,11 @@ import util.HashGenerator;
 public class FileImportDAO implements IFileImportDAO{
 
 	  private final PaginationDAO paginationDAO;
-
-	    public FileImportDAO() {
-	        this.paginationDAO = new PaginationDAO();
+	  private Connection conn;
+	    public FileImportDAO(Connection conn) {
+	    	this.conn=conn;
+	        this.paginationDAO = new PaginationDAO(conn);
+	        
 	    }
 
 	    @Override
@@ -83,7 +85,7 @@ public class FileImportDAO implements IFileImportDAO{
 	@Override
 	public int insertFileIntoDatabase(FileDTO file, String content) {
 	    String query = "INSERT INTO text_files (filename, language, hash, word_count) VALUES (?, ?, ?, ?)";
-	    try (Connection conn = DatabaseConnection.getInstance().getConnection();
+	    try (
 	         PreparedStatement stmt = conn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
 	        stmt.setString(1, file.getFilename());
@@ -114,7 +116,7 @@ public class FileImportDAO implements IFileImportDAO{
 	@Override
 	public boolean doesHashExist(String hash) {
         String query = "SELECT COUNT(*) FROM text_files WHERE hash = ?";
-        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+        try (
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, hash);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -126,7 +128,7 @@ public class FileImportDAO implements IFileImportDAO{
             return false; 
         }
     }
-	private String determineFileLanguage(String content) {
+	public String determineFileLanguage(String content) {
         try {
             if (isUrdu(content)) {
                 return "Urdu";

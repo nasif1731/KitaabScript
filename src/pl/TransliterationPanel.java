@@ -1,22 +1,39 @@
 package pl;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+
 import bll.IBLFacade;
-import dto.PageDTO;
 
 public class TransliterationPanel extends JPanel {
 
-    public JTextPane textPane;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public JTextPane textPane;
     private JPopupMenu contextMenu;
     private IBLFacade blFacade;
     private JPanel sidebarPanel;
     private JTextArea transliteratedTextArea;
-    private int pageID;
-    private int pageNumber; 
+    @SuppressWarnings("unused")
+	private int pageID;
+    @SuppressWarnings("unused")
+	private int pageNumber; 
 
     public TransliterationPanel(IBLFacade blFacade, int pageID, int pageNumber) {
         this.blFacade = blFacade;

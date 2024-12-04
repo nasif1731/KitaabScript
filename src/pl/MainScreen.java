@@ -63,11 +63,16 @@ import dal.ITransliterationDAO;
 
 public class MainScreen extends JFrame { //هَذِهِ
 
-    private JButton openFileButton;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JButton openFileButton;
     private JButton createFileButton;
     private JButton importFileButton;
     private JButton searchButton; 
-    private IBLFacade blFacade;
+    @SuppressWarnings("unused")
+	private IBLFacade blFacade;
     private JButton performAnalysisButton;
     public MainScreen(IBLFacade blFacade) {
         this.blFacade=blFacade;
@@ -77,7 +82,7 @@ public class MainScreen extends JFrame { //هَذِهِ
         setLocationRelativeTo(null);
 
         getContentPane().setBackground(new Color(235, 224, 199));
-        ImageIcon icon = new ImageIcon("C:\\Users\\dell\\Desktop\\24f-prj-scd-team\\src\\resources\\images\\icon.png");
+        ImageIcon icon = new ImageIcon("C:\\Users\\nasif\\git\\24f-prj-scd-team\\src\\resources\\images\\icon.png");
         setIconImage(icon.getImage());
         Font mughalFont = new Font("Serif", Font.BOLD, 24);
         Font gothicFont = loadGothicFont(55f);
@@ -204,7 +209,7 @@ public class MainScreen extends JFrame { //هَذِهِ
 
     private Font loadGothicFont(float size) {
         try {
-            File fontFile = new File("C:\\Users\\dell\\Desktop\\24f-prj-scd-team\\src\\resources\\fonts\\OldLondon.ttf");
+            File fontFile = new File("C:\\Users\\nasif\\git\\24f-prj-scd-team\\src\\resources\\fonts\\OldLondon.ttf");
             Font gothicFont = Font.createFont(Font.TRUETYPE_FONT, fontFile);
             return gothicFont.deriveFont(size);
         } catch (FontFormatException | IOException e) {

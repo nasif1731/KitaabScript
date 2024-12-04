@@ -15,11 +15,17 @@ import java.awt.event.KeyEvent;
 import java.util.List;
 
 public class FileTablePanel extends JPanel { 
-    private JTable fileTable;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JTable fileTable;
     private IBLFacade blFacade;
     private DefaultTableModel tableModel;
     private JButton deleteButton;
+	@SuppressWarnings("unused")
 	private FilePaginationBO filePaginationBO;
+	@SuppressWarnings("unused")
 	private FileBO fileBO;
 
 

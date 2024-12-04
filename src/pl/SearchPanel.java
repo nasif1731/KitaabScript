@@ -10,7 +10,6 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -23,7 +22,11 @@ import bll.IBLFacade;
 import dto.SearchResultDTO;
 
 public class SearchPanel extends JPanel {
-    private JList<SearchResultDTO> searchList;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JList<SearchResultDTO> searchList;
     private DefaultListModel<SearchResultDTO> listModel;
     private JTextField searchField;
     private JButton searchButton;

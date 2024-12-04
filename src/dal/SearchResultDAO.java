@@ -3,14 +3,16 @@ package dal;
 import dto.SearchResultDTO;
 import dto.PageDTO;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SearchResultDAO implements ISearchResultDAO {
     private final IPaginationDAO paginationDAO;
     private final IFileDAO fileDAO;
-
-    public SearchResultDAO(IPaginationDAO paginationDAO, IFileDAO fileDAO) {
+    private Connection conn;
+    public SearchResultDAO(IPaginationDAO paginationDAO, IFileDAO fileDAO, Connection conn) {
+    	this.conn=conn;
         this.paginationDAO = paginationDAO;
         this.fileDAO = fileDAO;
     }

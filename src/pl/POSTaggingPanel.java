@@ -1,16 +1,30 @@
 
 package pl;
 
-import bll.IBLFacade;
-import dto.POSTaggingDTO;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.LinkedList;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
+import javax.swing.SwingConstants;
+
+import bll.IBLFacade;
 
 public class POSTaggingPanel extends JPanel {
-    private IBLFacade blFacade;
-    private int pageId;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	@SuppressWarnings("unused")
+	private IBLFacade blFacade;
+    @SuppressWarnings("unused")
+	private int pageId;
     private JTextPane posTaggingResultsArea;
     private JButton closeButton;
 

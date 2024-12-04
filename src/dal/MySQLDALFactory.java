@@ -1,42 +1,185 @@
 package dal;
 
-public class MySQLDALFactory extends AbstractDALFactory{
+import java.sql.Connection;
+import java.sql.SQLException;
 
+import util.DatabaseConnection;
+
+public class MySQLDALFactory extends AbstractDALFactory{
+	private Connection conn;
+	public MySQLDALFactory() {
+		try {
+			try {
+				conn = DatabaseConnection.getInstance().getConnection();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 	@Override
 	public IFileDAO getFileDAO() {
-		return new FileDAO();
+		try {
+			if (conn == null || conn.isClosed()) {
+			    try {
+					try {
+						conn = DatabaseConnection.getInstance().getConnection();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return new FileDAO(conn);
 	}
 
 	@Override
 	public IFileImportDAO getFileImportDAO() {
-		return new FileImportDAO();
+		try {
+			if (conn == null || conn.isClosed()) {
+			    try {
+					try {
+						conn = DatabaseConnection.getInstance().getConnection();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new FileImportDAO(conn);
 	}
 
 	@Override
 	public IPaginationDAO getPaginationDAO() {
-		return new PaginationDAO();
+		try {
+			if (conn == null || conn.isClosed()) {
+			    try {
+					try {
+						conn = DatabaseConnection.getInstance().getConnection();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new PaginationDAO(conn);
 	}
 	@Override
     public ISearchResultDAO getSearchResultDAO() {
+		try {
+			if (conn == null || conn.isClosed()) {
+			    try {
+					try {
+						conn = DatabaseConnection.getInstance().getConnection();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         
-        return new SearchResultDAO(getPaginationDAO(), getFileDAO());
+        return new SearchResultDAO(getPaginationDAO(), getFileDAO(),conn);
     }
 
 	@Override
 	public ITransliterationDAO getTransliterationDAO() {
-	
-		return new TransliterationDAO();
+		try {
+			if (conn == null || conn.isClosed()) {
+			    try {
+					try {
+						conn = DatabaseConnection.getInstance().getConnection();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new TransliterationDAO(conn);
 	}
 
 	@Override
 	public ILemmatizationDAO getLemmatizationDAO() {
 		// TODO Auto-generated method stub
-		return new LemmatizationDAO();
+		try {
+			if (conn == null || conn.isClosed()) {
+			    try {
+					try {
+						conn = DatabaseConnection.getInstance().getConnection();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new LemmatizationDAO(conn);
 	}
 
 	@Override
 	public IPOSTaggingDAO getPOSTaggingDAO() {
 		// TODO Auto-generated method stub
-		return new POSTaggingDAO();
+		try {
+			if (conn == null || conn.isClosed()) {
+			    try {
+					try {
+						conn = DatabaseConnection.getInstance().getConnection();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new POSTaggingDAO(conn);
 	}
 }
