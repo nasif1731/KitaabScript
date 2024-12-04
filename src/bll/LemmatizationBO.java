@@ -2,9 +2,8 @@
 package bll;
 
 import dal.IDALFacade;
-import dal.ILemmatizationDAO;
+
 import dto.LemmatizationDTO;
-import dto.POSTaggingDTO;
 
 import java.io.File;
 import java.lang.reflect.Method;

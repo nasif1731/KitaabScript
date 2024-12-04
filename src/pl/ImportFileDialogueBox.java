@@ -30,7 +30,9 @@ public class ImportFileDialogueBox extends JDialog {
     /**
 	 * 
 	 */
+
 	private static final long serialVersionUID = 1841635305535824823L;
+
 	private IBLFacade blFacade;
     private JTextArea resultArea;
     private JButton importButton;

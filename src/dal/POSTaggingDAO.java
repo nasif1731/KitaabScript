@@ -74,7 +74,7 @@ public class POSTaggingDAO implements IPOSTaggingDAO {
     @Override
     public boolean isPOSTaggingSavedForPage(int pageId, String newContent) {
         String query = "SELECT word, pos_tag FROM pos_tagging WHERE pagination_id = ?";
-        String[] words = newContent.split("\\s+");
+       //String[] words = newContent.split("\\s+");
         List<String> existingWords = new ArrayList<>();
 
         
@@ -142,10 +142,10 @@ public class POSTaggingDAO implements IPOSTaggingDAO {
 
                     
                     Object defaultResult = posTaggedResults.get(0);
-                    Method getWordMethod = defaultResult.getClass().getMethod("getVoweledWord");
+                 //   Method getWordMethod = defaultResult.getClass().getMethod("getVoweledWord");
                     Method getWordTypeMethod = defaultResult.getClass().getMethod("getWordType");
 
-                    String voweledWord = (String) getWordMethod.invoke(defaultResult);
+                  //  String voweledWord = (String) getWordMethod.invoke(defaultResult);
                     String wordType = (String) getWordTypeMethod.invoke(defaultResult);
 
                     return wordType;  

@@ -17,6 +17,9 @@ public class PaginationDAO implements IPaginationDAO {
 	}
     @Override
     public List<PageDTO> paginateContent(int fileId, String content) {
+    	 if (content == null || content.trim().isEmpty()) {
+    	        return new ArrayList<>();
+    	    }
         List<PageDTO> pages = new ArrayList<>();
         int wordLimit = 400;
         int wordsPerLine = 10;

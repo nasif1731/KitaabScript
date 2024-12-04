@@ -1,7 +1,6 @@
 package bll;
 
 import dal.IDALFacade;
-import dal.ISearchResultDAO;
 import dto.SearchResultDTO;
 
 import java.util.List;

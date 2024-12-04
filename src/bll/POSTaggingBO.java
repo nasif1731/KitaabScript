@@ -1,7 +1,6 @@
 package bll;
 
 import dal.IDALFacade;
-import dal.IPOSTaggingDAO;
 import dto.POSTaggingDTO;
 
 import java.io.File;

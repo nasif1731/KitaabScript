@@ -1,7 +1,6 @@
 package bll;
 
 import dal.IDALFacade;
-import dal.IPaginationDAO;
 import dto.PageDTO;
 import java.util.List;
 

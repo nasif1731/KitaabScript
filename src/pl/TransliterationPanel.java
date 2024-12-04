@@ -30,15 +30,14 @@ public class TransliterationPanel extends JPanel {
     private IBLFacade blFacade;
     private JPanel sidebarPanel;
     private JTextArea transliteratedTextArea;
-    @SuppressWarnings("unused")
+    
 	private int pageID;
-    @SuppressWarnings("unused")
 	private int pageNumber; 
 
     public TransliterationPanel(IBLFacade blFacade, int pageID, int pageNumber) {
         this.blFacade = blFacade;
-        this.pageID = pageID;
-        this.pageNumber = pageNumber;
+        this.setPageID(pageID);
+        this.setPageNumber(pageNumber);
 
         textPane = new JTextPane();
         textPane.setEditable(false);
@@ -132,4 +131,28 @@ public class TransliterationPanel extends JPanel {
         revalidate();
         repaint();
     }
+
+
+
+	public int getPageID() {
+		return pageID;
+	}
+
+
+
+	public void setPageID(int pageID) {
+		this.pageID = pageID;
+	}
+
+
+
+	public int getPageNumber() {
+		return pageNumber;
+	}
+
+
+
+	public void setPageNumber(int pageNumber) {
+		this.pageNumber = pageNumber;
+	}
 }

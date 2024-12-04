@@ -21,16 +21,15 @@ public class POSTaggingPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	@SuppressWarnings("unused")
+
 	private IBLFacade blFacade;
-    @SuppressWarnings("unused")
-	private int pageId;
+    private int pageId;
     private JTextPane posTaggingResultsArea;
     private JButton closeButton;
 
     public POSTaggingPanel(IBLFacade blFacade, int pageId) {
-        this.blFacade = blFacade;
-        this.pageId = pageId;
+        this.setBlFacade(blFacade);
+        this.setPageId(pageId);
         initializeUI();
     }
 
@@ -85,5 +84,21 @@ public class POSTaggingPanel extends JPanel {
 	public void setContent(String content) {
 		// TODO Auto-generated method stub
 		posTaggingResultsArea.setText(content);
+	}
+
+	public IBLFacade getBlFacade() {
+		return blFacade;
+	}
+
+	public void setBlFacade(IBLFacade blFacade) {
+		this.blFacade = blFacade;
+	}
+
+	public int getPageId() {
+		return pageId;
+	}
+
+	public void setPageId(int pageId) {
+		this.pageId = pageId;
 	}
 }

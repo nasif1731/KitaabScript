@@ -4,17 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import dal.DALFacade;
-import dal.FileDAO;
-import dal.FileImportDAO;
 import dal.IDALFacade;
-import dal.IFileDAO;
-import dal.IPaginationDAO;
-import dal.LemmatizationDAO;
-import dal.POSTaggingDAO;
-import dal.PaginationDAO;
-import dal.SearchResultDAO;
-import dal.TransliterationDAO;
+
 import dto.PageDTO;
 import util.FarasaPreProcessor;
 

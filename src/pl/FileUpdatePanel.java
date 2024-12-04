@@ -87,8 +87,8 @@ public class FileUpdatePanel extends JFrame {
 		wordCountLabel.setForeground(new Color(138, 83, 43));
 		bottomPanel.add(wordCountLabel, BorderLayout.EAST);
 
-		prevButton = createStyledButton("← Previous", mughalFont);
-		nextButton = createStyledButton("Next →", mughalFont);
+		setPrevButton(createStyledButton("← Previous", mughalFont));
+		setNextButton(createStyledButton("Next →", mughalFont));
 
 		pageLabel = new JLabel("Page " + currentPage + " of " + totalPages);
 		pageLabel.setForeground(new Color(138, 83, 43));
@@ -218,6 +218,30 @@ public class FileUpdatePanel extends JFrame {
 			JOptionPane.showMessageDialog(this, "Error loading page: " + e.getMessage(), "Error",
 					JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+
+
+	public JButton getPrevButton() {
+		return prevButton;
+	}
+
+
+
+	public void setPrevButton(JButton prevButton) {
+		this.prevButton = prevButton;
+	}
+
+
+
+	public JButton getNextButton() {
+		return nextButton;
+	}
+
+
+
+	public void setNextButton(JButton nextButton) {
+		this.nextButton = nextButton;
 	}
 }
 

@@ -20,7 +20,7 @@ public class FileDAO  implements IFileDAO{
 	}
 
 	private int countWords(String content) {
-	    if (content.isEmpty()) {
+	    if (content == null || content.isEmpty()) {
 	        return 0;
 	    }
 
@@ -168,7 +168,7 @@ public class FileDAO  implements IFileDAO{
 	    }
 	    return null;
 	}
-
+	
 	@Override
 	public String createdAt(String name) {
         String createdAt = null;
