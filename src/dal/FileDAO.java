@@ -67,7 +67,7 @@ public class FileDAO  implements IFileDAO{
 
 	    return totalWordCount[0];
 	}
-//	
+
 	@Override
 	public PageDTO createFile(String name, String content) {
 	    try {
@@ -105,14 +105,11 @@ public class FileDAO  implements IFileDAO{
 	                return null;
 	            }
 
-	            if (content == null || content.isEmpty()) {
-	                return null;
-	            }
-
 	            List<PageDTO> paginatedContent = paginationDAO.paginateContent(fileId, content);
-
+	            System.out.println("Paginated Content: " + paginatedContent.size()); // Check if pagination occurs correctly
+	            
 	            if (paginatedContent.isEmpty()) {
-	                return null;
+	                return null; // No content to paginate
 	            }
 
 	            paginationDAO.insertContent(paginatedContent);
@@ -123,8 +120,7 @@ public class FileDAO  implements IFileDAO{
 	        return null;
 	    }
 	}
-
-
+	
 
 	@Override
 	public void deleteFile(String name) {
@@ -182,7 +178,7 @@ public class FileDAO  implements IFileDAO{
 	    }
 	    return null;
 	}
-	
+
 	@Override
 	public String createdAt(String name) {
         String createdAt = null;
@@ -373,4 +369,6 @@ public class FileDAO  implements IFileDAO{
 
        return fileIds;
    }
+
+
 }

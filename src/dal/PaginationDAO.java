@@ -43,33 +43,33 @@ public class PaginationDAO implements IPaginationDAO {
 	    return pages;
 	}
     
-    @Override
-    public void insertContent(List<PageDTO> paginatedContent) {
-        try (
-            PreparedStatement updateStmt = conn.prepareStatement(
-                "UPDATE pagination SET page_content = ? WHERE text_file_id = ? AND page_number = ?");
-            PreparedStatement insertStmt = conn.prepareStatement(
-                "INSERT INTO pagination (text_file_id, page_number, page_content) VALUES (?, ?, ?)")
-        ) {
-            for (PageDTO page : paginatedContent) {
-                if (contentExistsForFile(page.getTextFileId(), page.getPageNumber())) {
-                    updateStmt.setString(1, page.getPageContent());
-                    updateStmt.setInt(2, page.getTextFileId());
-                    updateStmt.setInt(3, page.getPageNumber());
-                    updateStmt.executeUpdate();
-                } else {
-                    insertStmt.setInt(1, page.getTextFileId());
-                    insertStmt.setInt(2, page.getPageNumber());
-                    insertStmt.setString(3, page.getPageContent());
-                    insertStmt.addBatch();
-                }
-            }
-            insertStmt.executeBatch();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.err.println("Error inserting/updating content: " + e.getMessage());
-        }
-    }
+	  @Override
+	    public void insertContent(List<PageDTO> paginatedContent) {
+	        try (
+	            PreparedStatement updateStmt = conn.prepareStatement(
+	                "UPDATE pagination SET page_content = ? WHERE text_file_id = ? AND page_number = ?");
+	            PreparedStatement insertStmt = conn.prepareStatement(
+	                "INSERT INTO pagination (text_file_id, page_number, page_content) VALUES (?, ?, ?)")
+	        ) {
+	            for (PageDTO page : paginatedContent) {
+	                if (contentExistsForFile(page.getTextFileId(), page.getPageNumber())) {
+	                    updateStmt.setString(1, page.getPageContent());
+	                    updateStmt.setInt(2, page.getTextFileId());
+	                    updateStmt.setInt(3, page.getPageNumber());
+	                    updateStmt.executeUpdate();
+	                } else {
+	                    insertStmt.setInt(1, page.getTextFileId());
+	                    insertStmt.setInt(2, page.getPageNumber());
+	                    insertStmt.setString(3, page.getPageContent());
+	                    insertStmt.addBatch();
+	                }
+	            }
+	            insertStmt.executeBatch();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            System.err.println("Error inserting/updating content: " + e.getMessage());
+	        }
+	    }
 
 
     @Override
