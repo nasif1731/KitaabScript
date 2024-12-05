@@ -51,7 +51,10 @@ public class TransliterationDAOTest {
 
     @AfterEach
     void tearDown() throws SQLException {
-       
+    	try (PreparedStatement stmt = conn.prepareStatement(
+                "DELETE FROM text_files")) {
+            stmt.executeUpdate();
+        }
         try (PreparedStatement stmt = conn.prepareStatement(
                 "DELETE FROM transliterations")) {
             stmt.executeUpdate();
