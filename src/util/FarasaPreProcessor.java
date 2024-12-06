@@ -1,11 +1,11 @@
 package util;
 
-import com.qcri.farasa.segmenter.Farasa;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import com.qcri.farasa.segmenter.Farasa;
 
 public class FarasaPreProcessor {
 	private Farasa farasa;

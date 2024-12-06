@@ -124,3 +124,22 @@ java.io.IOException: Can't read C:\Users\hp\git\24f-prj-scd-team\src\resources\f
 2024-12-06 21:40:10 [main] INFO  pl.MainScreen - Starting KitaabScript application...
 2024-12-06 21:40:23 [AWT-EventQueue-0] INFO  pl.FileTablePanel - File detail panel for 'example_arabic.txt' opened successfully.
 2024-12-06 21:40:25 [AWT-EventQueue-0] INFO  pl.FileDetailPanel - Processing all pages for Lemmatization.
+2024-12-07 01:36:21 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+2024-12-07 01:40:21 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+2024-12-07 01:40:35 [AWT-EventQueue-0] WARN  pl.MainScreen - No file name entered.
+2024-12-07 01:40:41 [AWT-EventQueue-0] INFO  pl.FileTablePanel - File detail panel for 'ibrahim.txt' opened successfully.
+2024-12-07 01:40:48 [AWT-EventQueue-0] INFO  pl.FileDetailPanel - Processing all pages for Lemmatization.
+2024-12-07 01:40:52 [AWT-EventQueue-0] INFO  pl.FileDetailPanel - Processing all pages for POSTagging.
+2024-12-07 01:41:14 [AWT-EventQueue-0] INFO  pl.FileTablePanel - File detail panel for 'hi.txt' opened successfully.
+2024-12-07 01:41:15 [AWT-EventQueue-0] INFO  pl.FileUpdatePanel - Loading content for file: hi.txt
+2024-12-07 01:41:23 [AWT-EventQueue-0] INFO  pl.FileTablePanel - File detail panel for 'hi.txt' opened successfully.
+2024-12-07 01:41:31 [AWT-EventQueue-0] INFO  pl.MainScreen - File created successfully:  gu.txt
+2024-12-07 01:41:31 [AWT-EventQueue-0] INFO  pl.FileUpdatePanel - Loading content for file:  gu.txt
+2024-12-07 01:41:38 [AWT-EventQueue-0] INFO  pl.FileTablePanel - File detail panel for ' gu.txt' opened successfully.
+2024-12-07 01:41:45 [AWT-EventQueue-0] INFO  pl.ImportFileDialogueBox - File import process started.
+2024-12-07 01:42:23 [AWT-EventQueue-0] INFO  pl.ImportFileDialogueBox - File import process started.
+2024-12-07 01:42:36 [AWT-EventQueue-0] INFO  pl.ImportFileDialogueBox - File import completed successfully.
+2024-12-07 01:42:41 [AWT-EventQueue-0] INFO  pl.FileTablePanel - File detail panel for 'j.txt' opened successfully.
+2024-12-07 01:42:56 [AWT-EventQueue-0] INFO  pl.FileTablePanel - File detail panel for 'example_arabic.txt' opened successfully.
+2024-12-07 01:43:25 [AWT-EventQueue-0] INFO  pl.SearchPanel - Performing search for term: العَرَبِيَّةُ
+2024-12-07 01:43:26 [AWT-EventQueue-0] INFO  pl.SearchPanel - Opening file: example_arabic.txt

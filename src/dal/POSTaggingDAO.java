@@ -9,7 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -75,49 +77,49 @@ public class POSTaggingDAO implements IPOSTaggingDAO {
         return posTaggings;
     }
 
+ 
     @Override
     public boolean isPOSTaggingSavedForPage(int pageId, String newContent) {
-        String query = "SELECT word, pos_tag FROM pos_tagging WHERE pagination_id = ?";
-       //String[] words = newContent.split("\\s+");
-        List<String> existingWords = new ArrayList<>();
+        if (newContent == null || newContent.trim().isEmpty()) {
+            return false;
+        }
 
-        
-        try ( 
-             PreparedStatement statement = conn.prepareStatement(query)) {
+        String[] words = newContent.split("\\s+");
+        List<String> missingWords = new ArrayList<>();
+
+        String query = "SELECT word, pos_tag FROM pos_tagging WHERE pagination_id = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setInt(1, pageId);
+
             try (ResultSet resultSet = statement.executeQuery()) {
+                Map<String, String> dbWordsMap = new HashMap<>();
+
+                // Populate the map with database values (word and POS tag)
                 while (resultSet.next()) {
                     String word = resultSet.getString("word");
                     String posTag = resultSet.getString("pos_tag");
-                    existingWords.add(word + ":" + posTag);
+                    dbWordsMap.put(word, posTag);
+                }
 
-                	
+                // Compare each word from the input with the database
+                for (String word : words) {
+                    String posTag = getPosTagForWord(word);  // Assuming this method exists for getting POS tag
+                    
+                    if (posTag == null || !posTag.equals(dbWordsMap.get(word))) {
+                        missingWords.add(word);
+                    }
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error while checking if POS tagging is saved for page ID: " + pageId, e);
+            throw new RuntimeException("Error while checking POS tagging for page ID: " + pageId, e);
         }
 
-        if(existingWords.size() == 0)
-        {
-        	return false;
-        }
-       
-        for (String word : existingWords) {
-            
-            String posTag = getPosTagForWord(word);
-//            if(posTag==null) System.out.println("POS Tag is null");
-//            if(!existingWords.contains(word + ":" + posTag)) System.out.println("contains");
-            if (posTag == null || !existingWords.contains(word + ":" + posTag)) {
-//            	System.out.println("POS Tagging not saved");
-                return false; 
-            }
-        }
-
-        return true; 
+        // Return true if no mismatches were found
+        return missingWords.isEmpty();
     }
 
-    public String getPosTagForWord(String word) {
+    private String getPosTagForWord(String word) {
         try {
             
             File jarFile = new File("/mnt/data/AlKhalil-2.1.21.jar");

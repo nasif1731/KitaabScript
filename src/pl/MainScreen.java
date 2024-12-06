@@ -22,7 +22,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import bll.BLFacade;
 import bll.FileBO;
@@ -191,6 +192,10 @@ public class MainScreen extends JFrame {
 				searchFrame.setVisible(true);
 			}
 		});
+
+		getContentPane().add(headerLabel, BorderLayout.NORTH);
+		getContentPane().add(paddedPanel, BorderLayout.CENTER);
+	}
 
 	private JButton createStyledButton(String text, Font font) {
 		JButton button = new JButton(text);

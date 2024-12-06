@@ -1,13 +1,13 @@
 package util;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
 
 public class DatabaseConnection {
     private static DatabaseConnection instance;
