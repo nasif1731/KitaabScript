@@ -106,10 +106,10 @@ public class FileDAO  implements IFileDAO{
 	            }
 
 	            List<PageDTO> paginatedContent = paginationDAO.paginateContent(fileId, content);
-	            System.out.println("Paginated Content: " + paginatedContent.size()); // Check if pagination occurs correctly
+	          //  System.out.println("Paginated Content: " + paginatedContent.size()); 
 	            
 	            if (paginatedContent.isEmpty()) {
-	                return null; // No content to paginate
+	                return null; 
 	            }
 
 	            paginationDAO.insertContent(paginatedContent);
@@ -142,41 +142,57 @@ public class FileDAO  implements IFileDAO{
 	    }
 	}
 
-	@Override
+//	@Override
 	public PageDTO updateFile(String name, int pageNumber, String newContent) {
 	    try {
 	        int count = countWords(newContent);
+
 	        String updateSQL = "UPDATE text_files SET word_count = ?, updated_at = NOW() WHERE filename = ?";
 
-	        try (
-	             PreparedStatement stmt = conn.prepareStatement(updateSQL)) {
-
+	        try (PreparedStatement stmt = conn.prepareStatement(updateSQL)) {
 	            stmt.setInt(1, count);
 	            stmt.setString(2, name);
 	            int rowsAffected = stmt.executeUpdate();
 
 	            if (rowsAffected == 0) {
-
 	                System.err.println("No file found with the name: " + name);
-	                return null; 
-
+	                return null;
 	            }
 
 	            int fileId = fetchFileIdByName(name);
-	            String updatePaginationSQL = "UPDATE pagination set page_content = ? where text_file_id = ? and page_number = ?";
-                try (PreparedStatement paginationStmt = conn.prepareStatement(updatePaginationSQL)) {
-                    paginationStmt.setString(1, newContent);
-                    paginationStmt.setInt(2, fileId);
-                    paginationStmt.setInt(3, pageNumber);
-                    paginationStmt.executeUpdate();
-                }
-	           return new PageDTO(fileId, pageNumber, newContent);
+	            List<PageDTO> paginatedContent = paginationDAO.paginateContent(fileId, newContent);
+
+	            String updatePaginationSQL = "UPDATE pagination SET page_content = ? WHERE text_file_id = ? AND page_number = ?";
+	            String insertPaginationSQL = "INSERT INTO pagination (text_file_id, page_number, page_content) VALUES (?, ?, ?)";
+
+	            try (PreparedStatement updateStmt = conn.prepareStatement(updatePaginationSQL);
+	                 PreparedStatement insertStmt = conn.prepareStatement(insertPaginationSQL)) {
+
+	                for (PageDTO page : paginatedContent) {
+	                    updateStmt.setString(1, page.getPageContent());
+	                    updateStmt.setInt(2, fileId);
+	                    updateStmt.setInt(3, page.getPageNumber());
+	                    int updatedRows = updateStmt.executeUpdate();
+
+	                    if (updatedRows == 0) {
+	                        insertStmt.setInt(1, fileId);
+	                        insertStmt.setInt(2, page.getPageNumber());
+	                        insertStmt.setString(3, page.getPageContent());
+	                        insertStmt.addBatch();
+	                    }
+	                }
+
+	                insertStmt.executeBatch();
+	            }
+
+	            return paginatedContent.get(0);
 
 	        }
+
 	    } catch (SQLException e) {
 	        e.printStackTrace();
+	        return null;
 	    }
-	    return null;
 	}
 
 	@Override
