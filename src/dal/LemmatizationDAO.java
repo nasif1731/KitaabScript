@@ -9,7 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import dto.LemmatizationDTO;
 
@@ -76,37 +78,47 @@ public LemmatizationDAO(Connection conn)
 
 	@Override
 	public boolean isLemmatizationSavedForPage(int pageId, String newContent) {
-	    String query = "SELECT word, lemma, root FROM lemmatization WHERE pagination_id = ?";
+	    if (newContent == null || newContent.trim().isEmpty()) {
+	        return false;
+	    }
+
 	    String[] words = newContent.split("\\s+");
-	    List<String> existingWords = new ArrayList<>();
+	    List<String> missingWords = new ArrayList<>();
 
 	    
-	    try ( 
-	         PreparedStatement statement = conn.prepareStatement(query)) {
+	    String query = "SELECT word, lemma, root FROM lemmatization WHERE pagination_id = ?";
+
+	    try (PreparedStatement statement = conn.prepareStatement(query)) {
 	        statement.setInt(1, pageId);
+
 	        try (ResultSet resultSet = statement.executeQuery()) {
+	            Map<String, String> dbWordsMap = new HashMap<>();
+
+	            
 	            while (resultSet.next()) {
 	                String word = resultSet.getString("word");
 	                String lemma = resultSet.getString("lemma");
 	                String root = resultSet.getString("root");
-	                existingWords.add(word+":"+lemma + ":" + root);  
+	                dbWordsMap.put(word, lemma + ":" + root);
+	            }
+
+	            for (String word : words) {
+	                String lemmaAndRoot = getLemmaAndRootForWord(word);
+
+	                
+	                if (lemmaAndRoot == null || !lemmaAndRoot.equals(dbWordsMap.get(word))) {
+	                    missingWords.add(word);
+	                }
 	            }
 	        }
 	    } catch (SQLException e) {
-	        throw new RuntimeException("Error while checking if lemmatization is saved for page ID: " + pageId, e);
+	        throw new RuntimeException("Error while checking lemmatization for page ID: " + pageId, e);
 	    }
 
-	    for (String word : words) {
-	        
-	        String lemmaAndRoot = getLemmaAndRootForWord(word);
-
-	        if (lemmaAndRoot == null || !existingWords.contains(word+":"+lemmaAndRoot)) {
-	            return false;  
-	        }
-	    }
-
-	    return true; 
+	    
+	    return missingWords.isEmpty();
 	}
+
 
 	private String getLemmaAndRootForWord(String word) {
 	    try {

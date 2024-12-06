@@ -27,9 +27,7 @@ import dto.PageDTO;
 
 public class FileUpdatePanel extends JFrame {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	private JTextArea fileContentArea;
 	private JButton saveButton;

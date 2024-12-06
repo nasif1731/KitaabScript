@@ -2,8 +2,8 @@ package dal;
 
 import org.junit.jupiter.api.*;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.*;
 import dto.LemmatizationDTO;
 import util.MockDatabaseConnection;
@@ -12,31 +12,58 @@ import static org.junit.jupiter.api.Assertions.*;
 public class LemmatizationDAOTests {
 
     private LemmatizationDAO lemmatizationDAO;
-
+    Connection mockConnection;
     @BeforeEach
-    public void setUp() throws SQLException, InterruptedException {
-        Connection mockConnection = MockDatabaseConnection.getInstance().getConnection();
+    public void setUp() throws SQLException  {
+       
+		try {
+			mockConnection = MockDatabaseConnection.getInstance().getConnection();
+		} catch (InterruptedException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         lemmatizationDAO = new LemmatizationDAO(mockConnection);
-        clearDatabase();
-    }
+        try (PreparedStatement stmt = mockConnection.prepareStatement(
+                "INSERT IGNORE INTO text_files (id) VALUES (?)")) {
+            stmt.setInt(1, 1);
+            stmt.executeUpdate();
+        }
 
-    private void clearDatabase() {
-        try (Connection conn = MockDatabaseConnection.getInstance().getConnection();
-             Statement stmt = conn.createStatement()) {
-            stmt.executeUpdate("DELETE FROM lemmatization");
-        } catch (Exception e) {
-            throw new RuntimeException("Error clearing test database.", e);
+        
+        try (PreparedStatement stmt = mockConnection.prepareStatement(
+                "INSERT IGNORE INTO pagination (id, text_file_id) VALUES (?, ?)")) {
+            stmt.setInt(1, 1); 
+            stmt.setInt(2, 1);
+            stmt.executeUpdate();
+        }
+
+        try (PreparedStatement stmt = mockConnection.prepareStatement(
+                "DELETE FROM lemmatization")) {
+            stmt.executeUpdate();
         }
     }
 
-//    @Test
-//    public void testAddLemmatizationSuccess() {
-//        LemmatizationDTO dto = new LemmatizationDTO(1, 1, "كلمة1", "تصريف1", "جذر1");
-//        lemmatizationDAO.addLemmatization(dto);
-//        List<LemmatizationDTO> results = lemmatizationDAO.getLemmatizationForPage(1);
-//        assertEquals(1, results.size());
-//        assertEquals("كلمة1", results.get(0).getWord());
-//    }
+   
+    @AfterEach
+    void tearDown() throws SQLException {
+    	try (PreparedStatement stmt = mockConnection.prepareStatement(
+                "DELETE FROM text_files")) {
+            stmt.executeUpdate();
+        }
+        try (PreparedStatement stmt = mockConnection.prepareStatement(
+                "DELETE FROM lemmatization")) {
+            stmt.executeUpdate();
+        }
+    }
+
+    @Test
+    public void testAddLemmatizationSuccess() {
+        LemmatizationDTO dto = new LemmatizationDTO(1, 1, "كلمة1", "تصريف1", "جذر1");
+        lemmatizationDAO.addLemmatization(dto);
+        List<LemmatizationDTO> results = lemmatizationDAO.getLemmatizationForPage(1);
+        assertEquals(1, results.size());
+        assertEquals("كلمة1", results.get(0).getWord());
+    }
 
     @Test
     public void testAddLemmatizationFailure() {
@@ -50,31 +77,32 @@ public class LemmatizationDAOTests {
         assertTrue(results.isEmpty());
     }
 
-//    @Test
-//    public void testGetLemmatizationForPageWithData() throws SQLException {
-//        LemmatizationDTO dto1 = new LemmatizationDTO(1, 1, "كلمة1", "تصريف1", "جذر1");
-//        LemmatizationDTO dto2 = new LemmatizationDTO(1, 1, "كلمة2", "تصريف2", "جذر2");
-//
-//        lemmatizationDAO.addLemmatization(dto1);
-//        lemmatizationDAO.addLemmatization(dto2);
-//
-//        List<LemmatizationDTO> results = lemmatizationDAO.getLemmatizationForPage(1);
-//        
-//        assertEquals(2, results.size());
-//        assertEquals("كلمة1", results.get(0).getWord());
-//        assertEquals("كلمة2", results.get(1).getWord());
-//    }
-//
-//    @Test
-//    public void testIsLemmatizationSavedForPageTrue() throws SQLException {
-//        LemmatizationDTO dto1 = new LemmatizationDTO(1, 1, "كلمة1", "تصريف1", "جذر1");
-//        LemmatizationDTO dto2 = new LemmatizationDTO(1, 1, "كلمة2", "تصريف2", "جذر2");
-//        lemmatizationDAO.addLemmatization(dto1);
-//        lemmatizationDAO.addLemmatization(dto2);
-//
-//        assertTrue(lemmatizationDAO.isLemmatizationSavedForPage(1, "كلمة1"));
-//        assertTrue(lemmatizationDAO.isLemmatizationSavedForPage(1, "كلمة2"));
-//    }
+    @Test
+    public void testGetLemmatizationForPageWithData() throws SQLException {
+        LemmatizationDTO dto1 = new LemmatizationDTO(1, 1, "كلمة1", "تصريف1", "جذر1");
+        LemmatizationDTO dto2 = new LemmatizationDTO(1, 1, "كلمة2", "تصريف2", "جذر2");
+
+        lemmatizationDAO.addLemmatization(dto1);
+        lemmatizationDAO.addLemmatization(dto2);
+
+        List<LemmatizationDTO> results = lemmatizationDAO.getLemmatizationForPage(1);
+        
+        assertEquals(2, results.size());
+        assertEquals("كلمة1", results.get(0).getWord());
+        assertEquals("كلمة2", results.get(1).getWord());
+    }
+
+    @Test
+    public void testIsLemmatizationSavedForPageTrue() throws SQLException {
+        LemmatizationDTO dto1 = new LemmatizationDTO(1, 1, "الْعَرَبِيَّةُ", "عَرَبِيَّة", "عرب");
+        LemmatizationDTO dto2 = new LemmatizationDTO(2, 1, "فَصِيحَةٌ", "فَصِيحَة", "فصح");
+        lemmatizationDAO.addLemmatization(dto1);
+        lemmatizationDAO.addLemmatization(dto2);
+        
+        
+        assertTrue(lemmatizationDAO.isLemmatizationSavedForPage(1, "الْعَرَبِيَّةُ"));
+        assertTrue(lemmatizationDAO.isLemmatizationSavedForPage(1, "فَصِيحَةٌ"));
+    }
 
     @Test
     public void testIsLemmatizationSavedForPageFalse() throws SQLException {
