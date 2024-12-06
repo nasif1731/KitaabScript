@@ -1,6 +1,7 @@
 2024-12-06 11:49:55 [main] INFO  pl.MainScreen - Starting KitaabScript application...
 2024-12-06 11:50:09 [AWT-EventQueue-0] INFO  pl.MainScreen - Open File button clicked.
 2024-12-06 11:53:59 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+
 2024-12-06 12:38:31 [main] INFO  pl.MainScreen - Starting KitaabScript application...
 2024-12-06 12:39:04 [AWT-EventQueue-0] INFO  pl.MainScreen - Create File button clicked.
 2024-12-06 12:39:06 [AWT-EventQueue-0] WARN  pl.MainScreen - No file name entered.
@@ -91,3 +92,27 @@ Caused by: java.lang.IllegalArgumentException: Content cannot be null or empty.
 
 2024-12-06 18:03:39 [main] INFO  pl.MainScreen - Starting KitaabScript application...
 2024-12-06 18:04:01 [AWT-EventQueue-0] INFO  pl.FileTablePanel - No files found in the system.
+
+2024-12-06 16:38:02 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+2024-12-06 16:38:09 [AWT-EventQueue-0] ERROR pl.MainScreen - Error loading custom font
+java.io.IOException: Can't read C:\Users\hp\git\24f-prj-scd-team\src\resources\fonts\OldLondon.ttf
+	at java.awt.Font.checkFontFile(Font.java:1267) ~[?:?]
+	at java.awt.Font.createFont(Font.java:1246) ~[?:?]
+	at pl.MainScreen.loadGothicFont(MainScreen.java:220) ~[bin/:?]
+	at pl.MainScreen.<init>(MainScreen.java:88) ~[bin/:?]
+	at pl.MainScreen$6.run(MainScreen.java:267) ~[bin/:?]
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:318) ~[?:?]
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:773) ~[?:?]
+	at java.awt.EventQueue$4.run(EventQueue.java:720) ~[?:?]
+	at java.awt.EventQueue$4.run(EventQueue.java:714) ~[?:?]
+	at java.security.AccessController.doPrivileged(AccessController.java:400) [?:?]
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:87) [?:?]
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:742) [?:?]
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203) [?:?]
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124) [?:?]
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113) [?:?]
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109) [?:?]
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101) [?:?]
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:90) [?:?]
+2024-12-06 16:53:55 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+

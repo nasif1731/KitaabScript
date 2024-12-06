@@ -69,7 +69,7 @@ public class AnalysisPanel extends JPanel {
         analysisTypePanel.setBackground(new Color(235, 224, 199));
         JLabel analysisTypeLabel = new JLabel("Choose Analysis:");
         analysisTypeLabel.setFont(font);
-        analysisTypeComboBox = new JComboBox<>(new String[]{"TF-IDF", "PMI", "KL Divergence"});
+        analysisTypeComboBox = new JComboBox<>(new String[]{"PMI", "KL Divergence"});
         analysisTypeComboBox.setFont(font);
         analysisTypePanel.add(analysisTypeLabel);
         analysisTypePanel.add(analysisTypeComboBox);
@@ -136,9 +136,6 @@ public class AnalysisPanel extends JPanel {
             Map<String, Double> result;
             StringBuilder res = new StringBuilder();
             switch (selectedAnalysis) {
-                case "TF-IDF":
-                    result = blFacade.performTFIDFAnalysisForWord(searchTerm);
-                    break;
                 case "PMI":
                     result = blFacade.performPMIAnalysisForWord(searchTerm);
                     break;
