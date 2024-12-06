@@ -1,3 +1,93 @@
 2024-12-06 11:49:55 [main] INFO  pl.MainScreen - Starting KitaabScript application...
 2024-12-06 11:50:09 [AWT-EventQueue-0] INFO  pl.MainScreen - Open File button clicked.
 2024-12-06 11:53:59 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+2024-12-06 12:38:31 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+2024-12-06 12:39:04 [AWT-EventQueue-0] INFO  pl.MainScreen - Create File button clicked.
+2024-12-06 12:39:06 [AWT-EventQueue-0] WARN  pl.MainScreen - No file name entered.
+2024-12-06 12:39:21 [AWT-EventQueue-0] INFO  pl.MainScreen - Create File button clicked.
+2024-12-06 12:39:26 [AWT-EventQueue-0] INFO  pl.MainScreen - File created successfully: hi.txt
+2024-12-06 12:40:19 [AWT-EventQueue-0] INFO  pl.MainScreen - Open File button clicked.
+2024-12-06 12:40:55 [AWT-EventQueue-0] INFO  pl.MainScreen - Open File button clicked.
+2024-12-06 12:43:34 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+2024-12-06 12:43:52 [AWT-EventQueue-0] INFO  pl.MainScreen - Create File button clicked.
+2024-12-06 12:44:01 [AWT-EventQueue-0] INFO  pl.MainScreen - File created successfully: hi.txt
+2024-12-06 12:47:30 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+2024-12-06 12:47:52 [AWT-EventQueue-0] INFO  pl.MainScreen - Create File button clicked.
+2024-12-06 12:47:59 [AWT-EventQueue-0] INFO  pl.MainScreen - File created successfully: test.txt
+2024-12-06 12:53:35 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+2024-12-06 12:53:51 [AWT-EventQueue-0] INFO  pl.MainScreen - Create File button clicked.
+2024-12-06 12:53:53 [AWT-EventQueue-0] WARN  pl.MainScreen - No file name entered.
+2024-12-06 12:53:59 [AWT-EventQueue-0] INFO  pl.MainScreen - Create File button clicked.
+2024-12-06 12:54:02 [AWT-EventQueue-0] INFO  pl.MainScreen - File created successfully: testing.txt
+2024-12-06 12:56:22 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+2024-12-06 12:56:40 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+2024-12-06 12:56:44 [AWT-EventQueue-0] INFO  pl.MainScreen - File created successfully: test.txt
+2024-12-06 12:58:10 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+2024-12-06 12:58:42 [AWT-EventQueue-0] INFO  pl.MainScreen - File created successfully: test.txt
+2024-12-06 13:02:27 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+2024-12-06 13:02:55 [AWT-EventQueue-0] ERROR pl.MainScreen - Error creating file: test.txt
+java.lang.RuntimeException: Error in file creation: An error occurred while creating the file: Content cannot be null or empty.
+	at bll.FileBO.createFile(FileBO.java:24) ~[bin/:?]
+	at bll.BLFacade.createFile(BLFacade.java:40) ~[bin/:?]
+	at pl.MainScreen$3.actionPerformed(MainScreen.java:151) ~[bin/:?]
+	at javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:1972) ~[?:?]
+	at javax.swing.AbstractButton$Handler.actionPerformed(AbstractButton.java:2314) ~[?:?]
+	at javax.swing.DefaultButtonModel.fireActionPerformed(DefaultButtonModel.java:407) ~[?:?]
+	at javax.swing.DefaultButtonModel.setPressed(DefaultButtonModel.java:262) ~[?:?]
+	at javax.swing.plaf.basic.BasicButtonListener.mouseReleased(BasicButtonListener.java:279) ~[?:?]
+	at java.awt.Component.processMouseEvent(Component.java:6621) ~[?:?]
+	at javax.swing.JComponent.processMouseEvent(JComponent.java:3398) ~[?:?]
+	at java.awt.Component.processEvent(Component.java:6386) ~[?:?]
+	at java.awt.Container.processEvent(Container.java:2266) ~[?:?]
+	at java.awt.Component.dispatchEventImpl(Component.java:4996) ~[?:?]
+	at java.awt.Container.dispatchEventImpl(Container.java:2324) ~[?:?]
+	at java.awt.Component.dispatchEvent(Component.java:4828) ~[?:?]
+	at java.awt.LightweightDispatcher.retargetMouseEvent(Container.java:4948) ~[?:?]
+	at java.awt.LightweightDispatcher.processMouseEvent(Container.java:4575) ~[?:?]
+	at java.awt.LightweightDispatcher.dispatchEvent(Container.java:4516) ~[?:?]
+	at java.awt.Container.dispatchEventImpl(Container.java:2310) ~[?:?]
+	at java.awt.Window.dispatchEventImpl(Window.java:2780) ~[?:?]
+	at java.awt.Component.dispatchEvent(Component.java:4828) ~[?:?]
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:775) ~[?:?]
+	at java.awt.EventQueue$4.run(EventQueue.java:720) ~[?:?]
+	at java.awt.EventQueue$4.run(EventQueue.java:714) ~[?:?]
+	at java.security.AccessController.doPrivileged(AccessController.java:400) [?:?]
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:87) ~[?:?]
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:98) ~[?:?]
+	at java.awt.EventQueue$5.run(EventQueue.java:747) ~[?:?]
+	at java.awt.EventQueue$5.run(EventQueue.java:745) ~[?:?]
+	at java.security.AccessController.doPrivileged(AccessController.java:400) [?:?]
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:87) [?:?]
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:744) [?:?]
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203) [?:?]
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124) [?:?]
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113) [?:?]
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109) [?:?]
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101) [?:?]
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:90) [?:?]
+Caused by: java.lang.RuntimeException: An error occurred while creating the file: Content cannot be null or empty.
+	at dal.FileDAO.createFile(FileDAO.java:129) ~[bin/:?]
+	at dal.DALFacade.createFile(DALFacade.java:36) ~[bin/:?]
+	at bll.FileBO.createFile(FileBO.java:22) ~[bin/:?]
+	... 37 more
+Caused by: java.lang.IllegalArgumentException: Content cannot be null or empty.
+	at dal.FileDAO.createFile(FileDAO.java:81) ~[bin/:?]
+	at dal.DALFacade.createFile(DALFacade.java:36) ~[bin/:?]
+	at bll.FileBO.createFile(FileBO.java:22) ~[bin/:?]
+	... 37 more
+2024-12-06 13:03:20 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+2024-12-06 13:03:40 [AWT-EventQueue-0] INFO  pl.MainScreen - File created successfully: test.txt
+2024-12-06 13:05:59 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+2024-12-06 13:06:25 [AWT-EventQueue-0] INFO  pl.MainScreen - File created successfully: test.txt
+2024-12-06 13:08:59 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+2024-12-06 13:09:25 [AWT-EventQueue-0] INFO  pl.MainScreen - File created successfully: test.txt
+2024-12-06 16:20:22 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+2024-12-06 16:21:40 [AWT-EventQueue-0] INFO  pl.MainScreen - File created successfully: test.txt
+2024-12-06 16:22:38 [AWT-EventQueue-0] INFO  pl.MainScreen - File created successfully: test.txt
+2024-12-06 16:27:49 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+2024-12-06 16:28:28 [AWT-EventQueue-0] INFO  pl.MainScreen - File created successfully: test.txt
+2024-12-06 16:29:57 [AWT-EventQueue-0] INFO  pl.MainScreen - File created successfully: hi.txt
+2024-12-06 16:33:04 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+
+2024-12-06 18:03:39 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+2024-12-06 18:04:01 [AWT-EventQueue-0] INFO  pl.FileTablePanel - No files found in the system.

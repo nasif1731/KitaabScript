@@ -22,7 +22,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-//import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.*;
 
 import bll.BLFacade;
@@ -124,14 +123,12 @@ public class MainScreen extends JFrame {
 		});
 		importFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				logger.info("Import File button clicked.");
 				ImportFileDialogueBox dialog = new ImportFileDialogueBox(MainScreen.this, blFacade);
 				dialog.setVisible(true);
 			}
 		});
 		createFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				logger.info("Create File button clicked.");
 				String fileName = JOptionPane.showInputDialog(MainScreen.this,
 						"Enter the name of the file (without extension):");
 
@@ -172,7 +169,6 @@ public class MainScreen extends JFrame {
 
 		openFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				logger.info("Open File button clicked.");
 				JFrame frame = new JFrame("Files in DB");
 				FileTablePanel fileTablePanel = new FileTablePanel(blFacade);
 				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -185,7 +181,7 @@ public class MainScreen extends JFrame {
 
 		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				logger.info("Search button clicked.");
+			
 				SearchPanel searchPanel = new SearchPanel(blFacade);
 
 				JFrame searchFrame = new JFrame("Search Panel");

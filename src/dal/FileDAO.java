@@ -69,7 +69,6 @@ public class FileDAO  implements IFileDAO{
 
 	    return totalWordCount[0];
 	}
-
 	@Override
 	public PageDTO createFile(String name, String content) {
 	    try {
@@ -122,29 +121,8 @@ public class FileDAO  implements IFileDAO{
 	        return null;
 	    }
 	}
-	
 
 	@Override
-	public void deleteFile(String name) {
-	    try {
-	        String deleteSQL = "DELETE FROM text_files WHERE filename = ?";
-
-	        try (
-	             PreparedStatement stmt = conn.prepareStatement(deleteSQL)) {
-
-	            stmt.setString(1, name);
-	            int rowsAffected = stmt.executeUpdate();
-
-	            if (rowsAffected == 0) {
-	                System.err.println("No file found with the name: " + name);
-	            }
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	}
-
-//	@Override
 	public PageDTO updateFile(String name, int pageNumber, String newContent) {
 	    try {
 	        int count = countWords(newContent);
@@ -196,6 +174,27 @@ public class FileDAO  implements IFileDAO{
 	        return null;
 	    }
 	}
+	@Override
+	public void deleteFile(String name) {
+	    try {
+	        String deleteSQL = "DELETE FROM text_files WHERE filename = ?";
+
+	        try (
+	             PreparedStatement stmt = conn.prepareStatement(deleteSQL)) {
+
+	            stmt.setString(1, name);
+	            int rowsAffected = stmt.executeUpdate();
+
+	            if (rowsAffected == 0) {
+	                System.err.println("No file found with the name: " + name);
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+
+	
 
 	@Override
 	public String createdAt(String name) {

@@ -18,6 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import org.apache.logging.log4j.*;
+
 import bll.IBLFacade;
 import dto.FileDTO;
 import dto.PageDTO;
@@ -28,12 +30,10 @@ public class FileUpdatePanel extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+private static final Logger logger = LogManager.getLogger(FileUpdatePanel.class);
 	private JTextArea fileContentArea;
 	private JButton saveButton;
-	@SuppressWarnings("unused")
 	private JButton prevButton;
-	@SuppressWarnings("unused")
 	private JButton nextButton;
 	private JLabel lastModifiedLabel;
 	private JLabel wordCountLabel;
@@ -101,8 +101,8 @@ public class FileUpdatePanel extends JFrame {
 		saveButton = createStyledButton("Save", mughalFont);
 		saveButton.setPreferredSize(new Dimension(120, 40));
 
-		JButton prevButton = createStyledButton("← Previous", mughalFont);
-		JButton nextButton = createStyledButton("Next →", mughalFont);
+	 prevButton = createStyledButton("← Previous", mughalFont);
+		 nextButton = createStyledButton("Next →", mughalFont);
 		prevButton.addActionListener(e -> navigatePage(currentPage - 1));
 		nextButton.addActionListener(e -> navigatePage(currentPage + 1));
 
@@ -136,6 +136,7 @@ public class FileUpdatePanel extends JFrame {
 
 	private void loadFileContent() {
 		try {
+			logger.info("Loading content for file: {}", currentFileName);
 			fileDTO = blFacade.getOneFile(currentFileName);
 			if (fileDTO != null) {
 				PageDTO page = blFacade.getPageContent(fileDTO.getId(), currentPage);
@@ -149,6 +150,7 @@ public class FileUpdatePanel extends JFrame {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error("Error loading file content: {}", e.getMessage(), e);
 			JOptionPane.showMessageDialog(this, "Error loading file content: " + e.getMessage(), "Error",
 					JOptionPane.ERROR_MESSAGE);
 		}

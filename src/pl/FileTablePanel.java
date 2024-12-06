@@ -19,6 +19,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
+import org.apache.logging.log4j.*;
 import bll.FileBO;
 import bll.FilePaginationBO;
 import bll.IBLFacade;
@@ -29,15 +30,14 @@ public class FileTablePanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	 private static final Logger logger = LogManager.getLogger(FileTablePanel.class);
 	private JTable fileTable;
     private IBLFacade blFacade;
     private DefaultTableModel tableModel;
     private JButton deleteButton;
-	@SuppressWarnings("unused")
 	private FilePaginationBO filePaginationBO;
-	@SuppressWarnings("unused")
 	private FileBO fileBO;
-
 
     
     private static final Dimension BUTTON_SIZE = new Dimension(100, 30);
@@ -155,6 +155,7 @@ public class FileTablePanel extends JPanel {
         fileDetailPanel.setSize(600, 400); 
         fileDetailPanel.setLocationRelativeTo(null); 
         fileDetailPanel.setVisible(true); 
+        logger.info("File detail panel for '{}' opened successfully.", fileName);
     }
 
 

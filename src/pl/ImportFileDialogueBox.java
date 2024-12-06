@@ -23,6 +23,9 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import bll.IBLFacade;
 
 public class ImportFileDialogueBox extends JDialog {
@@ -32,7 +35,7 @@ public class ImportFileDialogueBox extends JDialog {
 	 */
 
 	private static final long serialVersionUID = 1841635305535824823L;
-
+private static final Logger logger = LogManager.getLogger(ImportFileDialogueBox.class);
 	private IBLFacade blFacade;
     private JTextArea resultArea;
     private JButton importButton;
@@ -77,6 +80,7 @@ public class ImportFileDialogueBox extends JDialog {
     }
 
     private void handleFileImport() {
+    	logger.info("File import process started.");
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setMultiSelectionEnabled(true);
         fileChooser.setFileFilter(new FileNameExtensionFilter("Text Files", "txt"));
@@ -87,6 +91,8 @@ public class ImportFileDialogueBox extends JDialog {
             File[] selectedFiles = fileChooser.getSelectedFiles();
 
             if (selectedFiles.length == 0) {
+            	logger.warn("No files selected for import.");
+
                 JOptionPane.showMessageDialog(this, "Please select a file or files to import.", "No File Selected",
                         JOptionPane.WARNING_MESSAGE);
                 return;
@@ -104,7 +110,8 @@ public class ImportFileDialogueBox extends JDialog {
                 SwingUtilities.invokeLater(() -> {
                     for (String message : results) {
                         resultArea.append(message + "\n");
-                    }
+                    }logger.info("File import completed successfully.");
+
                     JOptionPane.showMessageDialog(ImportFileDialogueBox.this,
                             "File import completed.", "Completed", JOptionPane.INFORMATION_MESSAGE);
                 });
