@@ -12,7 +12,6 @@ import java.util.List;
 
 import dto.FileDTO;
 import dto.PageDTO;
-import util.DatabaseConnection;
 import util.HashGenerator;
 
 
@@ -85,14 +84,14 @@ public class FileDAO  implements IFileDAO{
 
 	        String insertSQL = "INSERT INTO text_files (filename, hash, word_count, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())";
 
-	        try (Connection conn = DatabaseConnection.getConnection();
+	        try (
 	             PreparedStatement stmt = conn.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)) {
 
 	            stmt.setString(1, name);
 	            stmt.setString(2, hash);
 	            stmt.setInt(3, count);
 	            int rowsAffected = stmt.executeUpdate();
-
+//	            System.out.println(rowsAffected);
 	            if (rowsAffected == 0) {
 	                return null;
 	            }
@@ -102,13 +101,13 @@ public class FileDAO  implements IFileDAO{
 	            if (rs.next()) {
 	                fileId = rs.getInt(1);
 	            }
-
+//	            System.out.println(fileId);
 	            if (fileId == 0) {
 	                return null;
 	            }
 
 	            List<PageDTO> paginatedContent = paginationDAO.paginateContent(fileId, content);
-	          //  System.out.println("Paginated Content: " + paginatedContent.size()); 
+//	            System.out.println("Paginated Content: " + paginatedContent.size()); 
 	            
 	            if (paginatedContent.isEmpty()) {
 	                return null; 

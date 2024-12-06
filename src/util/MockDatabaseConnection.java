@@ -17,11 +17,19 @@ public class MockDatabaseConnection{
     private static final String PASSWORD = "";
 
     private MockDatabaseConnection() throws SQLException {
-    	connectionPool = new ArrayBlockingQueue<>(POOL_SIZE);
+        connectionPool = new ArrayBlockingQueue<>(POOL_SIZE);
         for (int i = 0; i < POOL_SIZE; i++) {
-            connectionPool.add(DriverManager.getConnection(TEST_URL, USER, PASSWORD));
+            try {
+                connectionPool.add(DriverManager.getConnection(TEST_URL, USER, PASSWORD));
+            } catch (SQLException e) {
+                System.err.println("Failed to add connection to the pool: " + e.getMessage());
+                throw new SQLException("Error creating database connection for the pool", e);
+            }
         }
+        
     }
+
+
    
     public static synchronized MockDatabaseConnection getInstance() throws SQLException {
         if (instance == null) {

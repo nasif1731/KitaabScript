@@ -23,28 +23,48 @@ class FileDAOTests {
     @BeforeEach
     void setUp() throws SQLException, InterruptedException {
         connection = MockDatabaseConnection.getInstance().getConnection();
+        
         fileDAO = new FileDAO(connection);
+        
         connection.prepareStatement("DELETE FROM text_files").executeUpdate();
+        connection.prepareStatement("DELETE FROM pagination").executeUpdate();
+  
         connection.prepareStatement(
                 "INSERT INTO text_files (id, filename, created_at, updated_at, hash, word_count, language) " +
                         "VALUES (1, 'testfile1.txt', NOW(), NOW(), 'hash1', 1000, 'EN')").executeUpdate();
         connection.prepareStatement(
                 "INSERT INTO text_files (id, filename, created_at, updated_at, hash, word_count, language) " +
                         "VALUES (2, 'testfile2.txt', NOW(), NOW(), 'hash2', 2000, 'FR')").executeUpdate();
+        
+        
+        connection.prepareStatement(
+                "INSERT INTO pagination (text_file_id, page_number, page_content) VALUES (1, 1, 'Page 1 content for testfile1')").executeUpdate();
+        connection.prepareStatement(
+                "INSERT INTO pagination (text_file_id, page_number, page_content) VALUES (1, 2, 'Page 2 content for testfile1')").executeUpdate();
+        connection.prepareStatement(
+                "INSERT INTO pagination (text_file_id, page_number, page_content) VALUES (2, 1, 'Page 1 content for testfile2')").executeUpdate();
+        connection.prepareStatement(
+                "INSERT INTO pagination (text_file_id, page_number, page_content) VALUES (2, 2, 'Page 2 content for testfile2')").executeUpdate();
+        
+   
+        
     }
+
 
     @AfterEach
     void tearDown() throws SQLException {
         connection.prepareStatement("DELETE FROM text_files").executeUpdate();
+        connection.prepareStatement("DELETE FROM pagination").executeUpdate();
         MockDatabaseConnection.getInstance().releaseConnection(connection);
     }
+
 
     @Test
     void testCreateFile() {
         String fileName = "newfile1.txt";
         String content = "This is the content of the new file.";
         PageDTO firstPage = fileDAO.createFile(fileName, content);
-
+        
         assertNotNull(firstPage);
         assertEquals(fileName, fileDAO.getFileName(firstPage.getTextFileId()));
         assertTrue(fileDAO.getWordCount(fileName) > 0);
@@ -74,8 +94,13 @@ class FileDAOTests {
     void testGetOneFile() {
         String fileName = "testfile1.txt";
         FileDTO file = fileDAO.getOneFile(fileName);
+        
+        assertNotNull(file); 
         assertEquals(fileName, file.getFilename());
+        assertEquals(1000, file.getWordCount()); 
+        assertEquals("EN", file.getLanguage()); 
     }
+
 
 
     @Test

@@ -48,3 +48,9 @@ java.io.IOException: Can't read \24f-prj-scd-team\src\resources\fonts\OldLondon.
 2024-12-06 16:55:15 [AWT-EventQueue-0] INFO  pl.MainScreen - Create File button clicked.
 2024-12-06 16:55:21 [AWT-EventQueue-0] INFO  pl.MainScreen - File created successfully: test.txt
 2024-12-06 16:55:29 [AWT-EventQueue-0] INFO  pl.MainScreen - Open File button clicked.
+2024-12-06 17:45:14 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+2024-12-06 17:45:23 [AWT-EventQueue-0] INFO  pl.MainScreen - Open File button clicked.
+2024-12-06 20:52:06 [main] INFO  pl.MainScreen - Starting KitaabScript application...
+2024-12-06 20:52:18 [AWT-EventQueue-0] INFO  pl.MainScreen - Create File button clicked.
+2024-12-06 20:52:23 [AWT-EventQueue-0] INFO  pl.MainScreen - File created successfully: test.txt
+2024-12-06 20:52:30 [AWT-EventQueue-0] INFO  pl.MainScreen - Open File button clicked.
