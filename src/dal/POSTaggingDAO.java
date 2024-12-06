@@ -112,7 +112,7 @@ public class POSTaggingDAO implements IPOSTaggingDAO {
         return true; 
     }
 
-    private String getPosTagForWord(String word) {
+    public String getPosTagForWord(String word) {
         try {
             
             File jarFile = new File("/mnt/data/AlKhalil-2.1.21.jar");
