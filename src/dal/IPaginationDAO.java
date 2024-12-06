@@ -1,7 +1,8 @@
 package dal;
 
-import dto.PageDTO;
 import java.util.List;
+
+import dto.PageDTO;
 
 public interface IPaginationDAO {
     void insertContent(List<PageDTO> paginatedContent);

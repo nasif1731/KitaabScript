@@ -17,9 +17,7 @@ import javax.swing.SwingConstants;
 import bll.IBLFacade;
 
 public class POSTaggingPanel extends JPanel {
-    /**
-	 * 
-	 */
+  
 	private static final long serialVersionUID = 1L;
 
 	private IBLFacade blFacade;

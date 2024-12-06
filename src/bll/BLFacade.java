@@ -15,6 +15,7 @@ public class BLFacade implements IBLFacade {
     private final IFileImportBO fileImportBO;
     private final IFilePaginationBO filePaginateBO;
     private final ISearchResultBO searchResultBO;
+    
     private final ITransliterationBO transliterationBO;
     private final ILemmatizationBO lemmatizationBO;
     private final IPOSTaggingBO postaggingBO;

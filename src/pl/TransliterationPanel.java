@@ -1,8 +1,6 @@
 package pl;
 
 import java.awt.BorderLayout;
-
-import org.apache.logging.log4j.*;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
@@ -18,6 +16,9 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import bll.IBLFacade;
 

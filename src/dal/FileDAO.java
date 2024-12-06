@@ -9,12 +9,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import dto.FileDTO;
 import dto.PageDTO;
 import util.HashGenerator;
-
-
 
 public class FileDAO  implements IFileDAO{
 	private final PaginationDAO paginationDAO;

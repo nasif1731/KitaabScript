@@ -1,9 +1,9 @@
 package bll;
 
+import java.util.List;
+
 import dal.IDALFacade;
 import dto.SearchResultDTO;
-
-import java.util.List;
 
 public class SearchResultBO implements ISearchResultBO{
 	private final IDALFacade dalFacade;

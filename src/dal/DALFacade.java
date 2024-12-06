@@ -2,12 +2,12 @@ package dal;
 
 import java.sql.SQLException;
 import java.util.List;
+
 import dto.FileDTO;
 import dto.LemmatizationDTO;
 import dto.POSTaggingDTO;
 import dto.PageDTO;
 import dto.SearchResultDTO;
-
 import dto.TransliterationDTO;
 
 
