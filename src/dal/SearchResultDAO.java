@@ -20,6 +20,9 @@ public class SearchResultDAO implements ISearchResultDAO {
 
 	@Override
     public List<SearchResultDTO> search(String keyword) {
+		if (keyword == null || keyword.trim().isEmpty()) {
+	        return new ArrayList<>(); // Return an empty list for empty keyword
+	    }
         List<SearchResultDTO> searchResults = new ArrayList<>();
         List<Integer> fileIds = fileDAO.getAllFileIds();
 
