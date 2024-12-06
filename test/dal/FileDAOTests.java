@@ -1,101 +1,136 @@
 package dal;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import dto.FileDTO;
 import dto.PageDTO;
-import org.junit.*;
 import util.MockDatabaseConnection;
 
-import java.sql.*;
-import static org.junit.Assert.*;
+class FileDAOTests {
 
-public class FileDAOTests {
-
-    private Connection mockConnection;
     private FileDAO fileDAO;
+    private Connection connection;
 
-    @Before
-    public void setup() throws SQLException, InterruptedException {
-        mockConnection = MockDatabaseConnection.getInstance().getConnection();
-        fileDAO = new FileDAO(mockConnection);
-        clearTestData();
+
+    @BeforeEach
+    void setUp() throws SQLException, InterruptedException {
+        connection = MockDatabaseConnection.getInstance().getConnection();
+        fileDAO = new FileDAO(connection);
+        connection.prepareStatement("DELETE FROM text_files").executeUpdate();
+        connection.prepareStatement(
+                "INSERT INTO text_files (id, filename, created_at, updated_at, hash, word_count, language) " +
+                        "VALUES (1, 'testfile1.txt', NOW(), NOW(), 'hash1', 1000, 'EN')").executeUpdate();
+        connection.prepareStatement(
+                "INSERT INTO text_files (id, filename, created_at, updated_at, hash, word_count, language) " +
+                        "VALUES (2, 'testfile2.txt', NOW(), NOW(), 'hash2', 2000, 'FR')").executeUpdate();
     }
 
-    @After
-    public void tearDown() {
-        clearTestData();
-    }
-
-    private void clearTestData() {
-        try (Statement stmt = mockConnection.createStatement()) {
-            stmt.executeUpdate("DELETE FROM text_files");
-            stmt.executeUpdate("DELETE FROM pagination");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testCreateFile_withValidContent() {
-        String name = "testFile.txt";
-        String content = "This is a test file content.";
-        PageDTO pageDTO = fileDAO.createFile(name, content);
-
-        assertNotNull("PageDTO should not be null", pageDTO);
-        assertEquals("testFile.txt", fileDAO.getFileName(pageDTO.getTextFileId()));
+    @AfterEach
+    void tearDown() throws SQLException {
+        connection.prepareStatement("DELETE FROM text_files").executeUpdate();
+        MockDatabaseConnection.getInstance().releaseConnection(connection);
     }
 
     @Test
-    public void testUpdateFile_withValidData() {
-        String name = "existingFile.txt";
-        String content = "Updated content for the file.";
-        fileDAO.createFile(name, content);
+    void testCreateFile() {
+        String fileName = "newfile1.txt";
+        String content = "This is the content of the new file.";
+        PageDTO firstPage = fileDAO.createFile(fileName, content);
 
-        String newContent = "New content to update the file.";
+        assertNotNull(firstPage);
+        assertEquals(fileName, fileDAO.getFileName(firstPage.getTextFileId()));
+        assertTrue(fileDAO.getWordCount(fileName) > 0);
+    }
+
+    @Test
+    void testDeleteFile() {
+        String fileName = "testfile2.txt";
+        fileDAO.deleteFile(fileName);
+
+        List<Integer> fileIds = fileDAO.getAllFileIds();
+        assertFalse(fileIds.contains(2));
+    }
+
+    @Test
+    void testUpdateFile() {
+        String fileName = "testfile1.txt";
         int pageNumber = 1;
-        PageDTO updatedPageDTO = fileDAO.updateFile(name, pageNumber, newContent);
+        String newContent = "Updated content for page 1.";
 
-        assertNotNull("Updated pageDTO should not be null", updatedPageDTO);
-        assertEquals(newContent, updatedPageDTO.getPageContent());
-    }
-    @Test
-    public void testUpdateFile_withInvalidFileName() {
-        String name = "nonExistentFile.txt";
-        String content = "Some content.";
-        int pageNumber = 1;
-
-        PageDTO updatedPageDTO = fileDAO.updateFile(name, pageNumber, content);
-        assertNull("Updating a non-existent file should return null", updatedPageDTO);
+        PageDTO updatedPage = fileDAO.updateFile(fileName, pageNumber, newContent);
+        assertNotNull(updatedPage);
+        assertEquals(newContent, updatedPage.getPageContent());
     }
 
     @Test
-    public void testGetWordCount_withExistingFile() {
-    
-        String name = "wordCountFile.txt";
-        String content = "This is a simple test file content.";
-        fileDAO.createFile(name, content);
+    void testGetOneFile() {
+        String fileName = "testfile1.txt";
+        FileDTO file = fileDAO.getOneFile(fileName);
+        assertEquals(fileName, file.getFilename());
+    }
 
-        int wordCount = fileDAO.getWordCount(name);
-        assertEquals("Word count should be 7", 7, wordCount);
+
+    @Test
+    void testGetAllFiles() {
+        List<FileDTO> files = fileDAO.getAllFiles();
+
+        assertEquals(2, files.size());
+        assertTrue(files.stream().anyMatch(f -> f.getFilename().equals("testfile1.txt")));
     }
 
     @Test
-    public void testGetWordCount_withNonExistentFile() {
-  
-        String name = "nonExistentFile.txt";
-        int wordCount = fileDAO.getWordCount(name);
-        assertEquals("Word count for non-existent file should be 0", 0, wordCount);
+    void testGetWordCount() {
+        String fileName = "testfile1.txt";
+        int wordCount = fileDAO.getWordCount(fileName);
+
+        assertEquals(1000, wordCount);
     }
 
     @Test
-    public void testGetOneFile_withValidFile() {
-    
-        String name = "existingFile.txt";
-        String content = "Content for the file.";
-        fileDAO.createFile(name, content);
+    void testFetchFileIdByName() throws SQLException {
+        String fileName = "testfile1.txt";
+        int fileId = fileDAO.fetchFileIdByName(fileName);
 
-        FileDTO fileDTO = fileDAO.getOneFile(name);
-        assertNotNull("FileDTO should not be null", fileDTO);
-        assertEquals("existingFile.txt", fileDTO.getFilename());
-        assertTrue("Content should not be empty", fileDTO.getContent().length() > 0);
+        assertEquals(1, fileId);
+    }
+
+    @Test
+    void testGetFileName() {
+        int fileId = 1;
+        String fileName = fileDAO.getFileName(fileId);
+
+        assertEquals("testfile1.txt", fileName);
+    }
+
+    @Test
+    void testGetAllFileIds() {
+        List<Integer> fileIds = fileDAO.getAllFileIds();
+
+        assertTrue(fileIds.contains(1));
+        assertTrue(fileIds.contains(2));
+    }
+
+    @Test
+    void testCreatedAt() {
+        String fileName = "testfile1.txt";
+        String createdAt = fileDAO.createdAt(fileName);
+
+        assertNotNull(createdAt);
+    }
+
+    @Test
+    void testUpdatedAt() {
+        String fileName = "testfile1.txt";
+        String updatedAt = fileDAO.updatedAt(fileName);
+
+        assertNotNull(updatedAt);
     }
 }

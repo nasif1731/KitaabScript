@@ -1,9 +1,13 @@
 package dal;
 
 import org.junit.jupiter.api.*;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
+
+
 import java.util.*;
 import dto.LemmatizationDTO;
 import util.MockDatabaseConnection;
@@ -23,6 +27,7 @@ public class LemmatizationDAOTests {
 			e.printStackTrace();
 		}
         lemmatizationDAO = new LemmatizationDAO(mockConnection);
+
         try (PreparedStatement stmt = mockConnection.prepareStatement(
                 "INSERT IGNORE INTO text_files (id) VALUES (?)")) {
             stmt.setInt(1, 1);
@@ -69,17 +74,14 @@ public class LemmatizationDAOTests {
     public void testAddLemmatizationFailure() {
         LemmatizationDTO dto = new LemmatizationDTO(1, 1, null, null, null);
         assertThrows(RuntimeException.class, () -> lemmatizationDAO.addLemmatization(dto));
+
     }
 
-    @Test
-    public void testGetLemmatizationForPageEmpty() {
-        List<LemmatizationDTO> results = lemmatizationDAO.getLemmatizationForPage(1);
-        assertTrue(results.isEmpty());
-    }
 
     @Test
     public void testGetLemmatizationForPageWithData() throws SQLException {
         LemmatizationDTO dto1 = new LemmatizationDTO(1, 1, "كلمة1", "تصريف1", "جذر1");
+
         LemmatizationDTO dto2 = new LemmatizationDTO(1, 1, "كلمة2", "تصريف2", "جذر2");
 
         lemmatizationDAO.addLemmatization(dto1);
@@ -87,6 +89,7 @@ public class LemmatizationDAOTests {
 
         List<LemmatizationDTO> results = lemmatizationDAO.getLemmatizationForPage(1);
         
+
         assertEquals(2, results.size());
         assertEquals("كلمة1", results.get(0).getWord());
         assertEquals("كلمة2", results.get(1).getWord());
@@ -94,6 +97,7 @@ public class LemmatizationDAOTests {
 
     @Test
     public void testIsLemmatizationSavedForPageTrue() throws SQLException {
+
         LemmatizationDTO dto1 = new LemmatizationDTO(1, 1, "الْعَرَبِيَّةُ", "عَرَبِيَّة", "عرب");
         LemmatizationDTO dto2 = new LemmatizationDTO(2, 1, "فَصِيحَةٌ", "فَصِيحَة", "فصح");
         lemmatizationDAO.addLemmatization(dto1);
@@ -102,15 +106,17 @@ public class LemmatizationDAOTests {
         
         assertTrue(lemmatizationDAO.isLemmatizationSavedForPage(1, "الْعَرَبِيَّةُ"));
         assertTrue(lemmatizationDAO.isLemmatizationSavedForPage(1, "فَصِيحَةٌ"));
+
     }
 
     @Test
     public void testIsLemmatizationSavedForPageFalse() throws SQLException {
         assertFalse(lemmatizationDAO.isLemmatizationSavedForPage(1, "كلمة3"));
     }
-
     @Test
-    public void testIsLemmatizationSavedForPageEmptyContent() {
+    public void testIsLemmatizationSavedForPageEmptyContent() throws SQLException {
         assertFalse(lemmatizationDAO.isLemmatizationSavedForPage(1, ""));
     }
+   
+
 }

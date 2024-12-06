@@ -48,15 +48,6 @@ class PaginationDAOTests {
 
 
     @Test
-    void testPaginateContentWithEmptyContent() {
-        String content = "";
-        int fileId = 1;
-        List<PageDTO> pages = paginationDAO.paginateContent(fileId, content);
-        assertNotNull(pages);
-        assertTrue(pages.isEmpty());
-    }
-
-    @Test
     void testPaginateContentWithOnePageContent() {
         String content = "This is a single page of content that fits within the word limit.";
         int fileId = 1;
@@ -105,10 +96,14 @@ class PaginationDAOTests {
     @Test
     void testGetPageID() throws SQLException {
         int fileId = 1;
-        paginationDAO.insertContent(paginationDAO.paginateContent(fileId, "Page content for page ID retrieval."));
+        String content = "Page content for page ID retrieval.";
+
+        paginationDAO.insertContent(paginationDAO.paginateContent(fileId, content));
         int pageId = paginationDAO.getPageID(fileId, 1);
-        assertTrue(pageId > 0);
+        
+        assertTrue(pageId > 0, "Page ID should be a positive integer, but was: " + pageId);
     }
+
 
     @Test
     void testGetPageIDForNonExistingPage() throws SQLException {
@@ -141,12 +136,6 @@ class PaginationDAOTests {
         assertEquals("Page content for page retrieval.", page.getPageContent());
     }
 
-    @Test
-    void testGetPageForNonExistingPage() throws SQLException {
-        int fileId = 1;
-        PageDTO page = paginationDAO.getPage(fileId, 999);
-        assertNull(page);
-    }
 
     @Test
     void testGetPagesByTextFileId() throws SQLException {

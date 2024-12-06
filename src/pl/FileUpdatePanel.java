@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -29,6 +30,7 @@ public class FileUpdatePanel extends JFrame {
 
 	
 	private static final long serialVersionUID = 1L;
+
 	private JTextArea fileContentArea;
 	private JButton saveButton;
 	private JButton prevButton;

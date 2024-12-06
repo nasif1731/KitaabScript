@@ -9,7 +9,7 @@ import java.util.concurrent.BlockingQueue;
 public class MockDatabaseConnection{
 
     private static MockDatabaseConnection instance;
-    private BlockingQueue<Connection> connectionPool;
+    private  BlockingQueue<Connection> connectionPool;
     private static final int POOL_SIZE = 10;
 
     private static final String TEST_URL = "jdbc:mysql://127.0.0.1:3306/kitaab_script_test";
