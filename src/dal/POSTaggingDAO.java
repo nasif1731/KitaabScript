@@ -11,11 +11,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import dto.POSTaggingDTO;
 
 public class POSTaggingDAO implements IPOSTaggingDAO {
 	private Connection conn;
-
+	private static final Logger logger  = LogManager.getLogger(POSTaggingDAO.class);
 	public POSTaggingDAO(Connection conn) {
 		this.conn=conn;
 	}
@@ -65,6 +68,8 @@ public class POSTaggingDAO implements IPOSTaggingDAO {
                 }
             }
         } catch (SQLException e) {
+        	logger.error("Error retrieving POS tagging entries for pageId: {}", pageId, e);
+
             throw new RuntimeException("Error while retrieving POS tagging entries for page ID: " + pageId, e);
         }
         return posTaggings;

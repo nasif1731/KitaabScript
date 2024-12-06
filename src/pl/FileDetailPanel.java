@@ -26,6 +26,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import bll.IBLFacade;
 import dto.FileDTO;
 import dto.LemmatizationDTO;
@@ -37,6 +40,8 @@ public class FileDetailPanel extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	 private static final Logger logger = LogManager.getLogger(FileDetailPanel.class);
 	private JTextPane fileContentArea;
 	private JButton updateButton;
 	private JButton prevButton;
@@ -274,6 +279,7 @@ public class FileDetailPanel extends JFrame {
         cl.show(cardPanel, panelName);  // "Transliteration", "Lemmatization", or "POS Tagging"
     }
 	private void processAllPagesLemmatization() {
+		logger.info("Processing all pages for Lemmatization.");
         int totalPageCount = blFacade.getTotalPages(fileDTO.getId());
         for (int i = 1; i <= totalPageCount; i++) {
             PageDTO page = blFacade.getPageContent(fileDTO.getId(), i);
@@ -301,6 +307,7 @@ public class FileDetailPanel extends JFrame {
     }
 
 	private void processAllPagesPOSTagging() {
+		logger.info("Processing all pages for POSTagging.");
         int totalPageCount = blFacade.getTotalPages(fileDTO.getId());
         for (int i = 1; i <= totalPageCount; i++) {
             PageDTO page = blFacade.getPageContent(fileDTO.getId(), i);
@@ -334,6 +341,7 @@ public class FileDetailPanel extends JFrame {
 			 showPanel("Transliteration"); 
 			/*transliterationPanel.setVisible(true);*/
 		} else {
+			logger.warn("No text selected for transliteration.");
 			JOptionPane.showMessageDialog(this, "Please select text for transliteration.", "No Text Selected",
 					JOptionPane.WARNING_MESSAGE);
 		}
@@ -351,6 +359,7 @@ public class FileDetailPanel extends JFrame {
 			updatePageLabel();
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error("Error loading file details: " + e.getMessage(), e);
 			JOptionPane.showMessageDialog(this, "Error loading file details: " + e.getMessage(), "Error",
 					JOptionPane.ERROR_MESSAGE);
 		}

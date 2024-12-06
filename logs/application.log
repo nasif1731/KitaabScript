@@ -1,4 +1,0 @@
-2024-12-06 11:51:06 [main] INFO  pl.MainScreen - Starting KitaabScript application...
-2024-12-06 11:51:32 [AWT-EventQueue-0] INFO  pl.MainScreen - Create File button clicked.
-2024-12-06 11:51:33 [AWT-EventQueue-0] WARN  pl.MainScreen - No file name entered.
-2024-12-06 11:51:34 [AWT-EventQueue-0] INFO  pl.MainScreen - Import File button clicked.
