@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17">
 		<attributes>
@@ -8,16 +9,34 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="C:/Users/dell/Downloads/AlKhalil-2.1.21.jar">
+=======
+	<classpathentry kind="lib" path="C:/Users/nasif/Downloads/AlKhalil-2.1.21.jar">
+>>>>>>> 691ffc09ab649a25baa3ad4b9ecc67d9427f0fd0
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="C:/Users/dell/Downloads/FarasaSegmenterJar.jar">
+=======
+	<classpathentry kind="lib" path="C:/Users/nasif/Downloads/mysql-connector-j-8.0.31.jar">
+>>>>>>> 691ffc09ab649a25baa3ad4b9ecc67d9427f0fd0
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="C:/Users/dell/Downloads/mysql-connector-j-8.0.31.jar"/>
+=======
+	<classpathentry kind="lib" path="C:/Users/nasif/Downloads/FarasaSegmenterJar.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/nasif/Downloads/log4j-api-2.20.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/nasif/Downloads/log4j-core-2.20.0.jar"/>
+>>>>>>> 691ffc09ab649a25baa3ad4b9ecc67d9427f0fd0
 	<classpathentry kind="output" path="bin"/>
 </classpath>

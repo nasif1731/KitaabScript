@@ -6,6 +6,10 @@ import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -16,6 +20,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JToggleButton;
+
+import org.apache.logging.log4j.*;
 
 import bll.IBLFacade;
 import dto.FileDTO;
@@ -23,16 +30,14 @@ import dto.PageDTO;
 
 public class FileUpdatePanel extends JFrame {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
+private static final Logger logger = LogManager.getLogger(FileUpdatePanel.class);
 	private JTextArea fileContentArea;
 	private JButton saveButton;
-	@SuppressWarnings("unused")
 	private JButton prevButton;
-	@SuppressWarnings("unused")
 	private JButton nextButton;
+	private JToggleButton autoSaveToggle;
 	private JLabel lastModifiedLabel;
 	private JLabel wordCountLabel;
 	private JLabel pageLabel;
@@ -41,13 +46,15 @@ public class FileUpdatePanel extends JFrame {
 	private FileDTO fileDTO;
 	private int currentPage = 1;
 	private int totalPages = 0;
-
+	 private ScheduledExecutorService autosaveExecutor;
+	 private boolean isAutosaveEnabled = false;
 	public FileUpdatePanel(String fileName, IBLFacade blFacade) {
 		this.currentFileName = fileName;
 		this.blFacade = blFacade;
 		initializeUI();
 		loadFileContent();
 		updateWordCount();
+		initializeAutosave();
 	}
 
 
@@ -99,16 +106,22 @@ public class FileUpdatePanel extends JFrame {
 		saveButton = createStyledButton("Save", mughalFont);
 		saveButton.setPreferredSize(new Dimension(120, 40));
 
-		JButton prevButton = createStyledButton("← Previous", mughalFont);
-		JButton nextButton = createStyledButton("Next →", mughalFont);
+	 prevButton = createStyledButton("← Previous", mughalFont);
+		 nextButton = createStyledButton("Next →", mughalFont);
 		prevButton.addActionListener(e -> navigatePage(currentPage - 1));
 		nextButton.addActionListener(e -> navigatePage(currentPage + 1));
-
+		autoSaveToggle = new JToggleButton("Enable Autosave");
+        autoSaveToggle.setFont(mughalFont);
+        autoSaveToggle.setBackground(new Color(138, 83, 43));
+        autoSaveToggle.setForeground(Color.WHITE);
+        autoSaveToggle.addActionListener(e -> toggleAutosave(autoSaveToggle.isSelected()));
+        
 		JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		controlPanel.setBackground(new Color(235, 224, 199));
 		controlPanel.add(prevButton);
 		controlPanel.add(saveButton);
 		controlPanel.add(nextButton);
+		controlPanel.add(autoSaveToggle);
 		mainPanel.add(controlPanel, BorderLayout.SOUTH);
 
    
@@ -123,7 +136,46 @@ public class FileUpdatePanel extends JFrame {
 		setVisible(true);
 	}
 
-    
+	private void initializeAutosave() {
+        autosaveExecutor = Executors.newSingleThreadScheduledExecutor();
+    }
+
+    private void toggleAutosave(boolean enable) {
+        isAutosaveEnabled = enable;
+        if (enable) {
+            autoSaveToggle.setText("Disable Autosave");
+            startAutosave();
+        } else {
+            autoSaveToggle.setText("Enable Autosave");
+            stopAutosave();
+        }
+    }
+
+    private void startAutosave() {
+        autosaveExecutor.scheduleAtFixedRate(() -> {
+            if (isAutosaveEnabled) {
+                saveFileSilently();
+            }
+        }, 0, 5, TimeUnit.MINUTES); 
+    }
+
+    private void stopAutosave() {
+        autosaveExecutor.shutdownNow();
+        initializeAutosave(); 
+    }
+
+    private boolean saveFileSilently() {
+        try {
+            String updatedContent = fileContentArea.getText();
+            blFacade.updateFile(currentFileName, currentPage, updatedContent);
+//            System.out.println("Autosaved successfully at " + System.currentTimeMillis());
+            return true;
+        } catch (Exception e) {
+//            System.err.println("Autosave failed: " + e.getMessage());
+            return false;
+        }
+    }
+
 
 
 
@@ -134,6 +186,7 @@ public class FileUpdatePanel extends JFrame {
 
 	private void loadFileContent() {
 		try {
+			logger.info("Loading content for file: {}", currentFileName);
 			fileDTO = blFacade.getOneFile(currentFileName);
 			if (fileDTO != null) {
 				PageDTO page = blFacade.getPageContent(fileDTO.getId(), currentPage);
@@ -147,6 +200,7 @@ public class FileUpdatePanel extends JFrame {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error("Error loading file content: {}", e.getMessage(), e);
 			JOptionPane.showMessageDialog(this, "Error loading file content: " + e.getMessage(), "Error",
 					JOptionPane.ERROR_MESSAGE);
 		}

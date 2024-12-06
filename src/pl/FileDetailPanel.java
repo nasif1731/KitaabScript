@@ -1,22 +1,47 @@
 package pl;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.ComponentOrientation;
+import java.awt.FlowLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
+import javax.swing.SwingConstants;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import bll.IBLFacade;
 import dto.FileDTO;
 import dto.LemmatizationDTO;
 import dto.POSTaggingDTO;
 import dto.PageDTO;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.LinkedList;
-import java.util.function.Function;
-
 public class FileDetailPanel extends JFrame {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	 private static final Logger logger = LogManager.getLogger(FileDetailPanel.class);
 	private JTextPane fileContentArea;
 	private JButton updateButton;
 	private JButton prevButton;
@@ -38,6 +63,8 @@ public class FileDetailPanel extends JFrame {
 	private JButton showLemmatizationButton; 
 	
 	private JPanel cardPanel; 
+	private JButton showTFIDFButton; 
+	 private TFIDFPanel tfidfPanel;
 	@SuppressWarnings("unused")
 	public FileDetailPanel(String fileName, IBLFacade blFacade) {
 		this.blFacade = blFacade;
@@ -125,6 +152,7 @@ public class FileDetailPanel extends JFrame {
 	    posTaggingPanel.setVisible(false);
 	    add(posTaggingPanel, BorderLayout.EAST);*/
         
+        
         transliterationPanel = new TransliterationPanel(blFacade, pageId, currentPage);
         cardPanel.add(transliterationPanel, "Transliteration");
 
@@ -133,6 +161,9 @@ public class FileDetailPanel extends JFrame {
 
         posTaggingPanel = new POSTaggingPanel(blFacade, pageId);
         cardPanel.add(posTaggingPanel, "POS Tagging");
+        
+        tfidfPanel = new TFIDFPanel(); 
+        cardPanel.add(tfidfPanel, "TFIDF");
 
 	    updateButton = new JButton("Update");
 	    updateButton.setBackground(new Color(138, 83, 43));
@@ -148,12 +179,18 @@ public class FileDetailPanel extends JFrame {
 	    showLemmatizationButton.setBackground(new Color(138, 83, 43));
 	    showLemmatizationButton.setForeground(Color.WHITE);
 	    showLemmatizationButton.addActionListener(e -> showAllLemmatizationResults());
+	    
+	    showTFIDFButton = new JButton("Show TFIDF");
+        showTFIDFButton.setBackground(new Color(138, 83, 43));
+        showTFIDFButton.setForeground(Color.WHITE);
+        showTFIDFButton.addActionListener(e -> showTFIDFResults());
 
 	    
 	    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 	    buttonPanel.add(updateButton); 
 	    buttonPanel.add(showPOSTaggingButton); 
 	    buttonPanel.add(showLemmatizationButton);
+	    buttonPanel.add(showTFIDFButton);
 	    buttonPanel.setBackground(new Color(235, 224, 199));
 
 	    prevButton = new JButton("← Previous");
@@ -186,11 +223,63 @@ public class FileDetailPanel extends JFrame {
 	    bottomPanel.add(wordCountLabel, BorderLayout.EAST);
 	    add(bottomPanel, BorderLayout.SOUTH);
 	}
+	
+	private void showTFIDFResults() {
+        Map<String, Double> tfidfResults = calculateTFIDFForAllWords();
+        if (tfidfResults.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No TF-IDF results available.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        
+        String tfidfHtml = generateHtmlTable(
+            new LinkedList<>(tfidfResults.entrySet()),
+            new String[]{"Word", "TF-IDF"},
+            entry -> new String[]{entry.getKey(), String.format("%.4f", entry.getValue())}
+        );
+
+        tfidfPanel.setContent(tfidfHtml); 
+        showPanel("TFIDF");
+    }
+
+   
+
+    private Map<String, Double> calculateTFIDFForAllWords() {
+        Map<String, Double> aggregatedTFIDF = new HashMap<>();
+        try {
+            StringBuilder fullContent = new StringBuilder();
+            int totalPages = blFacade.getTotalPages(fileDTO.getId());
+
+            for (int i = 1; i <= totalPages; i++) {
+                PageDTO page = blFacade.getPageContent(fileDTO.getId(), i);
+                if (page != null) {
+                    fullContent.append(page.getPageContent()).append(" ");
+                }
+            }
+
+            String[] words = fullContent.toString().split("\\s+");
+            Set<String> uniqueWords = new HashSet<>(Arrays.asList(words));
+
+            for (String word : uniqueWords) {
+                Map<String, Double> wordTFIDF = blFacade.performTFIDFAnalysisForWord(word);
+                aggregatedTFIDF.putAll(wordTFIDF);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error calculating TF-IDF: " + e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+        return aggregatedTFIDF;
+    }
+
+	
+
 	private void showPanel(String panelName) {
         CardLayout cl = (CardLayout) (cardPanel.getLayout());
         cl.show(cardPanel, panelName);  // "Transliteration", "Lemmatization", or "POS Tagging"
     }
 	private void processAllPagesLemmatization() {
+		logger.info("Processing all pages for Lemmatization.");
         int totalPageCount = blFacade.getTotalPages(fileDTO.getId());
         for (int i = 1; i <= totalPageCount; i++) {
             PageDTO page = blFacade.getPageContent(fileDTO.getId(), i);
@@ -218,6 +307,7 @@ public class FileDetailPanel extends JFrame {
     }
 
 	private void processAllPagesPOSTagging() {
+		logger.info("Processing all pages for POSTagging.");
         int totalPageCount = blFacade.getTotalPages(fileDTO.getId());
         for (int i = 1; i <= totalPageCount; i++) {
             PageDTO page = blFacade.getPageContent(fileDTO.getId(), i);
@@ -251,6 +341,7 @@ public class FileDetailPanel extends JFrame {
 			 showPanel("Transliteration"); 
 			/*transliterationPanel.setVisible(true);*/
 		} else {
+			logger.warn("No text selected for transliteration.");
 			JOptionPane.showMessageDialog(this, "Please select text for transliteration.", "No Text Selected",
 					JOptionPane.WARNING_MESSAGE);
 		}
@@ -268,6 +359,7 @@ public class FileDetailPanel extends JFrame {
 			updatePageLabel();
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error("Error loading file details: " + e.getMessage(), e);
 			JOptionPane.showMessageDialog(this, "Error loading file details: " + e.getMessage(), "Error",
 					JOptionPane.ERROR_MESSAGE);
 		}

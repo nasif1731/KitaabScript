@@ -59,5 +59,16 @@ public class LemmatizationDTO {
 	public void setRoot(String root) {
 		this.root = root;
 	}
+
+    @Override
+    public String toString() {
+        return "LemmatizationDTO{" +
+               "id=" + id +
+               ", paginationId=" + paginationId +
+               ", word='" + word + '\'' +
+               ", lemma='" + lemma + '\'' +
+               ", root='" + root + '\'' +
+               '}';
+    }
 }
 

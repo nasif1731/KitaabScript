@@ -10,7 +10,8 @@ public class MySQLDALFactory extends AbstractDALFactory{
 	public MySQLDALFactory() {
 		try {
 			try {
-				conn = DatabaseConnection.getInstance().getConnection();
+				DatabaseConnection.getInstance();
+				conn = DatabaseConnection.getConnection();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -25,7 +26,8 @@ public class MySQLDALFactory extends AbstractDALFactory{
 			if (conn == null || conn.isClosed()) {
 			    try {
 					try {
-						conn = DatabaseConnection.getInstance().getConnection();
+						DatabaseConnection.getInstance();
+						conn = DatabaseConnection.getConnection();
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -49,7 +51,8 @@ public class MySQLDALFactory extends AbstractDALFactory{
 			if (conn == null || conn.isClosed()) {
 			    try {
 					try {
-						conn = DatabaseConnection.getInstance().getConnection();
+						DatabaseConnection.getInstance();
+						conn = DatabaseConnection.getConnection();
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -72,7 +75,8 @@ public class MySQLDALFactory extends AbstractDALFactory{
 			if (conn == null || conn.isClosed()) {
 			    try {
 					try {
-						conn = DatabaseConnection.getInstance().getConnection();
+						DatabaseConnection.getInstance();
+						conn = DatabaseConnection.getConnection();
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -94,7 +98,8 @@ public class MySQLDALFactory extends AbstractDALFactory{
 			if (conn == null || conn.isClosed()) {
 			    try {
 					try {
-						conn = DatabaseConnection.getInstance().getConnection();
+						DatabaseConnection.getInstance();
+						conn = DatabaseConnection.getConnection();
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -118,7 +123,8 @@ public class MySQLDALFactory extends AbstractDALFactory{
 			if (conn == null || conn.isClosed()) {
 			    try {
 					try {
-						conn = DatabaseConnection.getInstance().getConnection();
+						DatabaseConnection.getInstance();
+						conn = DatabaseConnection.getConnection();
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -142,7 +148,8 @@ public class MySQLDALFactory extends AbstractDALFactory{
 			if (conn == null || conn.isClosed()) {
 			    try {
 					try {
-						conn = DatabaseConnection.getInstance().getConnection();
+						DatabaseConnection.getInstance();
+						conn = DatabaseConnection.getConnection();
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -166,7 +173,8 @@ public class MySQLDALFactory extends AbstractDALFactory{
 			if (conn == null || conn.isClosed()) {
 			    try {
 					try {
-						conn = DatabaseConnection.getInstance().getConnection();
+						DatabaseConnection.getInstance();
+						conn = DatabaseConnection.getConnection();
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

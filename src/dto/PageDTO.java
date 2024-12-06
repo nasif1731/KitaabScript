@@ -51,6 +51,14 @@ public class PageDTO {
 		this.pageId = pageId;
 	}
 
-	
+	@Override
+	public String toString() {
+	    return "PageDTO{" +
+	            "textFileId=" + textFileId +
+	            ", pageNumber=" + pageNumber +
+	            ", pageContent='" + pageContent + '\'' +
+	            '}';
+	}
+
 	}
 

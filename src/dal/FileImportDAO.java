@@ -134,8 +134,12 @@ public class FileImportDAO implements IFileImportDAO{
                 return "Urdu";
             } else if (isArabic(content)) {
                 return "Arabic";
-            } else {
+            } else if(isEnglish(content)) {
                 return "English";
+            }
+            else
+            {
+            	return "Unknown";
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -143,7 +147,7 @@ public class FileImportDAO implements IFileImportDAO{
         }
     }
 
-	private boolean isUrdu(String content) {
+	boolean isUrdu(String content) {
 		for (int i = 0; i < content.length(); i++) {
 			char ch = content.charAt(i);
 			if (ch == 'ٹ' || ch == 'ڈ' || ch == 'ڑ' || ch == 'ں' || ch == 'ے' || ch == 'ؤ' || ch == 'ۓ') {
@@ -153,7 +157,7 @@ public class FileImportDAO implements IFileImportDAO{
 		return false;
 	}
 
-	private boolean isArabic(String content) {
+	 boolean isArabic(String content) {
 		for (int i = 0; i < content.length(); i++) {
 			char ch = content.charAt(i);
 			if (ch >= 0x0600 && ch <= 0x06FF && !isUrdu(String.valueOf(ch))) {
@@ -163,12 +167,16 @@ public class FileImportDAO implements IFileImportDAO{
 		return false;
 	}
 
-	private int countWords(String content) {
+	 int countWords(String content) {
 		if (content.isEmpty()) {
 			return 0;
 		} else {
 			return content.split("\\s+").length;
 		}
 	}
+	 boolean isEnglish(String sentence) {
+	        
+	        return sentence.matches("^[A-Za-z0-9\\s.,!?\"'()]*$");
+	    }
 
 }

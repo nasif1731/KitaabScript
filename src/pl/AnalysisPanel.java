@@ -21,6 +21,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import bll.IBLFacade;
 
 public class AnalysisPanel extends JPanel {
@@ -29,6 +32,8 @@ public class AnalysisPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	private static final Logger logger = LogManager.getLogger(AnalysisPanel.class);
 	private final IBLFacade blFacade;
     private final JTextField searchField;
     private final JTextArea resultArea;
@@ -64,7 +69,7 @@ public class AnalysisPanel extends JPanel {
         analysisTypePanel.setBackground(new Color(235, 224, 199));
         JLabel analysisTypeLabel = new JLabel("Choose Analysis:");
         analysisTypeLabel.setFont(font);
-        analysisTypeComboBox = new JComboBox<>(new String[]{"TF-IDF", "PMI", "KL Divergence"});
+        analysisTypeComboBox = new JComboBox<>(new String[]{"PMI", "KL Divergence"});
         analysisTypeComboBox.setFont(font);
         analysisTypePanel.add(analysisTypeLabel);
         analysisTypePanel.add(analysisTypeComboBox);
@@ -122,6 +127,7 @@ public class AnalysisPanel extends JPanel {
         String selectedAnalysis = (String) analysisTypeComboBox.getSelectedItem();
 
         if (searchTerm.isEmpty()) {
+        	logger.warn("Please enter a word");
             JOptionPane.showMessageDialog(this, "Please enter a word to search.");
             return;
         }
@@ -130,9 +136,6 @@ public class AnalysisPanel extends JPanel {
             Map<String, Double> result;
             StringBuilder res = new StringBuilder();
             switch (selectedAnalysis) {
-                case "TF-IDF":
-                    result = blFacade.performTFIDFAnalysisForWord(searchTerm);
-                    break;
                 case "PMI":
                     result = blFacade.performPMIAnalysisForWord(searchTerm);
                     break;
@@ -140,6 +143,7 @@ public class AnalysisPanel extends JPanel {
                     result = blFacade.performKLAnalysisForWord(searchTerm);
                     break;
                 default:
+                	logger.error("Not a valid Analysis Type");
                     JOptionPane.showMessageDialog(this, "Invalid analysis type selected.");
                     return;
             }
@@ -159,6 +163,7 @@ public class AnalysisPanel extends JPanel {
 
             resultArea.setText(res.toString());
         } catch (Exception ex) {
+        	logger.error("Error performing Analysis "+ ex.getMessage(), ex);
             JOptionPane.showMessageDialog(this, "Error performing analysis: " + ex.getMessage());
         }
     }

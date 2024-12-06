@@ -1,6 +1,8 @@
 package pl;
 
 import java.awt.BorderLayout;
+
+import org.apache.logging.log4j.*;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
@@ -25,6 +27,7 @@ public class TransliterationPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private static final Logger logger  = LogManager.getLogger(TransliterationPanel.class);
 	public JTextPane textPane;
     private JPopupMenu contextMenu;
     private IBLFacade blFacade;
@@ -92,6 +95,7 @@ public class TransliterationPanel extends JPanel {
         String selectedText = text;
         if (selectedText == null || selectedText.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please select text for transliteration.");
+            logger.warn("No text selected for transliteration.");
             return;
         }
 

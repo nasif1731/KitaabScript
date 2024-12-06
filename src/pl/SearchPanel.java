@@ -7,6 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
+import org.apache.logging.log4j.*;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -20,12 +21,12 @@ import javax.swing.JTextField;
 
 import bll.IBLFacade;
 import dto.SearchResultDTO;
-
 public class SearchPanel extends JPanel {
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	 private static final Logger logger = LogManager.getLogger(SearchPanel.class);
 	private JList<SearchResultDTO> searchList;
     private DefaultListModel<SearchResultDTO> listModel;
     private JTextField searchField;
@@ -94,8 +95,10 @@ public class SearchPanel extends JPanel {
 
     private void performSearch(ActionEvent e) {
         String searchTerm = searchField.getText().trim();
+        logger.info("Performing search for term: {}", searchTerm);
         if (searchTerm.isEmpty()) {
             resultArea.setText("Please enter a search term.");
+            logger.warn("Search term is empty.");
             return;
         }
         List<SearchResultDTO> searchResults = blFacade.search(searchTerm);
@@ -103,6 +106,7 @@ public class SearchPanel extends JPanel {
     }
 
     private void navigateToFile(SearchResultDTO result) {
+    	 logger.info("Opening file: {}", result.getFileName());
         new FileDetailPanel(result.getFileName(), blFacade).loadFileDetails(result.getFileName());
     }
 
