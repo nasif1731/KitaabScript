@@ -42,6 +42,7 @@ public class MainScreen extends JFrame {
 	private JButton performAnalysisButton;
 
 	public MainScreen(IBLFacade blFacade) {
+		logger.info("Starting KitaabScript application...");
 		this.setBlFacade(blFacade);
 		setTitle("Kitaab Script");
 		setSize(800, 500);
