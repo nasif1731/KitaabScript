@@ -8,9 +8,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
+
 
 public class MockDatabaseConnection {
     private static MockDatabaseConnection instance;
