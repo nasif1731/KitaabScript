@@ -72,7 +72,7 @@ public class RMIServer {
 		try {
 			blFacade = new BLFacade(fileBO,fileImportBO,filePaginationBO,searchResultBO,transliterationBO,lemmatizationBO,posTaggingBO,tfidfAnalysisBO,pmiAnalysisBO,klAnalysisBO);
 			Registry registry;
-			registry = LocateRegistry.getRegistry(1099);
+			registry = LocateRegistry.createRegistry(1099);
 			registry.rebind("BLFacade", blFacade);
 			System.out.println("Server is running...");
 		} catch (RemoteException e) {
