@@ -49,4 +49,4 @@
 
 ### 2. **Clone the Repository**
 ```bash
-git clone https://github.com/SoftwareConstructionAndDev/24f-prj-scd-team.git
+git clone https://github.com/nasif1731/KitaabScript.git
