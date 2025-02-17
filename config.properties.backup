@@ -1,0 +1,7 @@
+dal.factoryClass=dal.MySQLDALFactory
+db.url=jdbc:mysql://127.0.0.1:3306/kitaab_script
+db.user=root
+db.password=
+db.poolSize=10
+server.host=localhost
+server.port=1099
